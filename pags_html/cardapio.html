@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Qmesa - Cardápio</title>
+  <link rel="stylesheet" href="../pags_css/cardapio_style.css">
+</head>
+<body>
+
+  <main class="screen">
+    <section class="card">
+
+      <header class="top-image">
+        <a href="javascript:history.back()" class="back-button" aria-label="Voltar">
+          &#8592;
+        </a>
+
+        <img src="../images/banner_restaurante.png" alt="Imagem do restaurante" class="banner-img">
+
+        <div class="badge-circle">
+          <img src="../images/logo_restaurante.png" alt="Logo do restaurante">
+        </div>
+      </header>
+
+      <section class="content">
+        <h1>MENU</h1>
+
+        <nav class="menu-tabs">
+          <button class="tab active" data-filter="all">Ver tudo</button>
+          <button class="tab" data-filter="entradas">Entradas</button>
+          <button class="tab" data-filter="principais">Pratos principais</button>
+          <button class="tab" data-filter="sobremesas">Sobremesas</button>
+          <button class="tab" data-filter="bebidas">Bebidas</button>
+        </nav>
+
+        <section class="menu-grid">
+
+          <article class="menu-card" data-category="principais">
+            <img src="../images/prato_1.jpg" alt="Bife à parmegiana">
+            <div class="menu-card-body">
+              <h2>BIFE À PARMEGIANA</h2>
+              <p class="price">R$ 56,90</p>
+              <p class="desc">Filé bovino empanado, molho artesanal, queijo gratinado e acompanhamento da casa.</p>
+            </div>
+          </article>
+
+          <article class="menu-card" data-category="principais">
+            <img src="../images/prato_2.png" alt="Salmão grelhado">
+            <div class="menu-card-body">
+              <h2>SALMÃO GRELHADO</h2>
+              <p class="price">R$ 62,50</p>
+              <p class="desc">Salmão grelhado com legumes salteados e arroz aromático.</p>
+            </div>
+          </article>
+
+          <article class="menu-card" data-category="principais">
+            <img src="../images/prato_3.png" alt="Risoto de funghi">
+            <div class="menu-card-body">
+              <h2>RISOTO DE FUNGHI</h2>
+              <p class="price">R$ 48,90</p>
+              <p class="desc">Arroz arbóreo cremoso com cogumelos selecionados e toque de parmesão.</p>
+            </div>
+          </article>
+
+          <article class="menu-card" data-category="principais">
+            <img src="../images/prato_4.png" alt="Frango ao molho">
+            <div class="menu-card-body">
+              <h2>FRANGO AO MOLHO DE ERVAS</h2>
+              <p class="price">R$ 42,90</p>
+              <p class="desc">Peito de frango grelhado com molho leve de ervas e purê rústico.</p>
+            </div>
+          </article>
+
+          <article class="menu-card" data-category="entradas">
+            <img src="../images/entrada_1.png" alt="Bruschetta especial">
+            <div class="menu-card-body">
+              <h2>BRUSCHETTA ESPECIAL</h2>
+              <p class="price">R$ 24,90</p>
+              <p class="desc">Fatias crocantes com tomate fresco, manjericão e toque de azeite.</p>
+            </div>
+          </article>
+
+          <article class="menu-card" data-category="entradas">
+            <img src="../images/entrada_2.png" alt="Batata rústica">
+            <div class="menu-card-body">
+              <h2>BATATA RÚSTICA</h2>
+              <p class="price">R$ 21,50</p>
+              <p class="desc">Batatas crocantes servidas com molho especial da casa.</p>
+            </div>
+          </article>
+
+          <article class="menu-card" data-category="sobremesas">
+            <img src="../images/sobremesa_1.png" alt="Cheesecake de frutas vermelhas">
+            <div class="menu-card-body">
+              <h2>CHEESECAKE</h2>
+              <p class="price">R$ 19,90</p>
+              <p class="desc">Cheesecake cremoso com cobertura de frutas vermelhas.</p>
+            </div>
+          </article>
+
+          <article class="menu-card" data-category="sobremesas">
+            <img src="../images/sobremesa_2.png" alt="Petit gâteau">
+            <div class="menu-card-body">
+              <h2>PETIT GÂTEAU</h2>
+              <p class="price">R$ 22,90</p>
+              <p class="desc">Bolinho de chocolate com recheio cremoso e sorvete de baunilha.</p>
+            </div>
+          </article>
+
+          <article class="menu-card" data-category="bebidas">
+            <img src="../images/bebida_1.png" alt="Refrigerante lata">
+            <div class="menu-card-body">
+              <h2>REFRIGERANTE LATA</h2>
+              <p class="price">R$ 7,50</p>
+              <p class="desc">Consulte os sabores disponíveis no restaurante.</p>
+            </div>
+          </article>
+
+          <article class="menu-card" data-category="bebidas">
+            <img src="../images/bebida_2.png" alt="Suco natural">
+            <div class="menu-card-body">
+              <h2>SUCO NATURAL</h2>
+              <p class="price">R$ 11,90</p>
+              <p class="desc">Sucos preparados na hora com frutas frescas.</p>
+            </div>
+          </article>
+
+        </section>
+      </section>
+
+      <footer class="footer-nav"></footer>
+      <script src="../pags_js/cardapio.js"></script>
+
+    </section>
+  </main>
+
+</body>
+</html>

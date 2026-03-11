@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Qmesa - Reagendar reserva</title>
+  <link rel="stylesheet" href="../pags_css/reagendar_reserva_style.css">
+</head>
+<body>
+
+  <main class="screen">
+    <section class="card">
+
+      <header class="hero-green">
+        <a href="javascript:history.back()" class="back-button" aria-label="Voltar">
+          &#8592;
+        </a>
+
+        <div class="badge-circle">
+          <img src="../images/logo_restaurante.png" alt="Logo do restaurante">
+        </div>
+      </header>
+
+      <section class="content">
+        <h1>Para quando gostaria de<br>reagendar?</h1>
+
+        <form class="reschedule-form">
+          <input type="text" placeholder="Qual a data? *">
+          <input type="text" placeholder="Qual o horário? *">
+
+          <p class="section-title">Alguma mudança nos dados abaixo?</p>
+
+          <input type="text" value="Alessandro Sondey">
+          <input type="text" value="928.284.927-27">
+          <input type="text" value="(41) 99284-2837">
+          <input type="text" value="4 pessoas">
+
+          <div class="actions">
+            <a href="../pags_html/reagendamento_confirmado.html" class="btn btn-primary">Atualizar Reserva</a>
+            <button type="button" class="btn btn-light" onclick="history.back()">Cancelar</button>
+          </div>
+        </form>
+      </section>
+
+      <footer class="footer-nav"></footer>
+
+    </section>
+  </main>
+
+</body>
+</html>

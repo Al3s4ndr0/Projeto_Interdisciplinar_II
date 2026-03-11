@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Qmesa - Cancelar reserva</title>
+  <link rel="stylesheet" href="../pags_css/cancelar_reserva_futura_style.css">
+</head>
+<body>
+
+  <main class="screen">
+    <section class="card">
+
+      <header class="hero">
+        <a href="javascript:history.back()" class="back-button" aria-label="Voltar">
+          &#8592;
+        </a>
+
+        <div class="badge-circle">
+          <img src="../images/logo_restaurante.png" alt="Logo do restaurante">
+        </div>
+      </header>
+
+      <section class="content">
+        <h1>Você nem chegou e já quer<br>ir embora?</h1>
+
+        <div class="illustration">
+          <img src="../images/reserva_futura_cancelada.png" alt="Cancelar reserva futura">
+        </div>
+
+        <p class="question">
+          Você quer mesmo cancelar<br>
+          a sua reserva?
+        </p>
+
+        <div class="actions">
+          <button type="button" class="btn btn-primary" onclick="history.back()">
+            Não, eu posso aguardar
+          </button>
+
+          <a href="../pags_html/cancelamento_reserva_confirmado.html" class="btn btn-light">
+            Sim, eu quero cancelar
+          </a>
+        </div>
+      </section>
+
+      <footer class="footer-nav"></footer>
+
+    </section>
+  </main>
+
+</body>
+</html>

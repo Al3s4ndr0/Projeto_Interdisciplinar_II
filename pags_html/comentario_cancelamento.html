@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Qmesa - Comentário do cancelamento</title>
+  <link rel="stylesheet" href="../pags_css/comentario_cancelamento_style.css">
+</head>
+<body>
+
+  <main class="screen">
+    <section class="card">
+
+      <header class="hero">
+        <a href="javascript:history.back()" class="back-button" aria-label="Voltar">
+          &#8592;
+        </a>
+
+        <div class="badge-circle">
+          <img src="../images/logo_restaurante.png" alt="Logo do restaurante">
+        </div>
+      </header>
+
+      <section class="content">
+        <h1>Antes de ir, poderia nos<br>contar o que aconteceu?</h1>
+
+        <div class="survey-block">
+          <p class="question">Qual é o motivo do cancelamento?</p>
+
+          <label class="option">
+            <input type="radio" name="motivo_cancelamento">
+            <span>Tive um imprevisto</span>
+          </label>
+
+          <label class="option">
+            <input type="radio" name="motivo_cancelamento">
+            <span>Esperei demais</span>
+          </label>
+
+          <label class="option">
+            <input type="radio" name="motivo_cancelamento">
+            <span>Consegui mesa em outro lugar</span>
+          </label>
+
+          <label class="option">
+            <input type="radio" name="motivo_cancelamento">
+            <span>Outro motivo? Qual?</span>
+          </label>
+        </div>
+
+        <div class="comment-block">
+          <p class="question">Gostaria de deixar algum comentário?</p>
+          <textarea placeholder="Digite sua mensagem aqui"></textarea>
+        </div>
+
+        <div class="actions">
+          <a href="../pags_html/comentario_cancelamento_enviado.html" class="btn btn-primary">Enviar avaliação</a>
+          <a href="../pags_html/index.html" class="btn btn-light">Cancelar envio do comentário</a>
+        </div>
+      </section>
+
+      <footer class="footer-nav"></footer>
+
+    </section>
+  </main>
+
+</body>
+</html>
