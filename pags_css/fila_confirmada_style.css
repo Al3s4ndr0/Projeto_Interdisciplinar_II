@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
 * {
   margin: 0;
@@ -10,6 +10,7 @@
 body {
   background: #efefef;
   min-height: 100vh;
+  margin: 0;
 }
 
 .screen {
@@ -18,45 +19,73 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 24px;
+  padding: 24px 16px;
 }
 
 .card {
   width: 100%;
-  max-width: 320px;
-  min-height: 640px;
+  max-width: 420px;
+  min-height: auto;
   background: #f1f1f5;
-  border-radius: 6px;
+  border-radius: 18px;
   overflow: hidden;
   box-shadow: 0 10px 26px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
-}
-
-.hero {
   position: relative;
-  background: #171E4B;
-  height: 86px;
 }
 
-.hero::after {
+.brand {
+  width: 100%;
+  min-height: 130px;
+  background: #171e4b;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 18px;
+  overflow: visible;
+}
+
+.brand::after {
   content: "";
   position: absolute;
   left: 0;
+  right: 0;
   bottom: -1px;
-  width: 100%;
-  height: 44px;
+  height: 58px;
   background: #f1f1f5;
   border-top-left-radius: 50% 34px;
   border-top-right-radius: 50% 34px;
 }
 
+.brand-logo {
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+}
+
+.logo {
+  width: 104px;
+  height: 104px;
+  object-fit: contain;
+  display: block;
+}
+
 .back-button {
   position: absolute;
-  top: 12px;
-  left: 10px;
-  width: 34px;
-  height: 34px;
+  top: 16px;
+  left: 16px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background: #ffffff;
   color: #1f1f1f;
@@ -64,117 +93,108 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 600;
   line-height: 1;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-  z-index: 3;
-}
-
-.badge-circle {
-  position: absolute;
-  left: 50%;
-  bottom: -8px;
-  transform: translateX(-50%);
-  width: 74px;
-  height: 74px;
-  border-radius: 50%;
-  background: #f1f1f5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 3;
-}
-
-.badge-circle img {
-  width: 108px;
-  height: 108px;
-  object-fit: contain;
-  display: block;
+  z-index: 4;
 }
 
 .content {
   flex: 1;
-  text-align: center;
-  padding: 34px 20px 24px;
-}
-
-.content h1 {
-  font-size: 17px;
-  line-height: 1.25;
-  font-weight: 800;
-  color: #1f1f1f;
-  margin-bottom: 12px;
-}
-
-.subtitle {
-  font-size: 13px;
-  color: #1f1f1f;
-  margin-bottom: 26px;
-  font-weight: 500;
-}
-
-.position-circle {
-  width: 74px;
-  height: 74px;
-  margin: 0 auto 24px;
-  border-radius: 50%;
-  background: #649D16;
-  color: #ffffff;
-  font-size: 50px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.queue-info {
-  margin-bottom: 24px;
-}
-
-.main-text {
-  font-size: 14px;
-  color: #333333;
-  margin-bottom: 8px;
-}
-
-.secondary-text {
-  font-size: 12px;
-  color: #8a8a8a;
-  margin-bottom: 2px;
-}
-
-.eta {
-  font-size: 13px;
-  color: #9a9a9a;
-  margin-bottom: 10px;
-}
-
-.helper-text {
-  font-size: 8px;
-  line-height: 1.5;
-  color: #b0b0b0;
-}
-
-.actions {
+  padding: 54px 22px 30px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  text-align: center;
+}
+
+.content h1 {
+  font-size: 18px;
+  line-height: 1.35;
+  font-weight: 700;
+  color: #111111;
+  max-width: 280px;
+  margin-bottom: 14px;
+}
+
+.subtitle {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #1f1f1f;
+  margin-bottom: 24px;
+}
+
+.position-circle {
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  background: #7bb51f;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  font-weight: 700;
+  margin-bottom: 22px;
+}
+
+.queue-info {
+  max-width: 260px;
+  margin-bottom: 28px;
+}
+
+.main-text,
+.secondary-text,
+.eta {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #1f1f1f;
+}
+
+.main-text strong {
+  font-weight: 700;
+}
+
+.helper-text {
+  font-size: 11px;
+  line-height: 1.5;
+  color: #5e5e5e;
+  margin-top: 6px;
+}
+
+.actions {
+  width: 100%;
+  max-width: 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .btn {
+  width: 100%;
+  min-height: 44px;
+  border-radius: 22px;
+  text-decoration: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  text-decoration: none;
-  min-width: 108px;
-  height: 38px;
-  padding: 0 18px;
-  border-radius: 20px;
   font-size: 13px;
   font-weight: 600;
   transition: 0.2s ease;
+}
+
+.btn-primary {
+  background: #171e4b;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(23, 30, 75, 0.18);
+}
+
+.btn-light {
+  background: transparent;
+  color: #7d7d7d;
+  border: 1px solid #dddddd;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
 }
 
 .btn:hover {
@@ -182,20 +202,248 @@ body {
   opacity: 0.96;
 }
 
-.btn-primary {
-  background: #171E4B;
-  color: #ffffff;
-  box-shadow: 0 4px 10px rgba(23, 30, 75, 0.18);
+@media (min-width: 768px) {
+  .screen {
+    padding: 24px;
+  }
+
+  .card {
+    max-width: 760px;
+    min-height: auto;
+    flex-direction: column;
+  }
+
+  .brand {
+    min-height: 150px;
+    padding-top: 20px;
+  }
+
+  .brand::after {
+    height: 70px;
+    border-top-left-radius: 50% 42px;
+    border-top-right-radius: 50% 42px;
+  }
+
+  .brand-logo {
+    width: 96px;
+    height: 96px;
+    bottom: 20px;
+  }
+
+  .logo {
+    width: 118px;
+    height: 118px;
+  }
+
+  .back-button {
+    top: 20px;
+    left: 20px;
+    width: 42px;
+    height: 42px;
+    font-size: 22px;
+  }
+
+  .content {
+    padding: 64px 40px 36px;
+  }
+
+  .content h1 {
+    font-size: 28px;
+    max-width: 440px;
+    margin-bottom: 14px;
+  }
+
+  .subtitle {
+    font-size: 15px;
+    margin-bottom: 28px;
+  }
+
+  .position-circle {
+    width: 96px;
+    height: 96px;
+    font-size: 54px;
+    margin-bottom: 22px;
+  }
+
+  .queue-info {
+    max-width: 340px;
+    margin-bottom: 30px;
+  }
+
+  .main-text,
+  .secondary-text,
+  .eta {
+    font-size: 15px;
+  }
+
+  .helper-text {
+    font-size: 13px;
+  }
+
+  .actions {
+    max-width: 260px;
+    gap: 14px;
+  }
+
+  .btn {
+    min-height: 46px;
+    font-size: 14px;
+  }
 }
 
-.btn-light {
-  background: #efefef;
-  color: #7f7f7f;
-  border: 1px solid #dddddd;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
+@media (min-width: 1024px) {
+  .screen {
+    padding: 56px 32px;
+  }
+
+  .card {
+    max-width: 1080px;
+    min-height: 680px;
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .brand {
+    width: 38%;
+    min-width: 180px;
+    min-height: 680px;
+    background: #171e4b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 0;
+    overflow: hidden;
+  }
+
+  .brand::after {
+    display: none;
+  }
+
+  .brand-logo {
+    position: static;
+    transform: none;
+    width: auto;
+    height: auto;
+  }
+
+  .logo {
+    width: 160px;
+    height: 160px;
+  }
+
+  .back-button {
+    top: 22px;
+    left: 22px;
+    width: 38px;
+    height: 38px;
+    font-size: 20px;
+  }
+
+  .content {
+    width: 62%;
+    padding: 56px 56px 40px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .content h1 {
+    font-size: 38px;
+    max-width: 540px;
+    margin-bottom: 14px;
+  }
+
+  .subtitle {
+    font-size: 18px;
+    margin-bottom: 28px;
+  }
+
+  .position-circle {
+    width: 110px;
+    height: 110px;
+    font-size: 58px;
+    margin-bottom: 24px;
+  }
+
+  .queue-info {
+    max-width: 380px;
+    margin-bottom: 30px;
+  }
+
+  .main-text,
+  .secondary-text,
+  .eta {
+    font-size: 17px;
+  }
+
+  .helper-text {
+    font-size: 14px;
+  }
+
+  .actions {
+    max-width: 260px;
+    gap: 16px;
+  }
+
+  .btn {
+    min-height: 50px;
+    font-size: 15px;
+  }
 }
 
-.footer-nav {
-  height: 22px;
-  background: #e9e9e9;
+@media (min-width: 1440px) {
+  .screen {
+    padding: 64px 40px;
+  }
+
+  .card {
+    max-width: 1180px;
+  }
+
+  .content {
+    padding: 64px 64px 44px;
+  }
+
+  .content h1 {
+    font-size: 46px;
+    max-width: 620px;
+  }
+
+  .subtitle {
+    font-size: 20px;
+  }
+
+  .position-circle {
+    width: 120px;
+    height: 120px;
+    font-size: 64px;
+  }
+
+  .queue-info {
+    max-width: 420px;
+  }
+
+  .main-text,
+  .secondary-text,
+  .eta {
+    font-size: 18px;
+  }
+
+  .helper-text {
+    font-size: 15px;
+  }
+
+  .actions {
+    max-width: 280px;
+  }
+
+  .btn {
+    min-height: 52px;
+    font-size: 16px;
+  }
+
+  .logo {
+    width: 180px;
+    height: 180px;
+  }
 }
