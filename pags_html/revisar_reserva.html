@@ -6,67 +6,77 @@
 
 <title>Qmesa - Revisão da reserva</title>
 
-<link rel="stylesheet" href="../pags_css/revisar_reserva_style.css">
+<link rel="stylesheet" href="../pags_css/style.css">
 
 </head>
 
-<body>
+<body class="tema-reserva">
 
-<main class="screen">
-<section class="card">
+<main class="tela">
+<section class="cartao cartao-formulario">
 
-<header class="top-image">
+<section class="painel-imagem">
 
-<a href="javascript:history.back()" class="back-button">
-&#8592;
-</a>
+<div class="acoes-topo">
+  <a href="javascript:history.back()" class="botao-voltar" aria-label="Voltar">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M15 6l-6 6 6 6"/>
+    </svg>
+  </a>
 
-<img src="../images/banner_restaurante.png" alt="Imagem do restaurante" class="banner-img">
-
-<div class="badge-circle">
-<img src="../images/logo_restaurante.png" alt="Logo do restaurante">
+  <a href="../pags_html/index.html" class="botao-home" aria-label="Ir para início">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M3 10.5L12 3l9 7.5"/>
+      <path d="M5.5 9.5V21h13V9.5"/>
+      <path d="M9.5 21v-6h5v6"/>
+    </svg>
+  </a>
 </div>
 
-</header>
+<img src="../images/banner_restaurante.png" alt="Imagem do restaurante" class="imagem-restaurante">
+
+<div class="selo">
+  <img src="../images/logo_restaurante.png" alt="Logo do restaurante">
+</div>
+
+</section>
 
 
-<section class="content">
+<section class="conteudo">
 
-<h1>
+<h1 class="titulo">
 Revise seus dados antes de efetuar a reserva
 </h1>
 
 
-<div class="data-preview">
+<div class="formulario">
 
-<input type="text" value="11 de Setembro de 2026 às 12:30" readonly>
+<input type="text" class="campo" value="11 de Setembro de 2026 às 12:30" readonly>
 
-<input type="text" value="Alessandro Sondey" readonly>
+<input type="text" class="campo" value="Alessandro Sondey" readonly>
 
-<input type="text" value="928.284.927-27" readonly>
+<input type="text" class="campo" value="928.284.927-27" readonly>
 
-<input type="text" value="(41) 99284-2837" readonly>
+<input type="text" class="campo" value="(41) 99284-2837" readonly>
 
-<input type="text" value="4 pessoas" readonly>
+<input type="text" class="campo" value="4 pessoas" readonly>
 
 </div>
 
 
-<div class="actions">
+<div class="acoes">
 
-<button class="btn btn-light" onclick="history.back()">
+<button class="botao-secundario" onclick="history.back()">
 Revisar dados
 </button>
 
-<a href="../pags_html/reserva_confirmada.html" class="btn btn-success">
+<a href="../pags_html/reserva_confirmada.html" class="botao-primario">
 Confirmar reserva
 </a>
 
 </div>
 
 </section>
-
-<footer class="footer-nav"></footer>
 
 </section>
 </main>

@@ -1,47 +1,59 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Qmesa - Sua mesa está pronta</title>
-  <link rel="stylesheet" href="../pags_css/acompanhar_fila_3_style.css">
+  <link rel="stylesheet" href="../pags_css/style.css" />
 </head>
-<body>
-  <main class="screen">
-    <section class="card">
+<body class="tema-fila">
+  <main class="tela">
+    <section class="cartao cartao-acompanhamento">
 
-      <header class="brand">
-        <a href="../pags_html/acompanhar_fila_2.html" class="back-button" aria-label="Voltar">
-          &#8592;
-        </a>
+      <section class="painel-marca">
+        <div class="acoes-topo">
+          <a href="javascript:history.back()" class="botao-voltar" aria-label="Voltar">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15 6l-6 6 6 6"/>
+            </svg>
+          </a>
 
-        <div class="brand-logo">
-          <img src="../images/logo_restaurante.png" class="logo" alt="Logo do restaurante">
+          <a href="../pags_html/index.html" class="botao-home" aria-label="Ir para a tela inicial">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 10.5L12 3l9 7.5"/>
+              <path d="M5.5 9.5V21h13V9.5"/>
+              <path d="M9.5 21v-6h5v6"/>
+            </svg>
+          </a>
         </div>
-      </header>
+      </section>
 
-      <section class="content">
-        <h1>Sua mesa está pronta! Dirija-se ao balcão</h1>
+      <section class="conteudo">
+        <h1 class="titulo titulo-acompanhamento">
+          Sua mesa está pronta! Dirija-se ao balcão
+        </h1>
 
-        <p class="subtitle">O grande momento chegou!</p>
+        <p class="subtitulo-acompanhamento">
+          O grande momento chegou!
+        </p>
 
-        <div class="progress-wrapper">
-          <div class="progress-bar">
-            <div class="progress-fill progress-fill-ready"></div>
-            <div class="progress-badge">0</div>
+        <div class="barra-progresso">
+          <div class="barra-progresso-trilha">
+            <div class="barra-progresso-preenchimento barra-progresso-preenchimento-pronta"></div>
+            <div class="barra-progresso-indicador barra-progresso-indicador-pronto">0</div>
           </div>
         </div>
 
-        <div class="illustration">
-          <img src="../images/mesa_pronta.png" alt="Mesa pronta para atendimento">
+        <div class="ilustracao-acompanhamento">
+          <img src="../images/mesa_pronta.png" alt="Mesa pronta para atendimento" />
         </div>
 
-        <p class="eta-text">Estamos te esperando!</p>
-        <p class="helper-text">Sua mesa ficará reservada por 5 minutos</p>
+        <p class="tempo-medio tempo-medio-pronto">Estamos te esperando!</p>
+        <p class="texto-auxiliar-acompanhamento">Sua mesa ficará reservada por 5 minutos</p>
 
-        <div class="actions">
-          <a href="../pags_html/experiencia_fila.html" class="btn btn-success">Estou indo!</a>
-          <a href="../pags_html/cancelar_reserva.html" class="btn btn-light">Cancelar reserva</a>
+        <div class="acoes-acompanhamento">
+          <a href="../pags_html/experiencia_fila.html" class="botao-primario">Estou indo!</a>
+          <a href="../pags_html/cancelar_reserva.html" class="botao-secundario">Cancelar reserva</a>
         </div>
       </section>
 

@@ -4,47 +4,66 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Qmesa - Comentário enviado</title>
-  <link rel="stylesheet" href="../pags_css/comentario_cancelamento_enviado_style.css">
+  <link rel="stylesheet" href="../pags_css/style.css">
 </head>
-<body>
+<body class="tema-cancelamento">
 
-  <main class="screen">
-    <section class="card">
+  <main class="tela">
+    <section class="cartao cartao-confirmacao">
 
-      <header class="hero">
-        <a href="javascript:history.back()" class="back-button" aria-label="Voltar">
-          &#8592;
-        </a>
+      <header class="painel-marca">
+        <div class="acoes-topo">
+          <a href="javascript:history.back()" class="botao-voltar" aria-label="Voltar">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15 6l-6 6 6 6"/>
+            </svg>
+          </a>
 
-        <div class="badge-circle">
-          <img src="../images/logo_restaurante.png" alt="Logo do restaurante">
+          <a href="../pags_html/index.html" class="botao-home" aria-label="Ir para início">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 10.5L12 3l9 7.5"/>
+              <path d="M5.5 9.5V21h13V9.5"/>
+              <path d="M9.5 21v-6h5v6"/>
+            </svg>
+          </a>
+        </div>
+
+        <div class="marca-central">
+          <img src="../images/logo_restaurante.png" alt="Logo do restaurante" class="logo-marca">
         </div>
       </header>
 
-      <section class="content">
-        <h1>Obrigado pelo seu<br>retorno!</h1>
+      <section class="conteudo">
+        <h1 class="titulo-confirmacao">
+          Obrigado pelo seu retorno!
+        </h1>
 
-        <p class="subtitle">
-          Seu comentário ajuda a melhorar nossa
-          experiência para todos os clientes.
+        <p class="subtitulo-confirmacao">
+          Seu comentário ajuda a melhorar nossa experiência para todos os clientes.
         </p>
 
-        <div class="illustration">
+        <div class="ilustracao-acompanhamento">
           <img src="../images/coracao_solidario.png" alt="Comentário enviado com sucesso">
         </div>
 
-        <p class="message">
-          Esperamos poder conseguir uma<br>
-          segunda chance de te atender em breve.<br>
-          Boa Viagem!
-        </p>
+        <div class="info-fila">
+          <p class="texto-principal">
+            Esperamos poder conseguir uma
+          </p>
+          <p class="texto-secundario">
+            segunda chance de te atender em breve.
+          </p>
+          <p class="texto-auxiliar">
+            Boa viagem!
+          </p>
+        </div>
 
-        <div class="actions">
-          <a href="../pags_html/index.html" class="btn btn-success">Voltar a Tela Inicial</a>
+        <div class="acoes-confirmacao">
+          <a href="../pags_html/index.html" class="botao-primario">
+            Voltar à tela inicial
+          </a>
         </div>
       </section>
-
-      <footer class="footer-nav"></footer>
 
     </section>
   </main>

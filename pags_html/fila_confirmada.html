@@ -4,44 +4,57 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Qmesa - Entrou na fila</title>
-  <link rel="stylesheet" href="../pags_css/fila_confirmada_style.css" />
+  <link rel="stylesheet" href="../pags_css/style.css" />
 </head>
-<body>
-  <main class="screen">
-    <section class="card">
+<body class="tema-fila">
+  <main class="tela">
+    <section class="cartao cartao-confirmacao">
 
-      <header class="brand">
-        <a href="revisar_fila.html" class="back-button" aria-label="Voltar">
-          &#8592;
-        </a>
+      <section class="painel-marca">
+        <div class="acoes-topo">
+          <a href="javascript:history.back()" class="botao-voltar" aria-label="Voltar">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15 6l-6 6 6 6"/>
+            </svg>
+          </a>
 
-        <div class="brand-logo">
-          <img src="../images/logo_restaurante.png" class="logo" alt="Selo Restaurant" />
+          <a href="../pags_html/index.html" class="botao-home" aria-label="Ir para a tela inicial">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 10.5L12 3l9 7.5"/>
+              <path d="M5.5 9.5V21h13V9.5"/>
+              <path d="M9.5 21v-6h5v6"/>
+            </svg>
+          </a>
         </div>
-      </header>
+      </section>
 
-      <section class="content">
-        <h1>AGRADECEMOS POR AGUARDAR NA FILA</h1>
+      <section class="conteudo">
+        <h1 class="titulo titulo-confirmacao">
+          AGRADECEMOS POR AGUARDAR NA FILA
+        </h1>
 
-        <p class="subtitle">Estamos ansiosos para lhe atender</p>
+        <p class="subtitulo-confirmacao">
+          Estamos ansiosos para lhe atender
+        </p>
 
-        <div class="position-circle">2</div>
+        <div class="circulo-posicao">2</div>
 
-        <div class="queue-info">
-          <p class="main-text">Você é o <strong>SEGUNDO</strong> na fila</p>
-          <p class="secondary-text">Seu tempo médio de espera é:</p>
-          <p class="eta">15 - 20 minutos</p>
-          <p class="helper-text">
-            Clique em ACOMPANHAR para ver seu<br>
+        <div class="info-fila">
+          <p class="texto-principal">Você é o <strong>SEGUNDO</strong> na fila</p>
+          <p class="texto-secundario">Seu tempo médio de espera é:</p>
+          <p class="tempo-espera">15 - 20 minutos</p>
+          <p class="texto-auxiliar">
+            Clique em ACOMPANHAR para ver seu<br />
             progresso na fila em tempo real.
           </p>
         </div>
 
-        <div class="actions">
-          <a href="acompanhar_fila_1.html" class="btn btn-primary">Acompanhar</a>
-          <a href="../pags_html/cancelar_reserva.html" class="btn btn-light">Cancelar reserva</a>
+        <div class="acoes-confirmacao">
+          <a href="acompanhar_fila_1.html" class="botao-primario">Acompanhar</a>
+          <a href="../pags_html/cancelar_reserva.html" class="botao-secundario">Cancelar reserva</a>
         </div>
       </section>
+
     </section>
   </main>
 </body>

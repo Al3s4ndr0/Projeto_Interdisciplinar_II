@@ -4,44 +4,60 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Qmesa - Dados da reserva</title>
-  <link rel="stylesheet" href="../pags_css/dados_reserva_style.css" />
+  <link rel="stylesheet" href="../pags_css/style.css" />
 </head>
-<body>
-  <main class="screen">
-    <section class="card">
+<body class="tema-reserva">
 
-      <header class="top-image">
-        <a href="../pags_html/fazer_reserva.html" class="back-button" aria-label="Voltar">
-          &#8592;
-        </a>
+  <main class="tela">
+    <section class="cartao cartao-formulario">
 
-        <img src="../images/banner_restaurante.png" alt="Imagem do restaurante" class="banner-img" />
+      <section class="painel-imagem">
+        <div class="acoes-topo">
+          <a href="../pags_html/fazer_reserva.html" class="botao-voltar" aria-label="Voltar">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15 6l-6 6 6 6"/>
+            </svg>
+          </a>
 
-        <div class="badge-circle">
+          <a href="../pags_html/index.html" class="botao-home" aria-label="Ir para início">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 10.5L12 3l9 7.5"/>
+              <path d="M5.5 9.5V21h13V9.5"/>
+              <path d="M9.5 21v-6h5v6"/>
+            </svg>
+          </a>
+        </div>
+
+        <img src="../images/banner_restaurante.png" alt="Imagem do restaurante" class="imagem-restaurante" />
+
+        <div class="selo">
           <img src="../images/logo_restaurante.png" alt="Logo do restaurante" />
         </div>
-      </header>
+      </section>
 
-      <section class="content">
-        <h1>Preencha seus dados para criar uma reserva:</h1>
+      <section class="conteudo">
+        <h1 class="titulo">Preencha seus dados para criar uma reserva:</h1>
 
-        <form class="queue-form">
-          <input type="text" placeholder="Qual é o seu nome? *" />
-          <input type="text" placeholder="Qual é o seu CPF? *" />
-          <input type="text" placeholder="Qual é o seu telefone?" />
-          <input type="text" placeholder="Mesa para quantas pessoas? *" />
+        <form class="formulario">
+          <input type="text" class="campo" placeholder="Qual é o seu nome? *" />
+          <input type="text" class="campo" placeholder="Qual é o seu CPF? *" />
+          <input type="text" class="campo" placeholder="Qual é o seu telefone?" />
+          <input type="text" class="campo" placeholder="Mesa para quantas pessoas? *" />
 
-          <p class="info-text">
+          <p class="texto-informativo">
             Seus dados serão utilizados exclusivamente para fins de reserva.
           </p>
 
-          <a href="../pags_html/revisar_reserva.html" class="btn-continue">Continuar</a>
+          <div class="acoes">
+            <a href="../pags_html/revisar_reserva.html" class="botao-primario">
+              Continuar
+            </a>
+          </div>
         </form>
       </section>
 
-      <footer class="footer-nav"></footer>
-
     </section>
   </main>
+
 </body>
 </html>

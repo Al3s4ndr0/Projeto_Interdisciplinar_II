@@ -4,38 +4,62 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Qmesa - Reagendamento confirmado</title>
-  <link rel="stylesheet" href="../pags_css/reagendamento_confirmado_style.css">
+  <link rel="stylesheet" href="../pags_css/style.css">
 </head>
-<body>
+<body class="tema-reserva">
 
-  <main class="screen">
-    <section class="card">
+  <main class="tela">
+    <section class="cartao cartao-agradecimento cartao-reagendamento-confirmado">
 
-      <header class="hero-green">
-        <a href="javascript:history.back()" class="back-button" aria-label="Voltar">
-          &#8592;
-        </a>
+      <header class="painel-agradecimento">
+        <div class="acoes-topo">
+          <a href="javascript:history.back()" class="botao-voltar" aria-label="Voltar">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15 6l-6 6 6 6"/>
+            </svg>
+          </a>
 
-        <div class="badge-circle">
-          <img src="../images/logo_restaurante.png" alt="Logo do restaurante">
+          <a href="../pags_html/index.html" class="botao-home" aria-label="Ir para início">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 10.5L12 3l9 7.5"/>
+              <path d="M5.5 9.5V21h13V9.5"/>
+              <path d="M9.5 21v-6h5v6"/>
+            </svg>
+          </a>
         </div>
+
+        <div class="marca-agradecimento">
+          <img src="../images/logo_restaurante.png" alt="Logo do restaurante" class="logo-agradecimento">
+        </div>
+
+        <p class="frase-agradecimento">
+          Estamos ansiosos para lhe atender
+        </p>
       </header>
 
-      <section class="content">
-        <h1>AGRADECEMOS POR<br>AVISAR A GENTE COM<br>ANTECEDÊNCIA</h1>
+      <section class="conteudo">
+        <h1 class="titulo-agradecimento">
+          AGRADECEMOS POR<br>AVISAR A GENTE COM<br>ANTECEDÊNCIA
+        </h1>
 
-        <div class="illustration">
+        <div class="ilustracao-acompanhamento ilustracao-reagendamento-confirmado">
           <img src="../images/reserva_reagendada.png" alt="Reagendamento confirmado">
         </div>
 
-        <div class="actions">
-          <a href="../pags_html/reagendar_reserva.html" class="btn btn-primary">Reagendar</a>
-          <a href="../pags_html/cancelar_reserva_futura.html" class="btn btn-light">Cancelar reserva</a>
-          <a href="../pags_html/index.html" class="btn btn-success">Voltar a Tela Inicial</a>
+        <div class="acoes-acompanhamento acoes-reagendamento-confirmado">
+          <a href="../pags_html/reagendar_reserva.html" class="botao-primario botao-reagendar-confirmado">
+            Reagendar
+          </a>
+
+          <a href="../pags_html/cancelar_reserva_futura.html" class="botao-secundario botao-cancelar-confirmado">
+            Cancelar reserva
+          </a>
+
+          <a href="../pags_html/index.html" class="botao-primario botao-inicio-confirmado">
+            Voltar à tela inicial
+          </a>
         </div>
       </section>
-
-      <footer class="footer-nav"></footer>
 
     </section>
   </main>

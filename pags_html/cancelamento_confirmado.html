@@ -4,47 +4,67 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Qmesa - Cancelada</title>
-  <link rel="stylesheet" href="../pags_css/cancelamento_confirmado_style.css">
+  <link rel="stylesheet" href="../pags_css/style.css">
 </head>
-<body>
+<body class="tema-cancelamento">
 
-  <main class="screen">
-    <section class="card">
+  <main class="tela">
+    <section class="cartao cartao-confirmacao">
 
-      <header class="hero">
-        <a href="javascript:history.back()" class="back-button" aria-label="Voltar">
-          &#8592;
-        </a>
+      <header class="painel-marca">
+        <div class="acoes-topo">
+          <a href="javascript:history.back()" class="botao-voltar" aria-label="Voltar">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15 6l-6 6 6 6"/>
+            </svg>
+          </a>
 
-        <div class="badge-circle">
-          <img src="../images/logo_restaurante.png" alt="Logo do restaurante">
+          <a href="../pags_html/index.html" class="botao-home" aria-label="Ir para início">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 10.5L12 3l9 7.5"/>
+              <path d="M5.5 9.5V21h13V9.5"/>
+              <path d="M9.5 21v-6h5v6"/>
+            </svg>
+          </a>
+        </div>
+
+        <div class="marca-central">
+          <img src="../images/logo_restaurante.png" alt="Logo do restaurante" class="logo-marca">
         </div>
       </header>
 
-      <section class="content">
-        <h1>Nem sempre dá pra<br>esperar, não é?</h1>
+      <section class="conteudo">
+        <h1 class="titulo-confirmacao">
+          Nem sempre dá pra esperar, não é?
+        </h1>
 
-        <p class="subtitle">
-          Ficamos tristes por não termos<br>
-          conseguido te atender hoje
+        <p class="subtitulo-confirmacao">
+          Ficamos tristes por não termos conseguido te atender hoje
         </p>
 
-        <div class="illustration">
+        <div class="ilustracao-acompanhamento">
           <img src="../images/apertar_maos.png" alt="Ilustração cancelamento confirmado">
         </div>
 
-        <p class="question">
-          Como você poderia ter ficado?<br>
-          Conta pra gente!
-        </p>
+        <div class="info-fila">
+          <p class="texto-principal">
+            Como você poderia ter ficado?
+          </p>
+          <p class="texto-secundario">
+            Conta pra gente!
+          </p>
+        </div>
 
-        <div class="actions">
-          <a href="../pags_html/comentario_cancelamento.html" class="btn btn-success">Enviar comentário</a>
-          <a href="../pags_html/cancelamento_sem_comentario.html" class="btn btn-light">Prefiro não comentar</a>
+        <div class="acoes-confirmacao">
+          <a href="../pags_html/comentario_cancelamento.html" class="botao-primario">
+            Enviar comentário
+          </a>
+
+          <a href="../pags_html/cancelamento_sem_comentario.html" class="botao-secundario">
+            Prefiro não comentar
+          </a>
         </div>
       </section>
-
-      <footer class="footer-nav"></footer>
 
     </section>
   </main>

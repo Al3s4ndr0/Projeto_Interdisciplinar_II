@@ -1,32 +1,19 @@
-const tabs = document.querySelectorAll(".tab");
-const items = document.querySelectorAll(".menu-card");
+const tabs = document.querySelectorAll(".aba-cardapio");
+const items = document.querySelectorAll(".item-cardapio");
 
 tabs.forEach(tab => {
-
   tab.addEventListener("click", () => {
-
-    // remove active de todas
-    tabs.forEach(t => t.classList.remove("active"));
-
-    // ativa clicada
-    tab.classList.add("active");
+    tabs.forEach(t => t.classList.remove("ativa"));
+    tab.classList.add("ativa");
 
     const filter = tab.dataset.filter;
 
     items.forEach(item => {
-
-      if (filter === "all") {
-        item.style.display = "block";
-      }
-      else if (item.dataset.category === filter) {
-        item.style.display = "block";
-      }
-      else {
+      if (filter === "all" || item.dataset.category === filter) {
+        item.style.display = "flex";
+      } else {
         item.style.display = "none";
       }
-
     });
-
   });
-
 });

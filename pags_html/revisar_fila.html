@@ -4,37 +4,49 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Qmesa - Revisão dos dados da fila</title>
-  <link rel="stylesheet" href="../pags_css/revisar_fila_style.css" />
+  <link rel="stylesheet" href="../pags_css/style.css" />
 </head>
-<body>
-  <main class="screen">
-    <section class="card">
+<body class="tema-fila">
+  <main class="tela">
+    <section class="cartao cartao-formulario cartao-revisao">
 
-      <header class="top-image">
-        <a href="entrar_fila.html" class="back-button" aria-label="Voltar">
-          &#8592;
-        </a>
+      <section class="painel-imagem">
+        <div class="acoes-topo">
+          <a href="javascript:history.back()" class="botao-voltar" aria-label="Voltar">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15 6l-6 6 6 6"/>
+            </svg>
+          </a>
 
-        <img src="../images/banner_restaurante.png" alt="Imagem do restaurante" class="banner-img" />
-
-        <div class="badge-circle">
-          <img src="../images/logo_restaurante.png" alt="Selo Restaurant" />
-        </div>
-      </header>
-
-      <section class="content">
-         <h1>Revise seus dados antes de entrar na fila:</h1>
-
-        <div class="review-form">
-          <div class="review-field">Alessandro Sondey</div>
-          <div class="review-field">928.284.927-27</div>
-          <div class="review-field">(41) 99284-2837</div>
-          <div class="review-field">4 pessoas</div>
+          <a href="../pags_html/index.html" class="botao-home" aria-label="Ir para a tela inicial">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 10.5L12 3l9 7.5"/>
+              <path d="M5.5 9.5V21h13V9.5"/>
+              <path d="M9.5 21v-6h5v6"/>
+            </svg>
+          </a>
         </div>
 
-        <div class="review-actions">
-          <a href="entrar_fila.html" class="btn-outline">Revisar dados</a>
-          <a href="fila_confirmada.html" class="btn-primary">Confirmar reserva</a>
+        <img src="../images/banner_restaurante.png" alt="Imagem do restaurante" class="imagem-restaurante" />
+
+        <div class="selo">
+          <img src="../images/logo_restaurante.png" alt="Logo do restaurante" />
+        </div>
+      </section>
+
+      <section class="conteudo">
+        <h1 class="titulo">Revise seus dados antes de entrar na fila:</h1>
+
+        <div class="formulario-revisao">
+          <div class="campo-fixo">Alessandro Sondey</div>
+          <div class="campo-fixo">928.284.927-27</div>
+          <div class="campo-fixo">(41) 99284-2837</div>
+          <div class="campo-fixo">4 pessoas</div>
+        </div>
+
+        <div class="acoes-revisao">
+          <a href="entrar_fila.html" class="botao-revisar">Revisar dados</a>
+          <a href="fila_confirmada.html" class="botao-primario">Confirmar reserva</a>
         </div>
       </section>
     </section>

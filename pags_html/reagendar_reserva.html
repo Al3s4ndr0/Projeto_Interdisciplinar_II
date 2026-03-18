@@ -4,45 +4,60 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Qmesa - Reagendar reserva</title>
-  <link rel="stylesheet" href="../pags_css/reagendar_reserva_style.css">
+  <link rel="stylesheet" href="../pags_css/style.css">
 </head>
-<body>
+<body class="tema-reserva">
 
-  <main class="screen">
-    <section class="card">
+  <main class="tela">
+    <section class="cartao cartao-formulario cartao-reagendamento">
 
-      <header class="hero-green">
-        <a href="javascript:history.back()" class="back-button" aria-label="Voltar">
-          &#8592;
-        </a>
+      <header class="painel-imagem">
+        <div class="acoes-topo">
+          <a href="javascript:history.back()" class="botao-voltar" aria-label="Voltar">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15 6l-6 6 6 6"/>
+            </svg>
+          </a>
 
-        <div class="badge-circle">
+          <a href="../pags_html/index.html" class="botao-home" aria-label="Ir para início">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 10.5L12 3l9 7.5"/>
+              <path d="M5.5 9.5V21h13V9.5"/>
+              <path d="M9.5 21v-6h5v6"/>
+            </svg>
+          </a>
+        </div>
+
+        <div class="selo">
           <img src="../images/logo_restaurante.png" alt="Logo do restaurante">
         </div>
       </header>
 
-      <section class="content">
-        <h1>Para quando gostaria de<br>reagendar?</h1>
+      <section class="conteudo">
+        <h1 class="titulo">Para quando gostaria de<br>reagendar?</h1>
 
-        <form class="reschedule-form">
-          <input type="text" placeholder="Qual a data? *">
-          <input type="text" placeholder="Qual o horário? *">
+        <form class="formulario" action="../pags_html/reagendamento_confirmado.html">
+          <input class="campo" type="text" placeholder="Qual a data? *">
+          <input class="campo" type="text" placeholder="Qual o horário? *">
 
-          <p class="section-title">Alguma mudança nos dados abaixo?</p>
+          <p class="subtitulo-formulario">Alguma mudança nos dados abaixo?</p>
 
-          <input type="text" value="Alessandro Sondey">
-          <input type="text" value="928.284.927-27">
-          <input type="text" value="(41) 99284-2837">
-          <input type="text" value="4 pessoas">
+          <input class="campo" type="text" value="Alessandro Sondey">
+          <input class="campo" type="text" value="928.284.927-27">
+          <input class="campo" type="text" value="(41) 99284-2837">
+          <input class="campo" type="text" value="4 pessoas">
 
-          <div class="actions">
-            <a href="../pags_html/reagendamento_confirmado.html" class="btn btn-primary">Atualizar Reserva</a>
-            <button type="button" class="btn btn-light" onclick="history.back()">Cancelar</button>
+          <div class="acoes acoes-reagendamento">
+            <button type="submit" class="botao-primario botao-atualizar-reserva">
+              Atualizar reserva
+            </button>
+
+            <button type="button" class="botao-secundario botao-cancelar-reagendamento" onclick="history.back()">
+              Cancelar
+            </button>
           </div>
         </form>
       </section>
-
-      <footer class="footer-nav"></footer>
 
     </section>
   </main>

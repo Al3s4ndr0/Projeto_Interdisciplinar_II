@@ -1,93 +1,97 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Qmesa - Experiência na fila</title>
-  <link rel="stylesheet" href="../pags_css/experiencia_fila_style.css">
+  <link rel="stylesheet" href="../pags_css/style.css" />
 </head>
-<body>
+<body class="tema-fila">
+  <main class="tela">
+    <section class="cartao cartao-experiencia">
 
-  <main class="screen">
-    <section class="card">
+      <header class="painel-experiencia">
+        <div class="acoes-topo">
+          <a href="javascript:history.back()" class="botao-voltar" aria-label="Voltar">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15 6l-6 6 6 6"/>
+            </svg>
+          </a>
 
-      <header class="hero">
-        <a href="../pags_html/acompanhar_fila_3.html" class="back-button" aria-label="Voltar">
-          &#8592;
-        </a>
-
-        <div class="badge-circle">
-          <img src="../images/logo_restaurante.png" alt="Logo do restaurante">
+          <a href="../pags_html/index.html" class="botao-home" aria-label="Ir para a tela inicial">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 10.5L12 3l9 7.5"/>
+              <path d="M5.5 9.5V21h13V9.5"/>
+              <path d="M9.5 21v-6h5v6"/>
+            </svg>
+          </a>
         </div>
       </header>
 
-      <section class="content">
-        <h1>AGORA É SÓ<br>APROVEITAR!</h1>
+      <section class="conteudo">
+        <h1 class="titulo titulo-experiencia">AGORA É SÓ<br>APROVEITAR!</h1>
 
-        <p class="description">
+        <p class="descricao descricao-experiencia">
           Esperamos que sua experiência tenha sido
           positiva. Compartilha com a gente!
         </p>
 
-        <div class="rating-block">
-          <p class="question">Como foi o processo de espera?</p>
+        <section class="bloco-nota">
+          <p class="pergunta-experiencia">Como foi o processo de espera?</p>
 
-          <div class="stars">
-            <input type="radio" id="star5" name="rating" value="5">
-            <label for="star5">★</label>
+          <div class="estrelas">
+            <input type="radio" id="estrela5" name="avaliacao" value="5">
+            <label for="estrela5">★</label>
 
-            <input type="radio" id="star4" name="rating" value="4">
-            <label for="star4">★</label>
+            <input type="radio" id="estrela4" name="avaliacao" value="4">
+            <label for="estrela4">★</label>
 
-            <input type="radio" id="star3" name="rating" value="3">
-            <label for="star3">★</label>
+            <input type="radio" id="estrela3" name="avaliacao" value="3">
+            <label for="estrela3">★</label>
 
-            <input type="radio" id="star2" name="rating" value="2">
-            <label for="star2">★</label>
+            <input type="radio" id="estrela2" name="avaliacao" value="2">
+            <label for="estrela2">★</label>
 
-            <input type="radio" id="star1" name="rating" value="1">
-            <label for="star1">★</label>
+            <input type="radio" id="estrela1" name="avaliacao" value="1">
+            <label for="estrela1">★</label>
           </div>
-        </div>
+        </section>
 
-        <div class="survey-block">
-          <p class="question">O tempo de espera correspondeu ao informado?</p>
+        <section class="bloco-pesquisa-experiencia">
+          <p class="pergunta-experiencia">O tempo de espera correspondeu ao informado?</p>
 
-          <label class="option">
+          <label class="opcao-experiencia">
             <input type="radio" name="tempo_espera">
             <span>Sim, conforme previsto</span>
           </label>
 
-          <label class="option">
+          <label class="opcao-experiencia">
             <input type="radio" name="tempo_espera">
             <span>Sim, esperei até menos que o previsto</span>
           </label>
 
-          <label class="option">
+          <label class="opcao-experiencia">
             <input type="radio" name="tempo_espera">
             <span>Não, esperei um pouco mais que o previsto</span>
           </label>
 
-          <label class="option">
+          <label class="opcao-experiencia">
             <input type="radio" name="tempo_espera">
             <span>Não, esperei muito mais que o previsto</span>
           </label>
-        </div>
+        </section>
 
-        <div class="comment-block">
-          <p class="question">Gostaria de deixar algum comentário?</p>
-          <textarea placeholder="Digite sua mensagem aqui"></textarea>
-        </div>
+        <section class="bloco-comentario-experiencia">
+          <p class="pergunta-experiencia">Gostaria de deixar algum comentário?</p>
+          <textarea class="campo-comentario" placeholder="Digite sua mensagem aqui"></textarea>
+        </section>
 
-        <div class="actions">
-          <a href="../pags_html/agradecimento_avaliacao.html" class="btn btn-primary">Enviar avaliação</a>
+        <div class="acoes-experiencia">
+          <a href="../pags_html/agradecimento_avaliacao.html" class="botao-primario">Enviar avaliação</a>
         </div>
       </section>
 
-      <footer class="footer-nav"></footer>
-
     </section>
   </main>
-
 </body>
 </html>

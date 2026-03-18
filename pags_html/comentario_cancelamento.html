@@ -4,62 +4,77 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Qmesa - Comentário do cancelamento</title>
-  <link rel="stylesheet" href="../pags_css/comentario_cancelamento_style.css">
+  <link rel="stylesheet" href="../pags_css/style.css">
 </head>
-<body>
+<body class="tema-cancelamento">
 
-  <main class="screen">
-    <section class="card">
+  <main class="tela">
+    <section class="cartao cartao-experiencia">
 
-      <header class="hero">
-        <a href="javascript:history.back()" class="back-button" aria-label="Voltar">
-          &#8592;
-        </a>
+      <header class="painel-experiencia">
+        <div class="acoes-topo">
+          <a href="javascript:history.back()" class="botao-voltar" aria-label="Voltar">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15 6l-6 6 6 6"/>
+            </svg>
+          </a>
 
-        <div class="badge-circle">
+          <a href="../pags_html/index.html" class="botao-home" aria-label="Ir para início">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 10.5L12 3l9 7.5"/>
+              <path d="M5.5 9.5V21h13V9.5"/>
+              <path d="M9.5 21v-6h5v6"/>
+            </svg>
+          </a>
+        </div>
+
+        <div class="selo-experiencia">
           <img src="../images/logo_restaurante.png" alt="Logo do restaurante">
         </div>
       </header>
 
-      <section class="content">
-        <h1>Antes de ir, poderia nos<br>contar o que aconteceu?</h1>
+      <section class="conteudo">
+        <h1 class="titulo-experiencia">Antes de ir, poderia nos contar o que aconteceu?</h1>
 
-        <div class="survey-block">
-          <p class="question">Qual é o motivo do cancelamento?</p>
+        <div class="bloco-pesquisa-experiencia">
+          <p class="pergunta-experiencia">Qual é o motivo do cancelamento?</p>
 
-          <label class="option">
+          <label class="opcao-experiencia">
             <input type="radio" name="motivo_cancelamento">
             <span>Tive um imprevisto</span>
           </label>
 
-          <label class="option">
+          <label class="opcao-experiencia">
             <input type="radio" name="motivo_cancelamento">
             <span>Esperei demais</span>
           </label>
 
-          <label class="option">
+          <label class="opcao-experiencia">
             <input type="radio" name="motivo_cancelamento">
             <span>Consegui mesa em outro lugar</span>
           </label>
 
-          <label class="option">
+          <label class="opcao-experiencia">
             <input type="radio" name="motivo_cancelamento">
             <span>Outro motivo? Qual?</span>
           </label>
         </div>
 
-        <div class="comment-block">
-          <p class="question">Gostaria de deixar algum comentário?</p>
-          <textarea placeholder="Digite sua mensagem aqui"></textarea>
+        <div class="bloco-comentario-experiencia">
+          <p class="pergunta-experiencia">Gostaria de deixar algum comentário?</p>
+          <textarea class="campo-comentario" placeholder="Digite sua mensagem aqui"></textarea>
         </div>
 
-        <div class="actions">
-          <a href="../pags_html/comentario_cancelamento_enviado.html" class="btn btn-primary">Enviar avaliação</a>
-          <a href="../pags_html/index.html" class="btn btn-light">Cancelar envio do comentário</a>
+        <div class="acoes-confirmacao">
+          <a href="../pags_html/comentario_cancelamento_enviado.html" class="botao-primario">
+            Enviar avaliação
+          </a>
+
+          <a href="../pags_html/index.html" class="botao-secundario">
+            Cancelar envio do comentário
+          </a>
         </div>
       </section>
-
-      <footer class="footer-nav"></footer>
 
     </section>
   </main>

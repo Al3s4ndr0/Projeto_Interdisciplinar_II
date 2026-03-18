@@ -1,0 +1,3470 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+:root{
+  --cor-fundo: #efefef;
+  --cor-cartao: #f1f1f5;
+  --cor-texto: #1f1f1f;
+  --cor-texto-suave: #666666;
+  --cor-texto-claro: #ffffff;
+
+  --cor-inicio: #171E4B;
+  --cor-fila: #171E4B;
+  --cor-reserva: #407C5A;
+  --cor-cancelamento: #101010;
+
+  --cor-borda-campo: #e0e0e0;
+  --cor-placeholder: #a0a0a0;
+  --cor-texto-informativo: #9a9a9a;
+  --cor-foco-campo: #7bb51f;
+  --cor-botao-fila: #7bb51f;
+
+  --sombra-cartao: 0 10px 26px rgba(0, 0, 0, 0.08);
+  --sombra-botao-inicio: 0 4px 10px rgba(23, 30, 75, 0.18);
+  --sombra-botao-reserva: 0 4px 10px rgba(64, 124, 90, 0.18);
+  --sombra-botao-cancelamento: 0 4px 10px rgba(16, 16, 16, 0.18);
+  --sombra-botao-fila: 0 4px 10px rgba(123, 181, 31, 0.22);
+
+  --raio-cartao-mobile: 12px;
+  --raio-cartao-tablet: 18px;
+  --raio-cartao-desktop: 22px;
+  --raio-botao: 22px;
+
+  --largura-mobile: 420px;
+  --largura-tablet: 720px;
+  --largura-desktop: 960px;
+  --largura-wide: 1100px;
+}
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+html,
+body{
+  min-height: 100vh;
+}
+
+body{
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+}
+
+img{
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a{
+  text-decoration: none;
+}
+
+/* BASE */
+
+.tela{
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+.cartao{
+  width: 100%;
+  max-width: var(--largura-mobile);
+  background: var(--cor-cartao);
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--raio-cartao-mobile);
+  overflow: hidden;
+  box-shadow: var(--sombra-cartao);
+  position: relative;
+}
+
+.conteudo{
+  background: var(--cor-cartao);
+  position: relative;
+  z-index: 2;
+}
+
+.titulo{
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--cor-texto);
+  margin-bottom: 18px;
+}
+
+.descricao{
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--cor-texto-suave);
+  margin-bottom: 36px;
+}
+
+.acoes{
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.formulario{
+  gap: 12px;
+}
+
+/* BOTÕES */
+
+.acoes-topo{
+  position: absolute;
+  top: 14px;
+  left: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 4;
+}
+
+.botao-voltar,
+.botao-home{
+  position: static;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--cor-texto);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(2px);
+}
+
+.botao-voltar svg,
+.botao-home svg{
+  width: 18px;
+  height: 18px;
+  stroke: #1f1f1f;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  display: block;
+}
+
+.botao-voltar svg{
+  transform: translateX(-1px);
+}
+
+.botao-home svg{
+  transform: translateY(1px);
+}
+
+.botao-voltar:hover,
+.botao-home:hover{
+  transform: translateY(-1px);
+}
+
+.botao-primario,
+.botao-secundario{
+  min-width: 190px;
+  height: 46px;
+  padding: 0 26px;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  text-decoration: none;
+  transition: transform 0.2s ease, opacity 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.botao-secundario{
+  background: #1c2a5a;
+  color: #fff;
+  border: none;
+  opacity: 0.9;
+}
+
+.botao-primario,
+.botao-primario:visited{
+  color: #ffffff;
+}
+
+.botao-secundario,
+.botao-secundario:visited{
+  color: #ffffff;
+}
+
+.botao-primario:hover,
+.botao-secundario:hover{
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+.botao-primario:hover,
+.botao-primario:active,
+.botao-primario:focus{
+  color: #ffffff;
+}
+
+.botao-secundario:hover,
+.botao-secundario:active,
+.botao-secundario:focus{
+  color: #ffffff;
+}
+
+/* TELA INICIAL */
+
+.banner{
+  color: var(--cor-texto-claro);
+  padding: 28px 24px 78px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.logo{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.logo img{
+  width: 100%;
+  max-width: 200px;
+}
+
+.texto-banner{
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.tema-inicio .banner{
+  background: var(--cor-inicio);
+}
+
+.tema-inicio .conteudo{
+  margin-top: -34px;
+  padding: 34px 24px 40px;
+  text-align: center;
+  border-top-left-radius: 50% 34px;
+  border-top-right-radius: 50% 34px;
+}
+
+.tema-inicio .botao-primario{
+  background: var(--cor-inicio);
+  box-shadow: var(--sombra-botao-inicio);
+}
+
+.tema-inicio .botao-secundario{
+  background: var(--cor-reserva);
+  box-shadow: var(--sombra-botao-reserva);
+}
+
+/* TELA FORMULÁRIO / FILA */
+
+.cartao-formulario{
+  max-width: var(--largura-mobile);
+}
+
+.painel-imagem{
+  position: relative;
+  width: 100%;
+  height: 170px;
+  overflow: visible;
+  background: var(--cor-cartao);
+}
+
+.imagem-restaurante{
+  width: 100%;
+  height: 145px;
+  object-fit: cover;
+  object-position: center 35%;
+  display: block;
+  border-bottom-left-radius: 50% 24px;
+  border-bottom-right-radius: 50% 24px;
+}
+
+.selo{
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+  transform: translateX(-50%);
+  width: 82px;
+  height: 82px;
+  border-radius: 50%;
+  background: var(--cor-cartao);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.selo img{
+  width: 108px;
+  height: 108px;
+  object-fit: contain;
+}
+
+.cartao-formulario .conteudo{
+  flex: 1;
+  padding: 18px 20px 22px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-top: 0;
+}
+
+.cartao-formulario .titulo{
+  font-size: 22px;
+  line-height: 1.45;
+  margin-bottom: 20px;
+}
+
+.formulario{
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.campo{
+  width: 100%;
+  height: 44px;
+  border: 1px solid var(--cor-borda-campo);
+  border-radius: 8px;
+  padding: 0 15px;
+  font-size: 13px;
+  color: #444444;
+  background: #ffffff;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.campo:focus{
+  border-color: var(--cor-foco-campo);
+  box-shadow: 0 0 0 3px rgba(123, 181, 31, 0.12);
+}
+
+.campo::placeholder{
+  color: var(--cor-placeholder);
+  font-weight: 400;
+}
+
+.texto-informativo{
+  margin-top: 34px;
+  text-align: center;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--cor-texto-informativo);
+}
+
+.formulario .botao-primario{
+  width: 120px;
+  height: 42px;
+  margin: 14px auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* TEMAS */
+
+.tema-fila .painel-imagem{
+  background: var(--cor-fila);
+}
+
+.tema-fila .botao-primario{
+  background: var(--cor-botao-fila);
+  box-shadow: var(--sombra-botao-fila);
+}
+
+.tema-reserva .banner{
+  background: var(--cor-reserva);
+}
+
+.tema-reserva .botao-primario{
+  background: var(--cor-reserva);
+  box-shadow: var(--sombra-botao-reserva);
+}
+
+.tema-cancelamento .banner{
+  background: var(--cor-cancelamento);
+}
+
+.tema-cancelamento .titulo,
+.tema-cancelamento .descricao{
+  color: var(--cor-texto-claro);
+}
+
+.tema-cancelamento .descricao{
+  opacity: 0.85;
+}
+
+.tema-cancelamento .botao-primario{
+  background: var(--cor-cancelamento);
+  box-shadow: var(--sombra-botao-cancelamento);
+}
+
+/* REVISÃO DE DADOS */
+
+.cartao-revisao .conteudo{
+  flex: 1;
+  padding: 22px 20px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.cartao-revisao .titulo{
+  font-size: 18px;
+  line-height: 1.45;
+  font-weight: 600;
+  color: var(--cor-texto);
+  margin-bottom: 18px;
+  max-width: 280px;
+}
+
+.formulario-revisao{
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.campo-fixo{
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+  padding: 0 14px;
+  font-size: 13px;
+  color: #8d8d8d;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  line-height: 1.4;
+}
+
+.acoes-revisao{
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.botao-revisar{
+  min-width: 190px;
+  height: 46px;
+  padding: 0 26px;
+  border: none;
+  border-radius: 24px;
+  background: var(--cor-fila);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--sombra-botao-inicio);
+  transition: 0.2s ease;
+}
+
+.cartao-revisao .botao-primario{
+  min-width: 190px;
+  height: 46px;
+  padding: 0 26px;
+  border: none;
+  border-radius: 24px;
+  background: var(--cor-botao-fila);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--sombra-botao-fila);
+  transition: 0.2s ease;
+}
+
+.botao-revisar:hover,
+.cartao-revisao .botao-primario:hover{
+  transform: translateY(-1px);
+  opacity: 0.96;
+}
+
+/* CONFIRMAÇÃO DE FILA */
+
+.cartao-confirmacao{
+  max-width: var(--largura-mobile);
+}
+
+.painel-marca{
+  position: relative;
+  width: 100%;
+  min-height: 220px;
+  background: var(--cor-fila);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.marca-central{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-marca{
+  width: 108px;
+  height: 108px;
+  object-fit: contain;
+}
+
+.cartao-confirmacao .conteudo{
+  padding: 28px 20px 30px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.titulo-confirmacao{
+  max-width: 320px;
+  font-size: 30px;
+  line-height: 1.15;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+
+.subtitulo-confirmacao{
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--cor-texto);
+  margin-bottom: 24px;
+}
+
+.circulo-posicao{
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: var(--cor-botao-fila);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 58px;
+  font-weight: 700;
+  margin-bottom: 22px;
+}
+
+.info-fila{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin-bottom: 28px;
+}
+
+.texto-principal,
+.texto-secundario,
+.tempo-espera,
+.texto-auxiliar{
+  text-align: center;
+}
+
+.texto-principal{
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--cor-texto);
+}
+
+.texto-secundario{
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--cor-texto);
+}
+
+.tempo-espera{
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--cor-texto);
+  margin-bottom: 8px;
+}
+
+.texto-auxiliar{
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--cor-texto-suave);
+}
+
+.acoes-confirmacao{
+  width: 100%;
+  max-width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+}
+
+.acoes-confirmacao .botao-primario,
+.acoes-confirmacao .botao-secundario{
+  width: 100%;
+  max-width: 260px;
+  height: 46px;
+  padding: 0 24px;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.acoes-confirmacao .botao-primario{
+  background: var(--cor-fila);
+  box-shadow: var(--sombra-botao-inicio);
+}
+
+.acoes-confirmacao .botao-secundario,
+.acoes-confirmacao .botao-secundario:visited,
+.acoes-confirmacao .botao-secundario:hover,
+.acoes-confirmacao .botao-secundario:active,
+.acoes-confirmacao .botao-secundario:focus{
+  background: #f6f6f6;
+  color: #7d7d7d;
+  border: 1px solid #dddddd;
+  box-shadow: none;
+}
+
+/* ACOMPANHAMENTO DE FILA */
+
+.cartao-acompanhamento{
+  max-width: var(--largura-mobile);
+}
+
+.cartao-acompanhamento .conteudo{
+  padding: 28px 20px 30px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.titulo-acompanhamento{
+  max-width: 320px;
+  font-size: 30px;
+  line-height: 1.25;
+  font-weight: 500;
+  margin-bottom: 14px;
+}
+
+.subtitulo-acompanhamento{
+  font-size: 15px;
+  line-height: 1.6;
+  color: #9a9a9a;
+  margin-bottom: 24px;
+}
+
+.barra-progresso{
+  width: 100%;
+  max-width: 270px;
+  margin-bottom: 24px;
+}
+
+.barra-progresso-trilha{
+  position: relative;
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  background: #d8d8d8;
+  overflow: visible;
+}
+
+.barra-progresso-preenchimento{
+  width: 36%;
+  height: 100%;
+  border-radius: 999px;
+  background: #66a63a;
+}
+
+.barra-progresso-indicador{
+  position: absolute;
+  top: 50%;
+  left: 36%;
+  transform: translate(-50%, -50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--cor-botao-fila);
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ilustracao-acompanhamento{
+  width: 100%;
+  max-width: 160px;
+  margin-bottom: 22px;
+}
+
+.ilustracao-acompanhamento img{
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.tempo-medio{
+  font-size: 14px;
+  line-height: 1.5;
+  color: #9a9a9a;
+  margin-bottom: 26px;
+}
+
+.acoes-acompanhamento{
+  width: 100%;
+  max-width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+}
+
+.acoes-acompanhamento .botao-primario,
+.acoes-acompanhamento .botao-secundario{
+  width: 100%;
+  max-width: 260px;
+  height: 46px;
+  padding: 0 24px;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.acoes-acompanhamento .botao-primario{
+  background: var(--cor-fila);
+  box-shadow: var(--sombra-botao-inicio);
+}
+
+.acoes-acompanhamento .botao-secundario,
+.acoes-acompanhamento .botao-secundario:visited,
+.acoes-acompanhamento .botao-secundario:hover,
+.acoes-acompanhamento .botao-secundario:active,
+.acoes-acompanhamento .botao-secundario:focus{
+  background: #f6f6f6;
+  color: #7d7d7d;
+  border: 1px solid #dddddd;
+  box-shadow: none;
+}
+
+.barra-progresso-preenchimento-final{
+  width: 78%;
+}
+
+.barra-progresso-indicador-final{
+  left: 78%;
+}
+
+/* VARIAÇÕES - MESA PRONTA */
+
+.barra-progresso-preenchimento-pronta{
+  width: 100%;
+}
+
+.barra-progresso-indicador-pronto{
+  left: 100%;
+  transform: translate(-100%, -50%);
+}
+
+.tempo-medio-pronto{
+  color: var(--cor-texto);
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.texto-auxiliar-acompanhamento{
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--cor-texto-suave);
+  margin-bottom: 26px;
+  text-align: center;
+}
+
+/* EXPERIÊNCIA NA FILA / AVALIAÇÃO */
+
+.cartao-experiencia{
+  max-width: 420px;
+  border-radius: 18px;
+}
+
+.painel-experiencia{
+  width: 100%;
+  min-height: 130px;
+  background: var(--cor-fila);
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 18px;
+  overflow: visible;
+}
+
+.painel-experiencia::after{
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 58px;
+  background: var(--cor-cartao);
+  border-top-left-radius: 50% 34px;
+  border-top-right-radius: 50% 34px;
+}
+
+.selo-experiencia{
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  width: 84px;
+  height: 84px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+}
+
+.selo-experiencia img{
+  width: 104px;
+  height: 104px;
+  object-fit: contain;
+  display: block;
+}
+
+.cartao-experiencia .conteudo{
+  flex: 1;
+  padding: 54px 22px 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.titulo-experiencia{
+  font-size: 22px;
+  line-height: 1.2;
+  font-weight: 800;
+  color: #111111;
+  max-width: 280px;
+  margin-bottom: 14px;
+}
+
+.descricao-experiencia{
+  font-size: 12px;
+  line-height: 1.55;
+  color: #4c4c4c;
+  max-width: 250px;
+  margin-bottom: 22px;
+}
+
+.bloco-nota,
+.bloco-pesquisa-experiencia,
+.bloco-comentario-experiencia{
+  width: 100%;
+  max-width: 260px;
+}
+
+.bloco-nota{
+  margin-bottom: 20px;
+}
+
+.bloco-pesquisa-experiencia{
+  margin-bottom: 20px;
+}
+
+.pergunta-experiencia{
+  font-size: 12px;
+  line-height: 1.45;
+  font-weight: 600;
+  color: #2b2b2b;
+  margin-bottom: 12px;
+}
+
+.estrelas{
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: center;
+  gap: 6px;
+}
+
+.estrelas input{
+  display: none;
+}
+
+.estrelas label{
+  font-size: 28px;
+  color: #d0d0d0;
+  cursor: pointer;
+  transition: 0.2s ease;
+  line-height: 1;
+}
+
+.estrelas label:hover,
+.estrelas label:hover ~ label{
+  color: #f4c542;
+}
+
+.estrelas input:checked ~ label{
+  color: #f4c542;
+}
+
+.opcao-experiencia{
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  text-align: left;
+  margin-bottom: 8px;
+  font-size: 10px;
+  line-height: 1.45;
+  color: #5f5f5f;
+}
+
+.opcao-experiencia input{
+  margin-top: 2px;
+  accent-color: var(--cor-fila);
+  flex-shrink: 0;
+}
+
+.campo-comentario{
+  width: 100%;
+  min-height: 88px;
+  max-height: 180px;
+  border: 1px solid #d9d9d9;
+  border-radius: 18px;
+  padding: 12px 14px;
+  background: #f8f8f8;
+  color: #444444;
+  font-size: 11px;
+  line-height: 1.5;
+  outline: none;
+  resize: vertical;
+  overflow-y: auto;
+}
+
+.campo-comentario::placeholder{
+  color: #b1b1b1;
+}
+
+.acoes-experiencia{
+  width: 100%;
+  max-width: 180px;
+  display: flex;
+  justify-content: center;
+}
+
+.acoes-experiencia .botao-primario{
+  width: 100%;
+  min-height: 40px;
+  background: var(--cor-fila);
+  color: #ffffff;
+  box-shadow: var(--sombra-botao-inicio);
+}
+
+/* AGRADECIMENTO DA AVALIAÇÃO */
+
+.cartao-agradecimento{
+  max-width: var(--largura-mobile);
+}
+
+.painel-agradecimento{
+  position: relative;
+  width: 100%;
+  min-height: 240px;
+  background: var(--cor-fila);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 20px 28px;
+  text-align: center;
+}
+
+.marca-agradecimento{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.logo-agradecimento{
+  width: 180px;
+  height: auto;
+  object-fit: contain;
+}
+
+.frase-agradecimento{
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--cor-texto-claro);
+}
+
+.cartao-agradecimento .conteudo{
+  padding: 32px 22px 34px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.titulo-agradecimento{
+  font-size: 28px;
+  line-height: 1.15;
+  font-weight: 800;
+  color: var(--cor-texto);
+  margin-bottom: 18px;
+}
+
+.descricao-agradecimento{
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--cor-texto-suave);
+  margin-bottom: 28px;
+}
+
+.acoes-agradecimento{
+  width: 100%;
+  max-width: 240px;
+  display: flex;
+  justify-content: center;
+}
+
+.acoes-agradecimento .botao-primario{
+  width: 100%;
+  max-width: 240px;
+  height: 46px;
+  background: var(--cor-botao-fila);
+  box-shadow: var(--sombra-botao-fila);
+}
+
+/* CARDÁPIO */
+
+.cartao-cardapio{
+  max-width: 420px;
+}
+
+.cartao-cardapio .painel-imagem{
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  background: transparent !important;
+  position: relative;
+  overflow: visible;
+  padding-bottom: 34px;
+}
+
+.cartao-cardapio .imagem-restaurante{
+  width: 100%;
+  height: 110px;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  border-bottom-left-radius: 50% 26px;
+  border-bottom-right-radius: 50% 26px;
+}
+
+.cartao-cardapio .botao-voltar{
+  top: 12px;
+  left: 12px;
+  width: 36px;
+  height: 36px;
+  font-size: 20px;
+}
+
+.cartao-cardapio .selo{
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 82px;
+  height: 82px;
+  background: var(--cor-cartao);
+}
+
+.cartao-cardapio .selo img{
+  width: 104px;
+  height: 104px;
+  object-fit: contain;
+}
+
+.cartao-cardapio .conteudo{
+  padding: 34px 20px 30px;
+  text-align: center;
+}
+
+.cartao-cardapio .titulo{
+  width: 100%;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #2b2b2b;
+}
+
+/* ABAS */
+
+.abas-cardapio-area{
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 8px;
+  margin-bottom: 20px;
+  scrollbar-width: thin;
+  scrollbar-color: #bdbdbd transparent;
+}
+
+.abas-cardapio-area::-webkit-scrollbar{
+  height: 8px;
+}
+
+.abas-cardapio-area::-webkit-scrollbar-track{
+  background: transparent;
+}
+
+.abas-cardapio-area::-webkit-scrollbar-thumb{
+  background: #9d9d9d;
+  border-radius: 999px;
+}
+
+.abas-cardapio{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  width: max-content;
+  min-width: 100%;
+  margin: 0 auto;
+  padding: 0 4px;
+}
+
+.aba-cardapio{
+  background: none;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: #9a9a9a;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding-bottom: 4px;
+}
+
+.aba-cardapio.ativa{
+  color: #1f1f1f;
+  border-bottom: 2px solid #1f1f1f;
+}
+
+/* GRADE */
+
+.grade-cardapio{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* ITEM */
+
+.item-cardapio{
+  background: #ffffff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+.item-cardapio img{
+  width: 100%;
+  height: 110px;
+  object-fit: cover;
+}
+
+.corpo-item-cardapio{
+  padding: 12px;
+  text-align: left;
+}
+
+.corpo-item-cardapio h2{
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #2b2b2b;
+}
+
+.preco-item{
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.descricao-item{
+  font-size: 11px;
+  line-height: 1.5;
+  color: #8a8a8a;
+}
+
+.tema-cancelamento .cartao{
+  background: var(--cor-cartao);
+}
+
+.tema-cancelamento .painel-marca{
+  background: var(--cor-cancelamento);
+}
+
+.tema-cancelamento .conteudo{
+  background: var(--cor-cartao);
+}
+
+.tema-cancelamento .painel-agradecimento{
+  background: var(--cor-cancelamento);
+}
+
+.tema-cancelamento .frase-agradecimento{
+  color: #ffffff;
+}
+
+.tema-cancelamento .painel-experiencia{
+  background: var(--cor-cancelamento);
+}
+
+.tema-cancelamento .painel-marca{
+  background: var(--cor-cancelamento);
+}
+
+.tema-cancelamento .cartao{
+  background: var(--cor-cartao);
+}
+
+.tema-cancelamento .conteudo{
+  background: var(--cor-cartao);
+}
+
+.cartao-agradecimento .painel-agradecimento{
+  background: #407C5A;
+}
+
+.cartao-agradecimento .botao-reserva{
+  background: #407C5A;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(64, 124, 90, 0.18);
+}
+
+.cartao-agradecimento .botao-inicio{
+  background: #171E4B;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(23, 30, 75, 0.18);
+}
+
+/* REAGENDAMENTO */
+
+.cartao-reagendamento .painel-imagem{
+  background: #407C5A;
+}
+
+.tema-reserva .cartao-reagendamento .painel-imagem{
+  background: #407C5A;
+}
+
+.subtitulo-formulario{
+  margin-top: 8px;
+  margin-bottom: 4px;
+  font-size: 13px;
+  line-height: 1.5;
+  font-weight: 600;
+  color: var(--cor-texto);
+}
+
+.acoes-reagendamento{
+  width: 100%;
+  max-width: 260px;
+  margin: 18px auto 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.acoes-reagendamento .botao-primario,
+.acoes-reagendamento .botao-secundario,
+.botao-atualizar-reserva,
+.botao-cancelar-reagendamento{
+  width: 100%;
+  max-width: 260px;
+  min-width: 260px;
+  height: 46px;
+  padding: 0 24px;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.botao-atualizar-reserva{
+  background: #171E4B;
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 10px rgba(23, 30, 75, 0.18);
+}
+
+.botao-atualizar-reserva:hover,
+.botao-atualizar-reserva:active,
+.botao-atualizar-reserva:focus{
+  color: #ffffff;
+}
+
+.botao-cancelar-reagendamento{
+  background: #f6f6f6;
+  color: #7d7d7d;
+  border: 1px solid #dddddd;
+  box-shadow: none;
+}
+
+.botao-cancelar-reagendamento:hover,
+.botao-cancelar-reagendamento:active,
+.botao-cancelar-reagendamento:focus{
+  color: #7d7d7d;
+}
+
+/* CANCELAMENTO DE RESERVA FUTURA */
+
+.cartao-cancelamento-futuro{
+  max-width: var(--largura-mobile);
+}
+
+.cartao-cancelamento-futuro .painel-agradecimento{
+  background: var(--cor-cancelamento);
+}
+
+.cartao-cancelamento-futuro .conteudo{
+  padding: 32px 22px 34px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.titulo-cancelamento-futuro{
+  font-size: 28px;
+  line-height: 1.15;
+  font-weight: 800;
+  color: var(--cor-texto);
+  margin-bottom: 22px;
+}
+
+.ilustracao-cancelamento-futuro{
+  max-width: 170px;
+  margin-bottom: 24px;
+}
+
+.descricao-cancelamento-futuro{
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--cor-texto);
+  margin-bottom: 28px;
+}
+
+.acoes-cancelamento-futuro{
+  width: 100%;
+  max-width: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.acoes-cancelamento-futuro .botao-primario,
+.acoes-cancelamento-futuro .botao-secundario{
+  width: 100%;
+  max-width: 280px;
+  min-width: 280px;
+  height: 46px;
+  padding: 0 24px;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.botao-voltar-reserva{
+  background: #171E4B;
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 10px rgba(23, 30, 75, 0.18);
+}
+
+.botao-confirmar-cancelamento,
+.botao-confirmar-cancelamento:visited{
+  background: #f6f6f6;
+  color: #7d7d7d;
+  border: 1px solid #dddddd;
+  box-shadow: none;
+}
+
+.botao-confirmar-cancelamento:hover,
+.botao-confirmar-cancelamento:active,
+.botao-confirmar-cancelamento:focus{
+  color: #7d7d7d;
+}
+
+.cartao-cancelamento-confirmado{
+  max-width: var(--largura-mobile);
+}
+
+.cartao-cancelamento-confirmado .painel-agradecimento{
+  background: var(--cor-cancelamento);
+}
+
+.cartao-cancelamento-confirmado .conteudo{
+  padding: 32px 22px 34px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.titulo-cancelamento-confirmado{
+  font-size: 28px;
+  line-height: 1.15;
+  font-weight: 800;
+  color: var(--cor-texto);
+  margin-bottom: 16px;
+}
+
+.subtitulo-cancelamento-confirmado{
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--cor-texto-suave);
+  margin-bottom: 22px;
+}
+
+.ilustracao-cancelamento-confirmado{
+  max-width: 170px;
+  margin-bottom: 24px;
+}
+
+.descricao-cancelamento-confirmado{
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--cor-texto);
+  margin-bottom: 28px;
+}
+
+.acoes-cancelamento-confirmado{
+  width: 100%;
+  max-width: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.acoes-cancelamento-confirmado .botao-primario,
+.acoes-cancelamento-confirmado .botao-secundario{
+  width: 100%;
+  max-width: 280px;
+  min-width: 280px;
+  height: 46px;
+  padding: 0 24px;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.botao-enviar-comentario{
+  background: #171E4B;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(23, 30, 75, 0.18);
+}
+
+.botao-sem-comentario,
+.botao-sem-comentario:visited{
+  background: #f6f6f6;
+  color: #7d7d7d;
+  border: 1px solid #dddddd;
+  box-shadow: none;
+}
+
+.botao-sem-comentario:hover,
+.botao-sem-comentario:active,
+.botao-sem-comentario:focus{
+  color: #7d7d7d;
+}
+
+/* CANCELAMENTO SEM COMENTÁRIO */
+
+.cartao-cancelamento-sem-comentario{
+  max-width: var(--largura-mobile);
+}
+
+.cartao-cancelamento-sem-comentario .painel-agradecimento{
+  background: var(--cor-cancelamento);
+}
+
+.logo-cancelamento-sem-comentario{
+  width: 180px;
+}
+
+.frase-cancelamento-sem-comentario{
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.cartao-cancelamento-sem-comentario .conteudo{
+  padding: 32px 22px 34px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.titulo-cancelamento-sem-comentario{
+  font-size: 28px;
+  line-height: 1.15;
+  font-weight: 800;
+  color: var(--cor-texto);
+  margin-bottom: 18px;
+}
+
+.descricao-cancelamento-sem-comentario{
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--cor-texto-suave);
+  margin-bottom: 30px;
+}
+
+.acoes-cancelamento-sem-comentario{
+  width: 100%;
+  max-width: 280px;
+  display: flex;
+  justify-content: center;
+}
+
+.botao-inicio-cancelamento-sem-comentario{
+  width: 100%;
+  max-width: 280px;
+  min-width: 280px;
+  height: 46px;
+  padding: 0 24px;
+  border-radius: 24px;
+  background: #171E4B;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(23, 30, 75, 0.18);
+}
+
+/* COMENTÁRIO DE CANCELAMENTO */
+
+.cartao-comentario-cancelamento{
+  max-width: 420px;
+}
+
+.formulario-comentario-cancelamento{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bloco-motivo-cancelamento,
+.bloco-comentario-cancelamento{
+  width: 100%;
+  max-width: 260px;
+}
+
+.bloco-motivo-cancelamento{
+  margin-bottom: 20px;
+}
+
+.bloco-comentario-cancelamento{
+  margin-bottom: 22px;
+}
+
+.opcao-cancelamento{
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  text-align: left;
+  margin-bottom: 10px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #5f5f5f;
+}
+
+.opcao-cancelamento input{
+  margin-top: 2px;
+  accent-color: #171E4B;
+  flex-shrink: 0;
+}
+
+.acoes-comentario-cancelamento{
+  width: 100%;
+  max-width: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.acoes-comentario-cancelamento .botao-primario,
+.acoes-comentario-cancelamento .botao-secundario{
+  width: 100%;
+  max-width: 260px;
+  min-width: 260px;
+  height: 46px;
+  padding: 0 24px;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.botao-enviar-avaliacao{
+  background: #171E4B;
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 10px rgba(23, 30, 75, 0.18);
+}
+
+.botao-enviar-avaliacao:hover,
+.botao-enviar-avaliacao:active,
+.botao-enviar-avaliacao:focus{
+  color: #ffffff;
+}
+
+.botao-cancelar-envio-comentario,
+.botao-cancelar-envio-comentario:visited{
+  background: #f6f6f6;
+  color: #7d7d7d;
+  border: 1px solid #dddddd;
+  box-shadow: none;
+}
+
+.botao-cancelar-envio-comentario:hover,
+.botao-cancelar-envio-comentario:active,
+.botao-cancelar-envio-comentario:focus{
+  color: #7d7d7d;
+}
+
+/* COMENTÁRIO ENVIADO */
+
+.cartao-comentario-enviado{
+  max-width: var(--largura-mobile);
+}
+
+.cartao-comentario-enviado .painel-agradecimento{
+  background: var(--cor-cancelamento);
+}
+
+.cartao-comentario-enviado .conteudo{
+  padding: 32px 22px 34px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.titulo-comentario-enviado{
+  font-size: 28px;
+  line-height: 1.15;
+  font-weight: 800;
+  color: var(--cor-texto);
+  margin-bottom: 16px;
+}
+
+.subtitulo-comentario-enviado{
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--cor-texto-suave);
+  max-width: 300px;
+  margin-bottom: 24px;
+}
+
+.ilustracao-comentario-enviado{
+  max-width: 170px;
+  margin-bottom: 24px;
+}
+
+.descricao-comentario-enviado{
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--cor-texto);
+  margin-bottom: 30px;
+}
+
+.acoes-comentario-enviado{
+  width: 100%;
+  max-width: 280px;
+  display: flex;
+  justify-content: center;
+}
+
+.botao-inicio-comentario-enviado{
+  width: 100%;
+  max-width: 280px;
+  min-width: 280px;
+  height: 46px;
+  padding: 0 24px;
+  border-radius: 24px;
+  background: #171E4B;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(23, 30, 75, 0.18);
+}
+
+.tema-agradecimento-avaliacao .painel-agradecimento{
+  background: linear-gradient(135deg, #649D16 0%, #4f7f12 100%);
+}
+
+/* TABLET */
+
+@media (min-width: 768px){
+  .tela{
+    padding: 40px 24px;
+  }
+
+  .cartao{
+    max-width: var(--largura-tablet);
+    border-radius: var(--raio-cartao-tablet);
+  }
+
+  /* início */
+  .banner{
+    padding: 36px 48px 92px;
+  }
+
+  .logo img{
+    max-width: 240px;
+  }
+
+  .texto-banner{
+    font-size: 16px;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .tema-inicio .conteudo{
+    margin-top: -42px;
+    padding: 42px 48px 48px;
+    border-top-left-radius: 50% 42px;
+    border-top-right-radius: 50% 42px;
+  }
+
+  .tema-inicio .titulo{
+    font-size: 40px;
+  }
+
+  .tema-inicio .descricao{
+    font-size: 15px;
+    max-width: 540px;
+    margin: 0 auto 36px;
+  }
+
+  .tema-inicio .acoes{
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  .botao-primario,
+  .botao-secundario{
+    font-size: 15px;
+    padding: 15px 20px;
+  }
+
+  /* formulário */
+  .cartao-formulario{
+    max-width: var(--largura-tablet);
+    border-radius: var(--raio-cartao-tablet);
+  }
+
+  .painel-imagem{
+    height: 220px;
+  }
+
+  .imagem-restaurante{
+    height: 185px;
+    border-bottom-left-radius: 50% 30px;
+    border-bottom-right-radius: 50% 30px;
+  }
+
+  .selo{
+    width: 96px;
+    height: 96px;
+    bottom: -2px;
+  }
+
+  .selo img{
+    width: 124px;
+    height: 124px;
+  }
+
+  .cartao-formulario .conteudo{
+    padding: 28px 40px 30px;
+  }
+
+  .cartao-formulario .titulo{
+    font-size: 28px;
+    margin-bottom: 24px;
+  }
+
+  .formulario{
+    gap: 16px;
+  }
+
+  .campo{
+    height: 50px;
+    font-size: 14px;
+    border-radius: 10px;
+  }
+
+  .texto-informativo{
+    margin-top: 38px;
+    font-size: 12px;
+  }
+
+  .formulario .botao-primario{
+    width: 140px;
+    height: 46px;
+    font-size: 15px;
+    margin-top: 18px;
+  }
+
+  .cartao-revisao .conteudo{
+    padding: 28px 40px 34px;
+  }
+
+  .cartao-revisao .titulo{
+    font-size: 28px;
+    max-width: 440px;
+    margin-bottom: 24px;
+  }
+
+  .formulario-revisao{
+    max-width: 440px;
+    gap: 14px;
+  }
+
+  .campo-fixo{
+    min-height: 50px;
+    font-size: 14px;
+    border-radius: 10px;
+    padding: 0 16px;
+  }
+
+  .acoes-revisao{
+    max-width: 440px;
+    gap: 14px;
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+  }
+
+  .botao-revisar,
+  .cartao-revisao .botao-primario{
+    font-size: 14px;
+  }
+
+  .cartao-confirmacao{
+    max-width: 720px;
+  }
+
+  .painel-marca{
+    min-height: 260px;
+  }
+
+  .logo-marca{
+    width: 124px;
+    height: 124px;
+  }
+
+  .cartao-confirmacao .conteudo{
+    padding: 36px 40px 36px;
+  }
+
+  .titulo-confirmacao{
+    max-width: 500px;
+    font-size: 40px;
+    margin-bottom: 20px;
+  }
+
+  .subtitulo-confirmacao{
+    font-size: 18px;
+    margin-bottom: 26px;
+  }
+
+  .circulo-posicao{
+    width: 120px;
+    height: 120px;
+    font-size: 64px;
+    margin-bottom: 24px;
+  }
+
+  .texto-principal,
+  .texto-secundario,
+  .tempo-espera{
+    font-size: 18px;
+  }
+
+  .texto-auxiliar{
+    font-size: 13px;
+  }
+
+  .acoes-confirmacao{
+    max-width: 300px;
+  }
+
+  .acoes-confirmacao .botao-primario,
+  .acoes-confirmacao .botao-secundario{
+    max-width: 300px;
+    height: 48px;
+    font-size: 15px;
+  }
+
+  .cartao-acompanhamento{
+    max-width: 720px;
+  }
+
+  .cartao-acompanhamento .conteudo{
+    padding: 36px 40px 36px;
+  }
+
+  .titulo-acompanhamento{
+    max-width: 520px;
+    font-size: 42px;
+    margin-bottom: 16px;
+  }
+
+  .subtitulo-acompanhamento{
+    font-size: 18px;
+    margin-bottom: 26px;
+  }
+
+  .barra-progresso{
+    max-width: 300px;
+    margin-bottom: 26px;
+  }
+
+  .barra-progresso-trilha{
+    height: 12px;
+  }
+
+  .barra-progresso-indicador{
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+  }
+
+  .ilustracao-acompanhamento{
+    max-width: 180px;
+    margin-bottom: 24px;
+  }
+
+  .tempo-medio{
+    font-size: 16px;
+    margin-bottom: 28px;
+  }
+
+  .acoes-acompanhamento{
+    max-width: 300px;
+  }
+
+  .acoes-acompanhamento .botao-primario,
+  .acoes-acompanhamento .botao-secundario{
+    max-width: 300px;
+    height: 48px;
+    font-size: 15px;
+  }
+
+  .texto-auxiliar-acompanhamento{
+    font-size: 13px;
+    margin-bottom: 28px;
+  }
+
+  .cartao-experiencia{
+    max-width: 760px;
+    min-height: auto;
+    flex-direction: column;
+  }
+
+  .painel-experiencia{
+    min-height: 150px;
+    padding-top: 20px;
+  }
+
+  .painel-experiencia::after{
+    height: 70px;
+    border-top-left-radius: 50% 42px;
+    border-top-right-radius: 50% 42px;
+  }
+
+  .selo-experiencia{
+    width: 96px;
+    height: 96px;
+    bottom: 20px;
+  }
+
+  .selo-experiencia img{
+    width: 118px;
+    height: 118px;
+  }
+
+  .cartao-experiencia .botao-voltar{
+    top: 20px;
+    left: 20px;
+    width: 42px;
+    height: 42px;
+    font-size: 22px;
+  }
+
+  .cartao-experiencia .conteudo{
+    padding: 64px 40px 36px;
+  }
+
+  .titulo-experiencia{
+    font-size: 34px;
+    max-width: 420px;
+    margin-bottom: 16px;
+  }
+
+  .descricao-experiencia{
+    font-size: 15px;
+    max-width: 420px;
+    margin-bottom: 26px;
+  }
+
+  .bloco-nota,
+  .bloco-pesquisa-experiencia,
+  .bloco-comentario-experiencia{
+    max-width: 420px;
+  }
+
+  .pergunta-experiencia{
+    font-size: 15px;
+    margin-bottom: 14px;
+  }
+
+  .estrelas{
+    gap: 8px;
+  }
+
+  .estrelas label{
+    font-size: 34px;
+  }
+
+  .opcao-experiencia{
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+
+  .campo-comentario{
+    min-height: 110px;
+    font-size: 13px;
+    border-radius: 22px;
+    padding: 14px 16px;
+  }
+
+  .acoes-experiencia{
+    max-width: 220px;
+  }
+
+  .acoes-experiencia .botao-primario{
+    min-height: 46px;
+    font-size: 14px;
+  }
+
+  .cartao-agradecimento{
+    max-width: 760px;
+  }
+
+  .painel-agradecimento{
+    min-height: 280px;
+    padding: 62px 28px 34px;
+  }
+
+  .logo-agradecimento{
+    width: 210px;
+  }
+
+  .frase-agradecimento{
+    font-size: 16px;
+  }
+
+  .cartao-agradecimento .conteudo{
+    padding: 40px 40px 40px;
+  }
+
+  .titulo-agradecimento{
+    font-size: 38px;
+    margin-bottom: 20px;
+  }
+
+  .descricao-agradecimento{
+    font-size: 17px;
+    margin-bottom: 30px;
+  }
+
+  .acoes-agradecimento{
+    max-width: 280px;
+  }
+
+  .acoes-agradecimento .botao-primario{
+    max-width: 280px;
+    height: 48px;
+    font-size: 15px;
+  }
+
+  .cartao-cardapio{
+    max-width: 760px;
+  }
+
+  .cartao-cardapio .painel-imagem{
+    padding-bottom: 42px;
+  }
+
+  .cartao-cardapio .imagem-restaurante{
+    height: 150px;
+    border-bottom-left-radius: 50% 36px;
+    border-bottom-right-radius: 50% 36px;
+  }
+
+  .cartao-cardapio .botao-voltar{
+    top: 18px;
+    left: 18px;
+    width: 42px;
+    height: 42px;
+    font-size: 22px;
+  }
+
+  .cartao-cardapio .selo{
+    width: 90px;
+    height: 90px;
+  }
+
+  .cartao-cardapio .selo img{
+    width: 120px;
+    height: 120px;
+  }
+
+  .cartao-cardapio .conteudo{
+    padding: 42px 40px 40px;
+  }
+
+  .cartao-cardapio .titulo{
+    font-size: 28px;
+    margin-bottom: 28px;
+  }
+
+  .grade-cardapio{
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .item-cardapio img{
+    height: 150px;
+  }
+
+  .corpo-item-cardapio h2{
+    font-size: 15px;
+  }
+
+  .preco-item{
+    font-size: 15px;
+  }
+
+  .descricao-item{
+    font-size: 13px;
+  }
+
+.acoes-topo{
+  top: 18px;
+  left: 18px;
+  gap: 12px;
+}
+
+.botao-voltar,
+.botao-home{
+  width: 42px;
+  height: 42px;
+}
+
+.botao-voltar svg,
+.botao-home svg{
+  width: 19px;
+  height: 19px;
+}  
+
+.tema-reserva .botao-primario{
+  background: #407C5A;
+  color: #fff;
+}
+
+.botao-reserva{
+  background: #407C5A;
+  color: #fff;
+}
+
+  .subtitulo-formulario{
+    font-size: 14px;
+    margin-top: 10px;
+    margin-bottom: 6px;
+  }
+
+  .acoes-reagendamento{
+    max-width: 300px;
+    margin-top: 20px;
+  }
+
+  .acoes-reagendamento .botao-primario,
+  .acoes-reagendamento .botao-secundario,
+  .botao-atualizar-reserva,
+  .botao-cancelar-reagendamento{
+    max-width: 300px;
+    min-width: 300px;
+    height: 48px;
+    font-size: 15px;
+  }
+
+
+   .cartao-cancelamento-futuro{
+    max-width: 760px;
+  }
+
+  .titulo-cancelamento-futuro{
+    font-size: 38px;
+    margin-bottom: 24px;
+  }
+
+  .ilustracao-cancelamento-futuro{
+    max-width: 190px;
+    margin-bottom: 26px;
+  }
+
+  .descricao-cancelamento-futuro{
+    font-size: 22px;
+    margin-bottom: 30px;
+  }
+
+  .acoes-cancelamento-futuro{
+    max-width: 300px;
+  }
+
+  .acoes-cancelamento-futuro .botao-primario,
+  .acoes-cancelamento-futuro .botao-secundario{
+    max-width: 300px;
+    min-width: 300px;
+    height: 48px;
+    font-size: 15px;
+  }
+
+ .cartao-cancelamento-confirmado{
+    max-width: 760px;
+  }
+
+  .titulo-cancelamento-confirmado{
+    font-size: 38px;
+    margin-bottom: 18px;
+  }
+
+  .subtitulo-cancelamento-confirmado{
+    font-size: 18px;
+    margin-bottom: 24px;
+  }
+
+  .ilustracao-cancelamento-confirmado{
+    max-width: 190px;
+    margin-bottom: 26px;
+  }
+
+  .descricao-cancelamento-confirmado{
+    font-size: 20px;
+    margin-bottom: 30px;
+  }
+
+  .acoes-cancelamento-confirmado{
+    max-width: 300px;
+  }
+
+  .acoes-cancelamento-confirmado .botao-primario,
+  .acoes-cancelamento-confirmado .botao-secundario{
+    max-width: 300px;
+    min-width: 300px;
+    height: 48px;
+    font-size: 15px;
+  }
+
+  .cartao-comentario-cancelamento{
+    max-width: 760px;
+  }
+
+  .bloco-motivo-cancelamento,
+  .bloco-comentario-cancelamento{
+    max-width: 420px;
+  }
+
+  .opcao-cancelamento{
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
+
+  .acoes-comentario-cancelamento{
+    max-width: 300px;
+  }
+
+  .acoes-comentario-cancelamento .botao-primario,
+  .acoes-comentario-cancelamento .botao-secundario{
+    max-width: 300px;
+    min-width: 300px;
+    height: 48px;
+    font-size: 15px;
+  }
+
+  .cartao-comentario-enviado{
+    max-width: 760px;
+  }
+
+  .titulo-comentario-enviado{
+    font-size: 38px;
+    margin-bottom: 18px;
+  }
+
+  .subtitulo-comentario-enviado{
+    font-size: 17px;
+    max-width: 420px;
+    margin-bottom: 26px;
+  }
+
+  .ilustracao-comentario-enviado{
+    max-width: 190px;
+    margin-bottom: 26px;
+  }
+
+  .descricao-comentario-enviado{
+    font-size: 18px;
+    margin-bottom: 32px;
+  }
+
+  .acoes-comentario-enviado{
+    max-width: 300px;
+  }
+
+  .botao-inicio-comentario-enviado{
+    max-width: 300px;
+    min-width: 300px;
+    height: 48px;
+    font-size: 15px;
+  }
+}
+
+/* DESKTOP */
+
+@media (min-width: 1024px){
+  .tela{
+    padding: 56px 32px;
+  }
+
+  /* início */
+  .tema-inicio .cartao{
+    max-width: 1080px;
+    min-height: 680px;
+    flex-direction: row;
+    border-radius: var(--raio-cartao-desktop);
+  }
+
+  .tema-inicio .banner,
+  .tema-inicio .conteudo{
+    width: 50%;
+  }
+
+  .tema-inicio .banner{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    padding: 56px 52px;
+  }
+
+  .tema-inicio .logo{
+    justify-content: center;
+  }
+
+  .tema-inicio .logo img{
+    max-width: 320px;
+  }
+
+  .tema-inicio .texto-banner{
+    font-size: 24px;
+    text-align: center;
+    max-width: 100%;
+  }
+
+  .tema-inicio .conteudo{
+    margin-top: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    padding: 56px 52px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .tema-inicio .titulo{
+    font-size: 42px;
+  }
+
+  .tema-inicio .descricao{
+    font-size: 15px;
+    max-width: 100%;
+    margin: 0 0 36px;
+  }
+
+  .tema-inicio .acoes{
+    max-width: 100%;
+    margin: 0;
+  }
+
+  .cartao-acompanhamento{
+    max-width: 1080px;
+    min-height: 680px;
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .cartao-acompanhamento .painel-marca{
+    width: 38%;
+    min-height: 680px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .cartao-acompanhamento .logo-marca{
+    width: 140px;
+    height: 140px;
+  }
+
+  .cartao-acompanhamento .conteudo{
+    width: 62%;
+    padding: 56px 56px 44px;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .titulo-acompanhamento{
+    max-width: 520px;
+    font-size: 34px;
+    line-height: 1.35;
+    margin-bottom: 14px;
+  }
+
+  .subtitulo-acompanhamento{
+    font-size: 17px;
+    margin-bottom: 24px;
+  }
+
+  .barra-progresso{
+    max-width: 270px;
+    margin-bottom: 24px;
+  }
+
+  .ilustracao-acompanhamento{
+    max-width: 150px;
+    margin-bottom: 22px;
+  }
+
+  .tempo-medio{
+    font-size: 14px;
+    margin-bottom: 28px;
+  }
+
+  .acoes-acompanhamento{
+    max-width: 280px;
+  }
+
+  .acoes-acompanhamento .botao-primario,
+  .acoes-acompanhamento .botao-secundario{
+    width: 100%;
+    max-width: 280px;
+    height: 46px;
+    font-size: 14px;
+  }
+
+  /* formulário */
+  .cartao-formulario{
+    max-width: 1080px;
+    min-height: 680px;
+    flex-direction: row;
+    align-items: stretch;
+    border-radius: var(--raio-cartao-desktop);
+  }
+
+  .cartao-formulario .painel-imagem{
+    width: 46%;
+    min-height: 680px;
+    height: auto;
+    background: var(--cor-fila);
+    display: flex;
+    align-items: stretch;
+    justify-content: stretch;
+  }
+
+  .cartao-formulario .imagem-restaurante{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .cartao-formulario .selo{
+    left: 50%;
+    bottom: 28px;
+    width: 108px;
+    height: 108px;
+    background: rgba(241, 241, 245, 0.95);
+  }
+
+  .cartao-formulario .selo img{
+    width: 132px;
+    height: 132px;
+  }
+
+  .cartao-formulario .conteudo{
+    width: 54%;
+    padding: 56px 56px 40px;
+    justify-content: center;
+    text-align: left;
+  }
+
+  .cartao-formulario .titulo{
+    font-size: 34px;
+    line-height: 1.35;
+    max-width: 520px;
+  }
+
+  .cartao-formulario .formulario{
+    max-width: 460px;
+    gap: 18px;
+  }
+
+  .cartao-formulario .campo{
+    height: 52px;
+    font-size: 14px;
+    padding: 0 18px;
+  }
+
+  .cartao-formulario .texto-informativo{
+    max-width: 460px;
+    margin-top: 34px;
+    margin-left: 0;
+    margin-right: 0;
+    text-align: left;
+    font-size: 12px;
+  }
+
+  .cartao-formulario .formulario .botao-primario{
+    width: 150px;
+    height: 48px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .cartao-revisao .conteudo{
+    width: 54%;
+    padding: 56px 56px 40px;
+    justify-content: center;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .cartao-revisao .titulo{
+    max-width: 440px;
+    font-size: 34px;
+    line-height: 1.35;
+    margin-bottom: 24px;
+    text-align: left;
+  }
+
+  .formulario-revisao{
+    width: 100%;
+    max-width: 440px;
+    gap: 16px;
+  }
+
+  .campo-fixo{
+    width: 100%;
+    min-height: 52px;
+    font-size: 14px;
+    padding: 0 18px;
+  }
+
+  .acoes-revisao{
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    margin-top: 24px;
+  }
+
+  .botao-revisar{
+    font-size: 14px;
+  }
+
+  .cartao-revisao .botao-primario{
+    min-width: 190px;
+    height: 48px;
+    font-size: 14px;
+  }
+
+  .botao-revisar,
+  .cartao-revisao .botao-primario{
+    display: flex;
+    align-content: center;
+  }
+
+  .cartao-confirmacao{
+    max-width: 1080px;
+    min-height: 680px;
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .cartao-confirmacao .painel-marca{
+    width: 38%;
+    min-height: 680px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .cartao-confirmacao .logo-marca{
+    width: 140px;
+    height: 140px;
+  }
+
+  .cartao-confirmacao .conteudo{
+    width: 62%;
+    padding: 56px 56px 44px;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .titulo-confirmacao{
+    max-width: 560px;
+    font-size: 40px;
+    line-height: 1.15;
+    margin-bottom: 20px;
+  }
+
+  .subtitulo-confirmacao{
+    font-size: 17px;
+    margin-bottom: 28px;
+  }
+
+  .circulo-posicao{
+    width: 110px;
+    height: 110px;
+    font-size: 60px;
+    margin-bottom: 24px;
+  }
+
+  .info-fila{
+    margin-bottom: 28px;
+  }
+
+  .texto-principal,
+  .texto-secundario,
+  .tempo-espera{
+    font-size: 18px;
+  }
+
+  .texto-auxiliar{
+    font-size: 12px;
+  }
+
+  .acoes-confirmacao{
+    max-width: 280px;
+  }
+
+  .acoes-confirmacao .botao-primario,
+  .acoes-confirmacao .botao-secundario{
+    width: 100%;
+    max-width: 280px;
+    height: 46px;
+    font-size: 14px;
+  }
+
+  .texto-auxiliar-acompanhamento{
+    font-size: 12px;
+    margin-bottom: 28px;
+  }
+
+  .cartao-experiencia{
+    max-width: 1080px;
+    min-height: 680px;
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .painel-experiencia{
+    width: 38%;
+    min-width: 180px;
+    min-height: 680px;
+    background: var(--cor-fila);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 0;
+    overflow: hidden;
+  }
+
+  .painel-experiencia::after{
+    display: none;
+  }
+
+  .selo-experiencia{
+    position: static;
+    transform: none;
+    width: auto;
+    height: auto;
+  }
+
+  .selo-experiencia img{
+    width: 160px;
+    height: 160px;
+  }
+
+  .cartao-experiencia .conteudo{
+    width: 62%;
+    padding: 56px 56px 40px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .titulo-experiencia{
+    font-size: 42px;
+    max-width: 520px;
+    margin-bottom: 18px;
+  }
+
+  .descricao-experiencia{
+    font-size: 17px;
+    max-width: 500px;
+    margin-bottom: 30px;
+  }
+
+  .bloco-nota,
+  .bloco-pesquisa-experiencia,
+  .bloco-comentario-experiencia{
+    max-width: 500px;
+  }
+
+  .pergunta-experiencia{
+    font-size: 17px;
+    margin-bottom: 16px;
+  }
+
+  .estrelas{
+    gap: 10px;
+  }
+
+  .estrelas label{
+    font-size: 40px;
+  }
+
+  .opcao-experiencia{
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+
+  .campo-comentario{
+    min-height: 120px;
+    font-size: 14px;
+    border-radius: 24px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+  }
+
+  .acoes-experiencia{
+    max-width: 240px;
+  }
+
+  .acoes-experiencia .botao-primario{
+    min-height: 50px;
+    font-size: 15px;
+  }
+
+  .cartao-agradecimento{
+    max-width: 1080px;
+    min-height: 680px;
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .painel-agradecimento{
+    width: 38%;
+    min-height: 680px;
+    padding: 72px 28px 40px;
+    justify-content: center;
+  }
+
+  .logo-agradecimento{
+    width: 240px;
+  }
+
+  .frase-agradecimento{
+    font-size: 18px;
+    line-height: 1.7;
+  }
+
+  .cartao-agradecimento .conteudo{
+    width: 62%;
+    padding: 56px 56px 44px;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .titulo-agradecimento{
+    font-size: 44px;
+    margin-bottom: 20px;
+  }
+
+  .descricao-agradecimento{
+    font-size: 18px;
+    margin-bottom: 32px;
+  }
+
+  .acoes-agradecimento{
+    max-width: 300px;
+  }
+
+  .acoes-agradecimento .botao-primario{
+    max-width: 300px;
+    height: 50px;
+    font-size: 15px;
+  }
+
+  .cartao-cardapio{
+    max-width: 1080px;
+    min-height: auto;
+    flex-direction: column;
+  }
+
+  .cartao-cardapio .painel-imagem{
+    width: 100%;
+    min-height: 0;
+    height: auto;
+    background: transparent !important;
+    padding-bottom: 44px;
+  }
+
+  .cartao-cardapio .imagem-restaurante{
+    height: 150px;
+    border-bottom-left-radius: 50% 22px;
+    border-bottom-right-radius: 50% 22px;
+  }
+
+  .cartao-cardapio .selo{
+    width: 82px;
+    height: 82px;
+  }
+
+  .cartao-cardapio .selo img{
+    width: 104px;
+    height: 104px;
+  }
+
+  .cartao-cardapio .conteudo{
+    width: 100%;
+    padding: 44px 40px 40px;
+    align-items: center;
+    text-align: center;
+  }
+
+  .cartao-cardapio .titulo{
+    font-size: 34px;
+    margin-bottom: 28px;
+  }
+
+  .grade-cardapio{
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+
+  .item-cardapio img{
+    height: 170px;
+  }
+
+  .abas-cardapio-area{
+    overflow-x: visible;
+  }
+
+  .abas-cardapio{
+    width: 100%;
+    justify-content: center;
+    gap: 28px;
+  }
+
+  .cartao-formulario .acoes-topo,
+.cartao-cardapio .acoes-topo{
+  top: 22px;
+  left: 22px;
+}
+
+ .cartao-reagendamento .conteudo{
+    justify-content: center;
+  }
+
+  .cartao-reagendamento .formulario{
+    max-width: 460px;
+  }
+
+  .acoes-reagendamento{
+    max-width: 300px;
+    margin: 22px auto 0;
+  }
+
+  .acoes-reagendamento .botao-primario,
+  .acoes-reagendamento .botao-secundario,
+  .botao-atualizar-reserva,
+  .botao-cancelar-reagendamento{
+    max-width: 300px;
+    min-width: 300px;
+    height: 48px;
+    font-size: 14px;
+  }
+.cartao-cancelamento-futuro{
+    max-width: 1080px;
+    min-height: 680px;
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .cartao-cancelamento-futuro .painel-agradecimento{
+    width: 38%;
+    min-height: 680px;
+    padding: 72px 28px 40px;
+    justify-content: center;
+  }
+
+  .cartao-cancelamento-futuro .conteudo{
+    width: 62%;
+    padding: 56px 56px 44px;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .titulo-cancelamento-futuro{
+    font-size: 44px;
+    margin-bottom: 24px;
+  }
+
+  .ilustracao-cancelamento-futuro{
+    max-width: 200px;
+    margin-bottom: 28px;
+  }
+
+  .descricao-cancelamento-futuro{
+    font-size: 24px;
+    margin-bottom: 32px;
+  }
+
+  .acoes-cancelamento-futuro{
+    max-width: 320px;
+  }
+
+  .acoes-cancelamento-futuro .botao-primario,
+  .acoes-cancelamento-futuro .botao-secundario{
+    max-width: 320px;
+    min-width: 320px;
+    height: 48px;
+    font-size: 14px;
+  }
+
+ .cartao-cancelamento-confirmado{
+    max-width: 1080px;
+    min-height: 680px;
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .cartao-cancelamento-confirmado .painel-agradecimento{
+    width: 38%;
+    min-height: 680px;
+    padding: 72px 28px 40px;
+    justify-content: center;
+  }
+
+  .cartao-cancelamento-confirmado .conteudo{
+    width: 62%;
+    padding: 56px 56px 44px;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .titulo-cancelamento-confirmado{
+    font-size: 44px;
+    margin-bottom: 18px;
+  }
+
+  .subtitulo-cancelamento-confirmado{
+    font-size: 20px;
+    margin-bottom: 26px;
+  }
+
+  .ilustracao-cancelamento-confirmado{
+    max-width: 200px;
+    margin-bottom: 28px;
+  }
+
+  .descricao-cancelamento-confirmado{
+    font-size: 22px;
+    margin-bottom: 32px;
+  }
+
+  .acoes-cancelamento-confirmado{
+    max-width: 320px;
+  }
+
+  .acoes-cancelamento-confirmado .botao-primario,
+  .acoes-cancelamento-confirmado .botao-secundario{
+    max-width: 320px;
+    min-width: 320px;
+    height: 48px;
+    font-size: 14px;
+  }
+  .cartao-cancelamento-sem-comentario{
+    max-width: 1080px;
+    min-height: 680px;
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .cartao-cancelamento-sem-comentario .painel-agradecimento{
+    width: 38%;
+    min-height: 680px;
+    padding: 72px 28px 40px;
+    justify-content: center;
+  }
+
+  .cartao-cancelamento-sem-comentario .conteudo{
+    width: 62%;
+    padding: 56px 56px 44px;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .logo-cancelamento-sem-comentario{
+    width: 240px;
+  }
+
+  .frase-cancelamento-sem-comentario{
+    font-size: 22px;
+  }
+
+  .titulo-cancelamento-sem-comentario{
+    font-size: 44px;
+    margin-bottom: 20px;
+  }
+
+  .descricao-cancelamento-sem-comentario{
+    font-size: 20px;
+    margin-bottom: 34px;
+  }
+
+  .acoes-cancelamento-sem-comentario{
+    max-width: 320px;
+  }
+
+  .botao-inicio-cancelamento-sem-comentario{
+    max-width: 320px;
+    min-width: 320px;
+    height: 48px;
+    font-size: 14px;
+  }
+
+  .cartao-comentario-cancelamento{
+    max-width: 1080px;
+    min-height: 680px;
+  }
+
+  .cartao-comentario-cancelamento .conteudo{
+    width: 62%;
+    padding: 56px 56px 40px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .bloco-motivo-cancelamento,
+  .bloco-comentario-cancelamento{
+    max-width: 500px;
+  }
+
+  .opcao-cancelamento{
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+
+  .acoes-comentario-cancelamento{
+    max-width: 320px;
+  }
+
+  .acoes-comentario-cancelamento .botao-primario,
+  .acoes-comentario-cancelamento .botao-secundario{
+    max-width: 320px;
+    min-width: 320px;
+    height: 48px;
+    font-size: 14px;
+  }
+
+ .cartao-comentario-enviado{
+    max-width: 1080px;
+    min-height: 680px;
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .cartao-comentario-enviado .painel-agradecimento{
+    width: 38%;
+    min-height: 680px;
+    padding: 72px 28px 40px;
+    justify-content: center;
+  }
+
+  .cartao-comentario-enviado .conteudo{
+    width: 62%;
+    padding: 56px 56px 44px;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .titulo-comentario-enviado{
+    font-size: 44px;
+    margin-bottom: 18px;
+  }
+
+  .subtitulo-comentario-enviado{
+    font-size: 19px;
+    max-width: 500px;
+    margin-bottom: 28px;
+  }
+
+  .ilustracao-comentario-enviado{
+    max-width: 200px;
+    margin-bottom: 28px;
+  }
+
+  .descricao-comentario-enviado{
+    font-size: 20px;
+    margin-bottom: 34px;
+  }
+
+  .acoes-comentario-enviado{
+    max-width: 320px;
+  }
+
+  .botao-inicio-comentario-enviado{
+    max-width: 320px;
+    min-width: 320px;
+    height: 48px;
+    font-size: 14px;
+  }
+}
+
+/* TELAS MUITO GRANDES */
+
+@media (min-width: 1400px){
+  .tema-inicio .cartao{
+    max-width: var(--largura-wide);
+  }
+
+  .tema-inicio .banner{
+    padding: 64px 56px;
+  }
+
+  .tema-inicio .conteudo{
+    padding: 64px 56px;
+  }
+
+  .tema-inicio .titulo{
+    font-size: 48px;
+  }
+
+  .tema-inicio .texto-banner,
+  .tema-inicio .descricao,
+  .tema-inicio .botao-primario,
+  .tema-inicio .botao-secundario{
+    font-size: 24px;
+  }
+
+  .cartao-formulario{
+    max-width: 1180px;
+  }
+
+  .cartao-formulario .conteudo{
+    padding: 64px 64px 44px;
+  }
+
+  .cartao-formulario .titulo{
+    font-size: 38px;
+  }
+
+  .cartao-formulario .formulario{
+    max-width: 500px;
+  }
+
+  .cartao-formulario .texto-informativo{
+    text-align: center;
+    font-size: 14px;
+  }
+
+  .cartao-revisao .conteudo{
+    padding: 64px 64px 44px;
+  }
+
+  .cartao-revisao .titulo{
+    font-size: 38px;
+    max-width: 480px;
+  }
+
+  .formulario-revisao{
+    max-width: 500px;
+  }
+
+  .acoes-revisao{
+    max-width: 500px;
+    display: flex;
+    align-items: center;
+  }
+
+  .campo-fixo{
+    min-height: 54px;
+    font-size: 15px;
+  }
+
+  .botao-revisar{
+    font-size: 15px;
+  }
+
+  .cartao-revisao .botao-primario{
+    height: 50px;
+    font-size: 15px;
+    padding: 0 30px;
+  }
+
+  .botao-revisar,
+  .cartao-revisao .botao-primario{
+    display: flex;
+    align-content: center;
+  }
+
+  .cartao-confirmacao{
+    max-width: 1180px;
+  }
+
+  .titulo-confirmacao{
+    font-size: 42px;
+    max-width: 600px;
+  }
+
+  .subtitulo-confirmacao{
+    font-size: 18px;
+  }
+
+  .texto-principal,
+  .texto-secundario,
+  .tempo-espera{
+    font-size: 19px;
+  }
+
+  .texto-auxiliar{
+    font-size: 13px;
+  }
+
+  .cartao-acompanhamento{
+    max-width: 1180px;
+  }
+
+  .titulo-acompanhamento{
+    font-size: 38px;
+    max-width: 560px;
+  }
+
+  .subtitulo-acompanhamento{
+    font-size: 18px;
+  }
+
+  .tempo-medio{
+    font-size: 15px;
+  }
+
+  .texto-auxiliar-acompanhamento{
+    font-size: 13px;
+  }
+
+  .cartao-experiencia{
+    max-width: 1180px;
+  }
+
+  .cartao-experiencia .conteudo{
+    padding: 64px 64px 44px;
+  }
+
+  .titulo-experiencia{
+    font-size: 48px;
+    max-width: 560px;
+  }
+
+  .descricao-experiencia{
+    font-size: 18px;
+    max-width: 540px;
+  }
+
+  .bloco-nota,
+  .bloco-pesquisa-experiencia,
+  .bloco-comentario-experiencia{
+    max-width: 540px;
+  }
+
+  .pergunta-experiencia{
+    font-size: 18px;
+  }
+
+  .estrelas label{
+    font-size: 42px;
+  }
+
+  .opcao-experiencia{
+    font-size: 15px;
+  }
+
+  .campo-comentario{
+    min-height: 130px;
+    font-size: 15px;
+    margin-bottom: 10px;
+  }
+
+  .acoes-experiencia{
+    max-width: 260px;
+  }
+
+  .acoes-experiencia .botao-primario{
+    min-height: 52px;
+    font-size: 16px;
+  }
+
+  .selo-experiencia img{
+    width: 180px;
+    height: 180px;
+  }
+
+  .cartao-agradecimento{
+    max-width: 1180px;
+  }
+
+  .logo-agradecimento{
+    width: 260px;
+  }
+
+  .titulo-agradecimento{
+    font-size: 48px;
+  }
+
+  .descricao-agradecimento{
+    font-size: 19px;
+  }
+
+  .frase-agradecimento{
+    font-size: 19px;
+  }
+
+  .cartao-cardapio{
+    max-width: 1200px;
+  }
+
+  .cartao-cardapio .painel-imagem{
+    min-height: 0;
+    height: auto;
+    background: transparent !important;
+    padding-bottom: 48px;
+  }
+
+  .cartao-cardapio .imagem-restaurante{
+    height: 160px;
+  }
+
+  .cartao-cardapio .titulo{
+    font-size: 38px;
+  }
+
+  .grade-cardapio{
+    grid-template-columns: repeat(5, 1fr);
+    gap: 24px;
+  }
+
+  .item-cardapio img{
+    height: 190px;
+  }
+}
