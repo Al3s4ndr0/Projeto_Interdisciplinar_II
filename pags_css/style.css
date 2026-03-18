@@ -278,19 +278,17 @@ a{
 .painel-imagem{
   position: relative;
   width: 100%;
-  height: 170px;
-  overflow: visible;
+  height: 220px;
+  overflow: hidden;
   background: var(--cor-cartao);
 }
 
 .imagem-restaurante{
   width: 100%;
-  height: 145px;
+  height: 100%;
   object-fit: cover;
-  object-position: center 35%;
+  object-position: center;
   display: block;
-  border-bottom-left-radius: 50% 24px;
-  border-bottom-right-radius: 50% 24px;
 }
 
 .selo{
@@ -1837,13 +1835,11 @@ a{
   }
 
   .painel-imagem{
-    height: 220px;
+    height: 170px;
   }
 
   .imagem-restaurante{
-    height: 185px;
-    border-bottom-left-radius: 50% 30px;
-    border-bottom-right-radius: 50% 30px;
+    height: 145px;
   }
 
   .selo{
@@ -2412,6 +2408,61 @@ a{
     height: 48px;
     font-size: 15px;
   }
+
+  .cartao-formulario .painel-imagem {
+    position: relative;
+    width: 100%;
+    height: 220px; /* Defina uma altura fixa para a imagem */
+    background: var(--cor-fila); /* Deixe o banner azul como fundo */
+    overflow: hidden;
+  }
+
+  /* Imagem do restaurante */
+  .cartao-formulario .imagem-restaurante {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center; /* Garante que a imagem fique bem centralizada */
+  }
+
+  /* Selo no painel de imagem */
+  .cartao-formulario .painel-imagem .selo {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 80px;
+    background: var(--cor-cartao); /* Fundo transparente */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+  }
+
+  /* Ajustes no conteúdo */
+  .cartao-formulario .conteudo {
+    padding: 24px;
+  }
+
+  .cartao-formulario .titulo {
+    font-size: 24px;
+    margin-bottom: 18px;
+  }
+
+  .cartao-formulario .campo {
+    font-size: 16px;
+    margin-bottom: 14px;
+  }
+
+  /* Botão de ação */
+  .cartao-formulario .botao-primario {
+    margin-top: 24px;
+  }
+
+  .tema-fila .painel-imagem{
+  background: transparent;
+}
 }
 
 /* DESKTOP */
