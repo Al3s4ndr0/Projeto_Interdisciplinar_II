@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>CRUD Restaurante</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      padding: 20px;
+    }
+
+    input {
+      margin: 5px;
+      padding: 5px;
+    }
+
+    button {
+      margin: 5px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+
+    table {
+      margin-top: 20px;
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #eee;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🍽️ CRUD Restaurante</h1>
+
+  <!-- FORM -->
+  <input type="text" id="nome" placeholder="Nome">
+  <input type="number" id="capacidade" placeholder="Capacidade">
+  <input type="text" id="horario" placeholder="Horário">
+
+  <button onclick="inserir()">Salvar</button>
+  <button onclick="atualizar()" id="btnUpdate" style="display:none;">Atualizar</button>
+
+  <hr>
+
+  <button onclick="buscar()">🔄 Atualizar Lista</button>
+
+  <!-- TABELA -->
+  <table>
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Capacidade</th>
+        <th>Horário</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="tabela"></tbody>
+  </table>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+  <script>
+    const supabaseUrl = 'https://jlfbzdqhaezdtyyajqlk.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpsZmJ6ZHFoYWV6ZHR5eWFqcWxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjM0NjksImV4cCI6MjA4ODkzOTQ2OX0.6VX3Z1FjxgZuBYALd2oU4bQl0nzbMcBUcc0nLW_DbvA';
+
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+    let idEditando = null;
+
+    // 🔍 BUSCAR
+    async function buscar() {
+      const { data, error } = await supabaseClient
+        .from('restaurante')
+        .select('*');
+
+      if (error) {
+        alert(error.message);
+        return;
+      }
+
+      const tabela = document.getElementById('tabela');
+      tabela.innerHTML = '';
+
+      data.forEach(r => {
+        tabela.innerHTML += `
+          <tr>
+            <td>${r.nome}</td>
+            <td>${r.capacidade}</td>
+            <td>${r.horario_funcionamento || '-'}</td>
+            <td>
+              <button onclick="editar('${r.id}', '${r.nome}', ${r.capacidade}, '${r.horario_funcionamento}')">✏️</button>
+              <button onclick="deletar('${r.id}')">🗑️</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    // ➕ INSERIR
+    async function inserir() {
+      const nome = document.getElementById('nome').value;
+      const capacidade = document.getElementById('capacidade').value;
+      const horario = document.getElementById('horario').value;
+
+      const { error } = await supabaseClient
+        .from('restaurante')
+        .insert([
+          {
+            nome,
+            capacidade,
+            horario_funcionamento: horario
+          }
+        ]);
+
+      if (error) {
+        alert(error.message);
+      } else {
+        limpar();
+        buscar();
+      }
+    }
+
+    // ✏️ EDITAR (preenche o form)
+    function editar(id, nome, capacidade, horario) {
+      idEditando = id;
+
+      document.getElementById('nome').value = nome;
+      document.getElementById('capacidade').value = capacidade;
+      document.getElementById('horario').value = horario || '';
+
+      document.getElementById('btnUpdate').style.display = 'inline';
+    }
+
+    // 🔄 ATUALIZAR
+    async function atualizar() {
+      const nome = document.getElementById('nome').value;
+      const capacidade = document.getElementById('capacidade').value;
+      const horario = document.getElementById('horario').value;
+
+      const { error } = await supabaseClient
+        .from('restaurante')
+        .update({
+          nome,
+          capacidade,
+          horario_funcionamento: horario
+        })
+        .eq('id', idEditando);
+
+      if (error) {
+        alert(error.message);
+      } else {
+        limpar();
+        buscar();
+        idEditando = null;
+        document.getElementById('btnUpdate').style.display = 'none';
+      }
+    }
+
+    // 🗑️ DELETAR
+    async function deletar(id) {
+      if (!confirm('Deseja excluir?')) return;
+
+      const { error } = await supabaseClient
+        .from('restaurante')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        alert(error.message);
+      } else {
+        buscar();
+      }
+    }
+
+    // 🧹 LIMPAR FORM
+    function limpar() {
+      document.getElementById('nome').value = '';
+      document.getElementById('capacidade').value = '';
+      document.getElementById('horario').value = '';
+    }
+
+    // 🔥 CARREGA AUTOMÁTICO
+    buscar();
+
+  </script>
+
+</body>
+</html>
