@@ -2,12 +2,16 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>CRUD Restaurante</title>
+  <title>CRUD Restaurante + Clientes + Fila</title>
 
   <style>
     body {
-      font-family: Arial;
+      font-family: Arial, sans-serif;
       padding: 20px;
+    }
+
+    h1, h2 {
+      margin-bottom: 10px;
     }
 
     input {
@@ -23,6 +27,7 @@
 
     table {
       margin-top: 20px;
+      margin-bottom: 30px;
       border-collapse: collapse;
       width: 100%;
     }
@@ -36,13 +41,16 @@
     th {
       background-color: #eee;
     }
+
+    hr {
+      margin: 30px 0;
+    }
   </style>
 </head>
 <body>
 
   <h1>🍽️ CRUD Restaurante</h1>
 
-  <!-- FORM -->
   <input type="text" id="nome" placeholder="Nome">
   <input type="number" id="capacidade" placeholder="Capacidade">
   <input type="text" id="horario" placeholder="Horário">
@@ -52,12 +60,12 @@
 
   <hr>
 
-  <button onclick="buscar()">🔄 Atualizar Lista</button>
+  <button onclick="buscar()">🔄 Atualizar Lista de Restaurantes</button>
 
-  <!-- TABELA -->
   <table>
     <thead>
       <tr>
+        <th>ID</th>
         <th>Nome</th>
         <th>Capacidade</th>
         <th>Horário</th>
@@ -67,7 +75,50 @@
     <tbody id="tabela"></tbody>
   </table>
 
-  <!-- Supabase -->
+  <hr>
+
+  <h2>👤 Clientes</h2>
+
+  <button onclick="buscarClientes()">🔄 Atualizar Lista de Clientes</button>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>CPF</th>
+        <th>Telefone</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="tabelaClientes"></tbody>
+  </table>
+
+  <hr>
+
+  <h2>📋 Fila de Espera</h2>
+
+  <button onclick="buscarFila()">🔄 Atualizar Fila</button>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID Fila</th>
+        <th>Cliente</th>
+        <th>CPF</th>
+        <th>Telefone</th>
+        <th>Restaurante</th>
+        <th>Nº Pessoas</th>
+        <th>Posição</th>
+        <th>Status</th>
+        <th>Tempo Estimado</th>
+        <th>Hora Entrada</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="tabelaFila"></tbody>
+  </table>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
   <script>
@@ -78,14 +129,13 @@
 
     let idEditando = null;
 
-    // 🔍 BUSCAR
     async function buscar() {
       const { data, error } = await supabaseClient
         .from('restaurante')
         .select('*');
 
       if (error) {
-        alert(error.message);
+        alert('Erro ao buscar restaurantes: ' + error.message);
         return;
       }
 
@@ -95,11 +145,12 @@
       data.forEach(r => {
         tabela.innerHTML += `
           <tr>
+            <td>${r.id}</td>
             <td>${r.nome}</td>
             <td>${r.capacidade}</td>
             <td>${r.horario_funcionamento || '-'}</td>
             <td>
-              <button onclick="editar('${r.id}', '${r.nome}', ${r.capacidade}, '${r.horario_funcionamento}')">✏️</button>
+              <button onclick="editar('${r.id}', '${String(r.nome).replace(/'/g, "\\'")}', ${r.capacidade}, '${String(r.horario_funcionamento || '').replace(/'/g, "\\'")}')">✏️</button>
               <button onclick="deletar('${r.id}')">🗑️</button>
             </td>
           </tr>
@@ -107,11 +158,15 @@
       });
     }
 
-    // ➕ INSERIR
     async function inserir() {
-      const nome = document.getElementById('nome').value;
+      const nome = document.getElementById('nome').value.trim();
       const capacidade = document.getElementById('capacidade').value;
-      const horario = document.getElementById('horario').value;
+      const horario = document.getElementById('horario').value.trim();
+
+      if (!nome || !capacidade) {
+        alert('Preencha nome e capacidade.');
+        return;
+      }
 
       const { error } = await supabaseClient
         .from('restaurante')
@@ -124,14 +179,13 @@
         ]);
 
       if (error) {
-        alert(error.message);
+        alert('Erro ao salvar restaurante: ' + error.message);
       } else {
         limpar();
         buscar();
       }
     }
 
-    // ✏️ EDITAR (preenche o form)
     function editar(id, nome, capacidade, horario) {
       idEditando = id;
 
@@ -142,11 +196,17 @@
       document.getElementById('btnUpdate').style.display = 'inline';
     }
 
-    // 🔄 ATUALIZAR
     async function atualizar() {
-      const nome = document.getElementById('nome').value;
+      if (!idEditando) return;
+
+      const nome = document.getElementById('nome').value.trim();
       const capacidade = document.getElementById('capacidade').value;
-      const horario = document.getElementById('horario').value;
+      const horario = document.getElementById('horario').value.trim();
+
+      if (!nome || !capacidade) {
+        alert('Preencha nome e capacidade.');
+        return;
+      }
 
       const { error } = await supabaseClient
         .from('restaurante')
@@ -158,7 +218,7 @@
         .eq('id', idEditando);
 
       if (error) {
-        alert(error.message);
+        alert('Erro ao atualizar restaurante: ' + error.message);
       } else {
         limpar();
         buscar();
@@ -167,9 +227,8 @@
       }
     }
 
-    // 🗑️ DELETAR
     async function deletar(id) {
-      if (!confirm('Deseja excluir?')) return;
+      if (!confirm('Deseja excluir este restaurante?')) return;
 
       const { error } = await supabaseClient
         .from('restaurante')
@@ -177,22 +236,130 @@
         .eq('id', id);
 
       if (error) {
-        alert(error.message);
+        alert('Erro ao deletar restaurante: ' + error.message);
       } else {
         buscar();
       }
     }
 
-    // 🧹 LIMPAR FORM
+    async function buscarClientes() {
+      const { data, error } = await supabaseClient
+        .from('cliente')
+        .select('*');
+
+      if (error) {
+        alert('Erro ao buscar clientes: ' + error.message);
+        return;
+      }
+
+      const tabelaClientes = document.getElementById('tabelaClientes');
+      tabelaClientes.innerHTML = '';
+
+      data.forEach(c => {
+        tabelaClientes.innerHTML += `
+          <tr>
+            <td>${c.id}</td>
+            <td>${c.nome}</td>
+            <td>${c.cpf || '-'}</td>
+            <td>${c.telefone || '-'}</td>
+            <td>
+              <button onclick="deletarCliente('${c.id}')">🗑️</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    async function deletarCliente(id) {
+      if (!confirm('Deseja excluir este cliente? Apague antes os itens de fila relacionados, se houver.')) return;
+
+      const { error } = await supabaseClient
+        .from('cliente')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        alert('Erro ao deletar cliente: ' + error.message);
+      } else {
+        buscarClientes();
+      }
+    }
+
+    async function buscarFila() {
+      const { data, error } = await supabaseClient
+        .from('fila_item')
+        .select(`
+          id,
+          numero_pessoas,
+          posicao,
+          status,
+          tempo_estimado,
+          hora_entrada,
+          cliente:cliente_id (
+            id,
+            nome,
+            cpf,
+            telefone
+          ),
+          restaurante:restaurante_id (
+            nome
+          )
+        `)
+        .order('posicao', { ascending: true });
+
+      if (error) {
+        alert('Erro ao buscar fila: ' + error.message);
+        return;
+      }
+
+      const tabelaFila = document.getElementById('tabelaFila');
+      tabelaFila.innerHTML = '';
+
+      data.forEach(item => {
+        tabelaFila.innerHTML += `
+          <tr>
+            <td>${item.id}</td>
+            <td>${item.cliente?.nome || '-'}</td>
+            <td>${item.cliente?.cpf || '-'}</td>
+            <td>${item.cliente?.telefone || '-'}</td>
+            <td>${item.restaurante?.nome || '-'}</td>
+            <td>${item.numero_pessoas ?? '-'}</td>
+            <td>${item.posicao ?? '-'}</td>
+            <td>${item.status || '-'}</td>
+            <td>${item.tempo_estimado != null ? item.tempo_estimado + ' min' : '-'}</td>
+            <td>${item.hora_entrada ? new Date(item.hora_entrada).toLocaleString('pt-BR') : '-'}</td>
+            <td>
+              <button onclick="deletarFila('${item.id}')">🗑️</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    async function deletarFila(id) {
+      if (!confirm('Deseja excluir este item da fila?')) return;
+
+      const { error } = await supabaseClient
+        .from('fila_item')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        alert('Erro ao deletar item da fila: ' + error.message);
+      } else {
+        buscarFila();
+      }
+    }
+
     function limpar() {
       document.getElementById('nome').value = '';
       document.getElementById('capacidade').value = '';
       document.getElementById('horario').value = '';
     }
 
-    // 🔥 CARREGA AUTOMÁTICO
     buscar();
-
+    buscarClientes();
+    buscarFila();
   </script>
 
 </body>

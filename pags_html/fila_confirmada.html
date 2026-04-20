@@ -5,57 +5,226 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Qmesa - Entrou na fila</title>
   <link rel="stylesheet" href="../pags_css/style.css" />
+  <style>
+  </style>
 </head>
 <body class="tema-fila">
   <main class="tela">
-    <section class="cartao cartao-confirmacao">
+    <section class="cartao-confirmada-novo">
 
-      <section class="painel-marca">
-        <div class="acoes-topo">
-          <a href="javascript:history.back()" class="botao-voltar" aria-label="Voltar">
+      <section class="painel-esquerdo-confirmacao">
+        <div class="acoes-topo-confirmada">
+          <a href="javascript:history.back()" class="botao-circular-topo" aria-label="Voltar">
             <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M15 6l-6 6 6 6"/>
+              <path d="M15 6l-6 6 6 6"></path>
             </svg>
           </a>
 
-          <a href="../pags_html/index.html" class="botao-home" aria-label="Ir para a tela inicial">
+          <a href="../pags_html/index.html" class="botao-circular-topo" aria-label="Ir para a tela inicial">
             <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M3 10.5L12 3l9 7.5"/>
-              <path d="M5.5 9.5V21h13V9.5"/>
-              <path d="M9.5 21v-6h5v6"/>
+              <path d="M3 10.5L12 3l9 7.5"></path>
+              <path d="M5.5 9.5V21h13V9.5"></path>
+              <path d="M9.5 21v-6h5v6"></path>
             </svg>
           </a>
         </div>
       </section>
 
-      <section class="conteudo">
-        <h1 class="titulo titulo-confirmacao">
-          AGRADECEMOS POR AGUARDAR NA FILA
-        </h1>
+      <section class="conteudo-confirmada-novo">
+        <h1 class="titulo-confirmado">AGRADECEMOS POR AGUARDAR NA FILA</h1>
+        <p class="subtitulo-confirmado">Estamos ansiosos para lhe atender</p>
 
-        <p class="subtitulo-confirmacao">
-          Estamos ansiosos para lhe atender
+        <p id="mensagemSucesso" class="mensagem-sucesso"></p>
+
+        <div class="circulo-posicao" id="numeroFila">-</div>
+
+        <p class="texto-posicao" id="textoPosicao">
+          Você está na fila.
         </p>
 
-        <div class="circulo-posicao">2</div>
+        <p class="texto-tempo" id="textoTempo">
+          Seu tempo médio de espera é de:
+        </p>
 
-        <div class="info-fila">
-          <p class="texto-principal">Você é o <strong>SEGUNDO</strong> na fila</p>
-          <p class="texto-secundario">Seu tempo médio de espera é:</p>
-          <p class="tempo-espera">15 - 20 minutos</p>
-          <p class="texto-auxiliar">
-            Clique em ACOMPANHAR para ver seu<br />
-            progresso na fila em tempo real.
-          </p>
+        <p class="texto-apoio">
+          Clique em ACOMPANHAR para ver seu progresso na fila em tempo real.
+        </p>
+
+        <div class="acoes-confirmacao-novo">
+          <button type="button" class="btn-confirmacao-principal" id="btnAcompanhar">
+            Acompanhar
+          </button>
+
+          <button type="button" class="btn-confirmacao-secundario" id="btnCancelar">
+            Cancelar reserva
+          </button>
         </div>
 
-        <div class="acoes-confirmacao">
-          <a href="acompanhar_fila_1.html" class="botao-primario">Acompanhar</a>
-          <a href="../pags_html/cancelar_reserva.html" class="botao-secundario">Cancelar reserva</a>
-        </div>
+        <p id="mensagemErro" class="mensagem-erro-confirmada"></p>
       </section>
 
     </section>
   </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script>
+    const supabaseUrl = 'https://jlfbzdqhaezdtyyajqlk.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpsZmJ6ZHFoYWV6ZHR5eWFqcWxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjM0NjksImV4cCI6MjA4ODkzOTQ2OX0.6VX3Z1FjxgZuBYALd2oU4bQl0nzbMcBUcc0nLW_DbvA';
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+    const numeroFila = document.getElementById('numeroFila');
+    const textoPosicao = document.getElementById('textoPosicao');
+    const textoTempo = document.getElementById('textoTempo');
+    const mensagemSucesso = document.getElementById('mensagemSucesso');
+    const mensagemErro = document.getElementById('mensagemErro');
+    const btnAcompanhar = document.getElementById('btnAcompanhar');
+    const btnCancelar = document.getElementById('btnCancelar');
+
+    function limparEstadoFila() {
+      sessionStorage.removeItem('fila_ativa');
+      sessionStorage.removeItem('fila_nome');
+      sessionStorage.removeItem('fila_cpf');
+      sessionStorage.removeItem('fila_telefone');
+      sessionStorage.removeItem('fila_qtd_pessoas');
+      sessionStorage.removeItem('fila_posicao');
+      sessionStorage.removeItem('fila_tempo_estimado');
+      sessionStorage.removeItem('fila_item_id');
+      sessionStorage.removeItem('cliente_id');
+      sessionStorage.removeItem('fila_mensagem_sucesso');
+    }
+
+    function ordinalPorExtenso(posicao) {
+      const mapa = {
+        1: 'PRIMEIRO',
+        2: 'SEGUNDO',
+        3: 'TERCEIRO',
+        4: 'QUARTO',
+        5: 'QUINTO',
+        6: 'SEXTO',
+        7: 'SÉTIMO',
+        8: 'OITAVO',
+        9: 'NONO',
+        10: 'DÉCIMO'
+      };
+      return mapa[posicao] || `${posicao}º`;
+    }
+
+    function exibirMensagemSucesso() {
+      const texto = sessionStorage.getItem('fila_mensagem_sucesso');
+      if (texto) {
+        mensagemSucesso.textContent = texto;
+      }
+    }
+
+    async function carregarFilaConfirmada() {
+      const filaItemId = sessionStorage.getItem('fila_item_id');
+
+      if (!filaItemId) {
+        limparEstadoFila();
+        window.location.href = 'login_entrar_fila.html';
+        return;
+      }
+
+      try {
+        const { data: fila, error } = await supabaseClient
+          .from('fila_item')
+          .select(`
+            id,
+            restaurante_id,
+            posicao,
+            status,
+            tempo_estimado
+          `)
+          .eq('id', filaItemId)
+          .maybeSingle();
+
+        if (error) {
+          throw error;
+        }
+
+        if (!fila) {
+          limparEstadoFila();
+          window.location.href = 'login_entrar_fila.html';
+          return;
+        }
+
+        if (fila.status !== 'Aguardando') {
+          window.location.href = 'acompanhar_fila.html';
+          return;
+        }
+
+        const { data: aguardando, error: erroAguardando } = await supabaseClient
+          .from('fila_item')
+          .select('id, posicao')
+          .eq('restaurante_id', fila.restaurante_id)
+          .eq('status', 'Aguardando')
+          .order('posicao', { ascending: true });
+
+        if (erroAguardando) {
+          throw erroAguardando;
+        }
+
+        const indiceAtual = aguardando.findIndex(item => item.id === fila.id);
+        const posicaoAtual = indiceAtual >= 0 ? indiceAtual + 1 : fila.posicao;
+
+        numeroFila.textContent = posicaoAtual ?? '-';
+        textoPosicao.innerHTML = `Você é o <strong>${ordinalPorExtenso(posicaoAtual)}</strong> na fila`;
+        textoTempo.innerHTML = `Seu tempo médio de espera é:<br>${fila.tempo_estimado ?? '-'} minuto(s)`;
+
+        sessionStorage.setItem('fila_ativa', 'true');
+        sessionStorage.setItem('fila_posicao', posicaoAtual);
+        sessionStorage.setItem('fila_tempo_estimado', fila.tempo_estimado ?? '');
+      } catch (erro) {
+        console.error('Erro ao carregar fila confirmada:', erro);
+        mensagemErro.textContent = 'Não foi possível consultar sua fila agora. Tente novamente.';
+      }
+    }
+
+    async function cancelarFila() {
+      const filaItemId = sessionStorage.getItem('fila_item_id');
+
+      if (!filaItemId) {
+        limparEstadoFila();
+        window.location.href = 'login_entrar_fila.html';
+        return;
+      }
+
+      if (!confirm('Deseja realmente cancelar sua reserva na fila?')) {
+        return;
+      }
+
+      btnCancelar.disabled = true;
+      btnCancelar.textContent = 'Cancelando...';
+      mensagemErro.textContent = '';
+
+      try {
+        const { error } = await supabaseClient
+          .from('fila_item')
+          .update({ status: 'Cancelado' })
+          .eq('id', filaItemId);
+
+        if (error) {
+          throw error;
+        }
+
+        limparEstadoFila();
+        window.location.href = 'cancelamento_confirmado.html';
+      } catch (erro) {
+        console.error('Erro ao cancelar fila:', erro);
+        mensagemErro.textContent = 'Não foi possível cancelar sua fila no momento. Tente novamente.';
+        btnCancelar.disabled = false;
+        btnCancelar.textContent = 'Cancelar reserva';
+      }
+    }
+
+    btnAcompanhar.addEventListener('click', () => {
+      window.location.href = 'acompanhar_fila.html';
+    });
+
+    btnCancelar.addEventListener('click', cancelarFila);
+
+    exibirMensagemSucesso();
+    carregarFilaConfirmada();
+  </script>
 </body>
 </html>

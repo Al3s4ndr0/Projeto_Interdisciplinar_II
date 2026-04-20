@@ -38,18 +38,242 @@
         <h1 class="titulo">Revise seus dados antes de entrar na fila:</h1>
 
         <div class="formulario-revisao">
-          <div class="campo-fixo">Alessandro Sondey</div>
-          <div class="campo-fixo">928.284.927-27</div>
-          <div class="campo-fixo">(41) 99284-2837</div>
-          <div class="campo-fixo">4 pessoas</div>
+          <div class="campo-fixo" id="revNome">-</div>
+          <div class="campo-fixo" id="revCpf">-</div>
+          <div class="campo-fixo" id="revTelefone">-</div>
+          <div class="campo-fixo" id="revQtdPessoas">-</div>
         </div>
 
         <div class="acoes-revisao">
-          <a href="entrar_fila.html" class="botao-revisar">Revisar dados</a>
-          <a href="fila_confirmada.html" class="botao-primario">Confirmar reserva</a>
+          <a href="login_entrar_fila.html" class="botao-revisar">Revisar dados</a>
+          <button type="button" class="botao-primario" id="btnConfirmar">Confirmar reserva</button>
         </div>
+
+        <p id="mensagem" style="margin-top: 14px;"></p>
       </section>
     </section>
   </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script>
+    const supabaseUrl = 'https://jlfbzdqhaezdtyyajqlk.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpsZmJ6ZHFoYWV6ZHR5eWFqcWxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjM0NjksImV4cCI6MjA4ODkzOTQ2OX0.6VX3Z1FjxgZuBYALd2oU4bQl0nzbMcBUcc0nLW_DbvA';
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+    const RESTAURANTE_ID = '00000000-0000-0000-0000-000000000001';
+
+    const mensagem = document.getElementById('mensagem');
+    const btnConfirmar = document.getElementById('btnConfirmar');
+
+    function limparEstadoFila() {
+      sessionStorage.removeItem('fila_ativa');
+      sessionStorage.removeItem('fila_nome');
+      sessionStorage.removeItem('fila_cpf');
+      sessionStorage.removeItem('fila_telefone');
+      sessionStorage.removeItem('fila_qtd_pessoas');
+      sessionStorage.removeItem('fila_posicao');
+      sessionStorage.removeItem('fila_tempo_estimado');
+      sessionStorage.removeItem('fila_item_id');
+      sessionStorage.removeItem('cliente_id');
+      sessionStorage.removeItem('fila_mensagem_sucesso');
+    }
+
+    async function validarFilaAtivaAtual() {
+      const filaAtiva = sessionStorage.getItem('fila_ativa');
+      const filaItemId = sessionStorage.getItem('fila_item_id');
+
+      if (filaAtiva !== 'true' || !filaItemId) {
+        return;
+      }
+
+      try {
+        const { data, error } = await supabaseClient
+          .from('fila_item')
+          .select('id, status')
+          .eq('id', filaItemId)
+          .maybeSingle();
+
+        if (error || !data || data.status !== 'Aguardando') {
+          limparEstadoFila();
+          return;
+        }
+
+        window.location.href = 'fila_confirmada.html';
+      } catch (erro) {
+        console.error('Erro ao validar fila ativa atual:', erro);
+        limparEstadoFila();
+      }
+    }
+
+    async function iniciarTela() {
+      await validarFilaAtivaAtual();
+
+      const nome = sessionStorage.getItem('fila_nome');
+      const cpf = sessionStorage.getItem('fila_cpf');
+      const telefone = sessionStorage.getItem('fila_telefone');
+      const qtdPessoas = sessionStorage.getItem('fila_qtd_pessoas');
+
+      if (!nome || !cpf || !telefone || !qtdPessoas) {
+        mensagem.textContent = 'Nenhum dado foi encontrado para revisão. Preencha o formulário novamente.';
+        mensagem.style.color = 'red';
+        btnConfirmar.disabled = true;
+        return;
+      }
+
+      document.getElementById('revNome').textContent = nome;
+      document.getElementById('revCpf').textContent = cpf;
+      document.getElementById('revTelefone').textContent = telefone;
+      document.getElementById('revQtdPessoas').textContent = `${qtdPessoas} pessoa(s)`;
+    }
+
+    btnConfirmar.addEventListener('click', async function () {
+      const nome = sessionStorage.getItem('fila_nome');
+      const cpf = sessionStorage.getItem('fila_cpf');
+      const telefone = sessionStorage.getItem('fila_telefone');
+      const qtdPessoas = sessionStorage.getItem('fila_qtd_pessoas');
+
+      if (!nome || !cpf || !telefone || !qtdPessoas) {
+        mensagem.textContent = 'Os dados da fila estão incompletos.';
+        mensagem.style.color = 'red';
+        return;
+      }
+
+      btnConfirmar.disabled = true;
+      btnConfirmar.textContent = 'Confirmando...';
+      mensagem.textContent = '';
+
+      try {
+        let clienteId = null;
+
+        const { data: clienteExistente, error: erroClienteExistente } = await supabaseClient
+          .from('cliente')
+          .select('id, cpf')
+          .eq('cpf', cpf)
+          .maybeSingle();
+
+        if (erroClienteExistente) {
+          throw erroClienteExistente;
+        }
+
+        if (clienteExistente) {
+          clienteId = clienteExistente.id;
+
+          const { data: filaExistente, error: erroFilaExistente } = await supabaseClient
+            .from('fila_item')
+            .select('id, status')
+            .eq('cliente_id', clienteId)
+            .eq('status', 'Aguardando')
+            .maybeSingle();
+
+          if (erroFilaExistente) {
+            throw erroFilaExistente;
+          }
+
+          if (filaExistente) {
+            mensagem.textContent = 'Já existe uma fila ativa para este CPF.';
+            mensagem.style.color = 'red';
+            btnConfirmar.disabled = false;
+            btnConfirmar.textContent = 'Confirmar reserva';
+            return;
+          }
+
+          const { error: erroAtualizacaoCliente } = await supabaseClient
+            .from('cliente')
+            .update({
+              nome: nome,
+              telefone: telefone,
+              cpf: cpf
+            })
+            .eq('id', clienteId);
+
+          if (erroAtualizacaoCliente) {
+            throw erroAtualizacaoCliente;
+          }
+        } else {
+          const { data: clienteInserido, error: erroCliente } = await supabaseClient
+            .from('cliente')
+            .insert([
+              {
+                nome: nome,
+                telefone: telefone,
+                cpf: cpf
+              }
+            ])
+            .select()
+            .single();
+
+          if (erroCliente) {
+            throw erroCliente;
+          }
+
+          clienteId = clienteInserido.id;
+        }
+
+        const { data: filaAtual, error: erroFila } = await supabaseClient
+          .from('fila_item')
+          .select('id')
+          .eq('restaurante_id', RESTAURANTE_ID)
+          .eq('status', 'Aguardando');
+
+        if (erroFila) {
+          throw erroFila;
+        }
+
+        const proximaPosicao = (filaAtual?.length || 0) + 1;
+        const tempoEstimado = proximaPosicao * 10;
+
+        const { data: filaInserida, error: erroInsercaoFila } = await supabaseClient
+          .from('fila_item')
+          .insert([
+            {
+              restaurante_id: RESTAURANTE_ID,
+              cliente_id: clienteId,
+              numero_pessoas: Number(qtdPessoas),
+              posicao: proximaPosicao,
+              status: 'Aguardando',
+              tempo_estimado: tempoEstimado
+            }
+          ])
+          .select()
+          .single();
+
+        if (erroInsercaoFila) {
+          throw erroInsercaoFila;
+        }
+
+        sessionStorage.setItem('fila_ativa', 'true');
+        sessionStorage.setItem('fila_nome', nome);
+        sessionStorage.setItem('fila_cpf', cpf);
+        sessionStorage.setItem('fila_telefone', telefone);
+        sessionStorage.setItem('fila_qtd_pessoas', qtdPessoas);
+        sessionStorage.setItem('fila_posicao', proximaPosicao);
+        sessionStorage.setItem('fila_tempo_estimado', tempoEstimado);
+        sessionStorage.setItem('fila_item_id', filaInserida.id);
+        sessionStorage.setItem('cliente_id', clienteId);
+        sessionStorage.setItem('fila_mensagem_sucesso', 'Você entrou na fila com sucesso!');
+
+        window.location.href = 'fila_confirmada.html';
+
+      } catch (error) {
+        console.error('Erro técnico ao confirmar fila:', error);
+
+        if (error.message && error.message.includes('row-level security')) {
+          mensagem.textContent = 'Não foi possível concluir sua entrada na fila no momento. Tente novamente em instantes.';
+        } else if (error.message && error.message.includes('Failed to fetch')) {
+          mensagem.textContent = 'Não foi possível conectar ao sistema. Verifique sua internet e tente novamente.';
+        } else if (error.message && error.message.toLowerCase().includes('duplicate')) {
+          mensagem.textContent = 'Já existe um cadastro com este CPF.';
+        } else {
+          mensagem.textContent = 'Ocorreu um erro ao confirmar sua entrada na fila. Tente novamente.';
+        }
+
+        mensagem.style.color = 'red';
+        btnConfirmar.disabled = false;
+        btnConfirmar.textContent = 'Confirmar reserva';
+      }
+    });
+
+    iniciarTela();
+  </script>
 </body>
 </html>

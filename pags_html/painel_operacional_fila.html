@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Qmesa - Painel Operacional</title>
+  <link rel="stylesheet" href="../pags_css/style.css" />
+</head>
+
+<body class="tema-fila tema-dashboard-operacional">
+  <main class="dashboard-operacional">
+
+    <section class="dashboard-operacional-banner">
+      <div class="dashboard-operacional-banner-textos">
+        <h1 class="dashboard-operacional-banner-titulo">Painel Operacional</h1>
+        <p class="dashboard-operacional-banner-subtitulo">Gerencie a fila em tempo real</p>
+      </div>
+
+      <div class="dashboard-operacional-banner-logos">
+        <img
+          src="../images/logo_restaurante.png"
+          alt="Logo do restaurante"
+          class="dashboard-operacional-banner-logo-restaurante"
+        />
+        <img
+          src="../images/logo_qmesa_sem_fundo.png"
+          alt="Logo Qmesa"
+          class="dashboard-operacional-banner-logo-qmesa"
+        />
+      </div>
+    </section>
+
+    <section class="dashboard-operacional-resumo">
+      <article class="dashboard-operacional-card">
+        <span class="dashboard-operacional-card-titulo">Aguardando</span>
+        <strong class="dashboard-operacional-card-numero" id="totalAguardando">0</strong>
+      </article>
+
+      <article class="dashboard-operacional-card">
+        <span class="dashboard-operacional-card-titulo">Preparando</span>
+        <strong class="dashboard-operacional-card-numero" id="totalPreparando">0</strong>
+      </article>
+
+      <article class="dashboard-operacional-card">
+        <span class="dashboard-operacional-card-titulo">Chamado</span>
+        <strong class="dashboard-operacional-card-numero" id="totalChamado">0</strong>
+      </article>
+
+      <article class="dashboard-operacional-card">
+        <span class="dashboard-operacional-card-titulo">Atendido</span>
+        <strong class="dashboard-operacional-card-numero" id="totalAtendido">0</strong>
+      </article>
+
+      <article class="dashboard-operacional-card">
+        <span class="dashboard-operacional-card-titulo">Fila ativa</span>
+        <strong class="dashboard-operacional-card-numero" id="totalAtiva">0</strong>
+      </article>
+    </section>
+
+    <section class="dashboard-operacional-filtros dashboard-operacional-filtros-linha">
+      <div class="dashboard-operacional-filtro">
+        <label for="filtroStatus">Status</label>
+        <select id="filtroStatus" class="dashboard-operacional-campo">
+          <option value="em_fila" selected>Em fila</option>
+          <option value="">Todos</option>
+          <option value="Aguardando">Aguardando</option>
+          <option value="Preparando">Preparando</option>
+          <option value="Chamado">Chamado</option>
+          <option value="Atendido">Atendido</option>
+          <option value="Desistente">Desistente</option>
+          <option value="Cancelado">Cancelado</option>
+        </select>
+      </div>
+
+      <div class="dashboard-operacional-filtro dashboard-operacional-filtro-busca">
+        <label for="filtroBusca">Busca</label>
+        <input
+          type="text"
+          id="filtroBusca"
+          class="dashboard-operacional-campo"
+          placeholder="Nome, CPF ou telefone"
+        />
+      </div>
+
+      <div class="dashboard-operacional-filtro dashboard-operacional-filtro-acoes">
+        <button class="botao-primario" id="btnAplicarFiltros">
+          Aplicar filtros
+        </button>
+      </div>
+    </section>
+
+    <section class="dashboard-operacional-tabela-card">
+      <table class="dashboard-operacional-tabela">
+        <thead>
+          <tr>
+            <th>Posição</th>
+            <th>Cliente</th>
+            <th>CPF</th>
+            <th>Telefone</th>
+            <th>Pessoas</th>
+            <th>Status</th>
+            <th>Tempo Estimado</th>
+            <th>Tempo na fila</th>
+            <th>Entrada</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+
+        <tbody id="tabelaFila">
+          <tr>
+            <td colspan="10">Carregando...</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p id="mensagemPainel"></p>
+    </section>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+  <script>
+    const supabaseUrl = 'https://jlfbzdqhaezdtyyajqlk.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpsZmJ6ZHFoYWV6ZHR5eWFqcWxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjM0NjksImV4cCI6MjA4ODkzOTQ2OX0.6VX3Z1FjxgZuBYALd2oU4bQl0nzbMcBUcc0nLW_DbvA';
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+    const tabelaFila = document.getElementById('tabelaFila');
+    const filtroStatus = document.getElementById('filtroStatus');
+    const filtroBusca = document.getElementById('filtroBusca');
+    const mensagemPainel = document.getElementById('mensagemPainel');
+
+    const totalAguardando = document.getElementById('totalAguardando');
+    const totalPreparando = document.getElementById('totalPreparando');
+    const totalChamado = document.getElementById('totalChamado');
+    const totalAtendido = document.getElementById('totalAtendido');
+    const totalAtiva = document.getElementById('totalAtiva');
+
+    const RESTAURANTE_ID_FIXO = '00000000-0000-0000-0000-000000000001';
+
+    function setMensagem(texto, tipo = '') {
+      mensagemPainel.textContent = texto;
+      mensagemPainel.className = '';
+
+      if (tipo === 'erro') {
+        mensagemPainel.style.color = '#d62828';
+      } else if (tipo === 'sucesso') {
+        mensagemPainel.style.color = '#1f8a3d';
+      } else {
+        mensagemPainel.style.color = '';
+      }
+    }
+
+    function classeStatus(status) {
+      const valor = String(status || '').toLowerCase();
+
+      if (valor === 'aguardando') return 'dashboard-operacional-status dashboard-operacional-status-aguardando';
+      if (valor === 'preparando') return 'dashboard-operacional-status dashboard-operacional-status-preparando';
+      if (valor === 'chamado') return 'dashboard-operacional-status dashboard-operacional-status-chamado';
+      if (valor === 'atendido') return 'dashboard-operacional-status dashboard-operacional-status-atendido';
+      if (valor === 'desistente') return 'dashboard-operacional-status dashboard-operacional-status-desistente';
+      if (valor === 'cancelado') return 'dashboard-operacional-status dashboard-operacional-status-cancelado';
+
+      return 'dashboard-operacional-status';
+    }
+
+    function atualizarResumo(itens) {
+      totalAguardando.textContent = itens.filter(i => i.status === 'Aguardando').length;
+      totalPreparando.textContent = itens.filter(i => i.status === 'Preparando').length;
+      totalChamado.textContent = itens.filter(i => i.status === 'Chamado').length;
+      totalAtendido.textContent = itens.filter(i => i.status === 'Atendido').length;
+      totalAtiva.textContent = itens.filter(i => ['Aguardando', 'Preparando', 'Chamado'].includes(i.status)).length;
+    }
+
+    function montarMapaPosicoesDinamicas(itens) {
+      const emFila = itens
+        .filter(item => ['Aguardando', 'Preparando', 'Chamado'].includes(item.status))
+        .sort((a, b) => new Date(a.hora_entrada) - new Date(b.hora_entrada));
+
+      const mapa = {};
+
+      emFila.forEach((item, index) => {
+        mapa[item.id] = index + 1;
+      });
+
+      return mapa;
+    }
+
+    function calcularTempoNaFila(horaEntrada) {
+      if (!horaEntrada) return '-';
+
+      const entrada = new Date(horaEntrada);
+      const agora = new Date();
+      const diffMs = agora - entrada;
+      const totalMin = Math.max(0, Math.floor(diffMs / 60000));
+
+      const horas = Math.floor(totalMin / 60);
+      const minutos = totalMin % 60;
+
+      if (horas > 0) {
+        return `${horas}h ${minutos}min`;
+      }
+
+      return `${totalMin} min`;
+    }
+
+    function classeTempoFila(horaEntrada) {
+      if (!horaEntrada) return 'dashboard-operacional-tempo-normal';
+
+      const entrada = new Date(horaEntrada);
+      const agora = new Date();
+      const totalMin = Math.max(0, Math.floor((agora - entrada) / 60000));
+
+      if (totalMin >= 30) return 'dashboard-operacional-tempo-critico';
+      if (totalMin >= 15) return 'dashboard-operacional-tempo-alerta';
+      return 'dashboard-operacional-tempo-normal';
+    }
+
+    function renderizarTabela(itens, mapaPosicoes) {
+      tabelaFila.innerHTML = '';
+
+      if (!itens.length) {
+        tabelaFila.innerHTML = `
+          <tr>
+            <td colspan="10">Nenhum item encontrado.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      itens.forEach(item => {
+        const estaNaFila = ['Aguardando', 'Preparando', 'Chamado'].includes(item.status);
+
+        const posicaoDinamica = estaNaFila
+          ? (mapaPosicoes[item.id] ?? '-')
+          : '-';
+
+        const tempoEstimado = estaNaFila && posicaoDinamica !== '-'
+          ? (posicaoDinamica * 10) + ' min'
+          : '-';
+
+        const tempoFila = calcularTempoNaFila(item.hora_entrada);
+        const classeTempo = classeTempoFila(item.hora_entrada);
+
+        let botoes = `
+          <button class="dashboard-operacional-btn btn-preparando" onclick="alterar('${item.id}','Preparando')">Prep</button>
+          <button class="dashboard-operacional-btn btn-chamar" onclick="alterar('${item.id}','Chamado')">Chamar</button>
+          <button class="dashboard-operacional-btn btn-atendido" onclick="alterar('${item.id}','Atendido')">OK</button>
+          <button class="dashboard-operacional-btn btn-desistente" onclick="alterar('${item.id}','Desistente')">Desistiu</button>
+          <button class="dashboard-operacional-btn btn-cancelado" onclick="alterar('${item.id}','Cancelado')">Cancelar</button>
+          <button class="dashboard-operacional-btn btn-editar" onclick="editarCliente('${item.id}')">✏️</button>
+        `;
+
+        if (['Cancelado', 'Desistente'].includes(item.status)) {
+          botoes += `
+            <button class="dashboard-operacional-btn btn-reativar" onclick="reativarFila('${item.id}')">Reativar</button>
+          `;
+        }
+
+        tabelaFila.innerHTML += `
+          <tr>
+            <td>${posicaoDinamica}</td>
+            <td>${item.cliente?.nome || '-'}</td>
+            <td>${item.cliente?.cpf || '-'}</td>
+            <td>${item.cliente?.telefone || '-'}</td>
+            <td>${item.numero_pessoas ?? '-'}</td>
+            <td>
+              <span class="${classeStatus(item.status)}">
+                ${item.status || '-'}
+              </span>
+            </td>
+            <td>${tempoEstimado}</td>
+            <td><span class="${classeTempo}">${tempoFila}</span></td>
+            <td>${item.hora_entrada ? new Date(item.hora_entrada).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '-'}</td>
+            <td>
+              <div class="dashboard-operacional-acoes">
+                ${botoes}
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    async function carregarFila() {
+      setMensagem('');
+
+      let query = supabaseClient
+        .from('fila_item')
+        .select(`
+          id,
+          cliente_id,
+          numero_pessoas,
+          posicao,
+          status,
+          tempo_estimado,
+          hora_entrada,
+          cliente:cliente_id (
+            nome,
+            cpf,
+            telefone
+          )
+        `)
+        .eq('restaurante_id', RESTAURANTE_ID_FIXO)
+        .order('hora_entrada', { ascending: true });
+
+      if (filtroStatus.value === 'em_fila') {
+        query = query.in('status', ['Aguardando', 'Preparando', 'Chamado']);
+      } else if (filtroStatus.value) {
+        query = query.eq('status', filtroStatus.value);
+      }
+
+      const { data, error } = await query;
+
+      if (error) {
+        setMensagem('Erro ao carregar fila: ' + error.message, 'erro');
+        return;
+      }
+
+      let itens = data || [];
+      const busca = filtroBusca.value.trim().toLowerCase();
+
+      if (busca) {
+        itens = itens.filter(item => {
+          const nome = item.cliente?.nome?.toLowerCase() || '';
+          const cpf = item.cliente?.cpf?.toLowerCase() || '';
+          const telefone = item.cliente?.telefone?.toLowerCase() || '';
+          return nome.includes(busca) || cpf.includes(busca) || telefone.includes(busca);
+        });
+      }
+
+      const { data: todosDoRestaurante, error: erroResumo } = await supabaseClient
+        .from('fila_item')
+        .select(`
+          id,
+          status,
+          hora_entrada
+        `)
+        .eq('restaurante_id', RESTAURANTE_ID_FIXO);
+
+      if (erroResumo) {
+        setMensagem('Erro ao carregar resumo: ' + erroResumo.message, 'erro');
+        return;
+      }
+
+      const mapaPosicoes = montarMapaPosicoesDinamicas(todosDoRestaurante || []);
+      atualizarResumo(todosDoRestaurante || []);
+      renderizarTabela(itens, mapaPosicoes);
+    }
+
+    async function recalcularPosicoes() {
+      const { data, error } = await supabaseClient
+        .from('fila_item')
+        .select('id, hora_entrada')
+        .eq('restaurante_id', RESTAURANTE_ID_FIXO)
+        .in('status', ['Aguardando', 'Preparando', 'Chamado'])
+        .order('hora_entrada', { ascending: true });
+
+      if (error) {
+        setMensagem('Erro ao recalcular posições: ' + error.message, 'erro');
+        return false;
+      }
+
+      for (let i = 0; i < data.length; i++) {
+        const item = data[i];
+        const novaPosicao = i + 1;
+        const novoTempo = novaPosicao * 10;
+
+        const { error: erroUpdate } = await supabaseClient
+          .from('fila_item')
+          .update({
+            posicao: novaPosicao,
+            tempo_estimado: novoTempo
+          })
+          .eq('id', item.id);
+
+        if (erroUpdate) {
+          setMensagem('Erro ao atualizar posições: ' + erroUpdate.message, 'erro');
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    async function alterar(id, status) {
+      const confirmar = confirm(`Deseja alterar o status para "${status}"?`);
+      if (!confirmar) return;
+
+      const payload = { status };
+
+      if (['Atendido', 'Desistente', 'Cancelado'].includes(status)) {
+        payload.posicao = 0;
+        payload.tempo_estimado = 0;
+      }
+
+      const { error } = await supabaseClient
+        .from('fila_item')
+        .update(payload)
+        .eq('id', id);
+
+      if (error) {
+        setMensagem('Erro ao alterar status: ' + error.message, 'erro');
+        return;
+      }
+
+      await recalcularPosicoes();
+      await carregarFila();
+      setMensagem(`Status alterado para "${status}" com sucesso.`, 'sucesso');
+    }
+
+    async function editarCliente(filaItemId) {
+      const { data: fila, error: erroFila } = await supabaseClient
+        .from('fila_item')
+        .select(`
+          id,
+          cliente_id,
+          numero_pessoas,
+          cliente:cliente_id (
+            nome,
+            cpf,
+            telefone
+          )
+        `)
+        .eq('id', filaItemId)
+        .maybeSingle();
+
+      if (erroFila || !fila) {
+        setMensagem('Não foi possível carregar os dados para edição.', 'erro');
+        return;
+      }
+
+      const nome = prompt('Nome do cliente:', fila.cliente?.nome || '');
+      if (nome === null) return;
+
+      const cpf = prompt('CPF do cliente:', fila.cliente?.cpf || '');
+      if (cpf === null) return;
+
+      const telefone = prompt('Telefone do cliente:', fila.cliente?.telefone || '');
+      if (telefone === null) return;
+
+      const pessoas = prompt('Quantidade de pessoas:', fila.numero_pessoas ?? '');
+      if (pessoas === null) return;
+
+      const { error: erroCliente } = await supabaseClient
+        .from('cliente')
+        .update({
+          nome: nome.trim(),
+          cpf: cpf.trim(),
+          telefone: telefone.trim()
+        })
+        .eq('id', fila.cliente_id);
+
+      if (erroCliente) {
+        setMensagem('Erro ao atualizar cliente: ' + erroCliente.message, 'erro');
+        return;
+      }
+
+      const { error: erroFilaUpdate } = await supabaseClient
+        .from('fila_item')
+        .update({
+          numero_pessoas: Number(pessoas)
+        })
+        .eq('id', filaItemId);
+
+      if (erroFilaUpdate) {
+        setMensagem('Erro ao atualizar dados da fila: ' + erroFilaUpdate.message, 'erro');
+        return;
+      }
+
+      await carregarFila();
+      setMensagem('Dados atualizados com sucesso.', 'sucesso');
+    }
+
+    async function reativarFila(id) {
+      const confirmar = confirm('Deseja recolocar esta pessoa na fila?');
+      if (!confirmar) return;
+
+      const { error } = await supabaseClient
+        .from('fila_item')
+        .update({
+          status: 'Aguardando',
+          posicao: 0,
+          tempo_estimado: 0
+        })
+        .eq('id', id);
+
+      if (error) {
+        setMensagem('Erro ao reativar fila: ' + error.message, 'erro');
+        return;
+      }
+
+      await recalcularPosicoes();
+      await carregarFila();
+      setMensagem('Pessoa recolocada na fila com sucesso.', 'sucesso');
+    }
+
+    document.getElementById('btnAplicarFiltros').addEventListener('click', carregarFila);
+
+    async function iniciarPainel() {
+      await carregarFila();
+      setInterval(carregarFila, 5000);
+    }
+
+    iniciarPainel();
+  </script>
+</body>
+</html>

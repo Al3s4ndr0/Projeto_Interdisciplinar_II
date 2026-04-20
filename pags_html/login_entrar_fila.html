@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Qmesa - Identificação para fila</title>
+  <link rel="stylesheet" href="../pags_css/style.css" />
+</head>
+<body class="tema-fila">
+  <main class="tela">
+    <section class="cartao cartao-formulario">
+
+      <section class="painel-imagem">
+        <div class="acoes-topo">
+          <a href="javascript:history.back()" class="botao-voltar" aria-label="Voltar">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15 6l-6 6 6 6"/>
+            </svg>
+          </a>
+
+          <a href="../pags_html/index.html" class="botao-home" aria-label="Ir para a tela inicial">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 10.5L12 3l9 7.5"/>
+              <path d="M5.5 9.5V21h13V9.5"/>
+              <path d="M9.5 21v-6h5v6"/>
+            </svg>
+          </a>
+        </div>
+
+        <img src="../images/banner_restaurante.png" alt="Imagem do restaurante" class="imagem-restaurante" />
+
+        <div class="selo">
+          <img src="../images/logo_restaurante.png" alt="Logo do restaurante" />
+        </div>
+      </section>
+
+      <section class="conteudo">
+        <h1 class="titulo">Entre na fila</h1>
+
+        <form class="formulario" id="formLoginFila">
+          <input type="text" id="cpf" class="campo" placeholder="Qual é o seu CPF? *" required />
+          <input type="number" id="qtdPessoas" class="campo" placeholder="Mesa para quantas pessoas? *" min="1" required />
+
+          <button type="button" class="botao-secundario" id="btnBuscarCliente">
+            Buscar cadastro
+          </button>
+
+          <input type="text" id="nome" class="campo" placeholder="Qual é o seu nome? *" required />
+          <input type="text" id="telefone" class="campo" placeholder="Qual é o seu telefone? *" required />
+
+          <p class="texto-informativo">
+            Se o CPF já estiver cadastrado, seus dados serão carregados automaticamente.
+          </p>
+
+          <button type="submit" class="botao-primario">
+            Continuar
+          </button>
+
+          <p id="mensagem" style="margin-top: 12px;"></p>
+        </form>
+      </section>
+
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script>
+    const supabaseUrl = 'https://jlfbzdqhaezdtyyajqlk.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpsZmJ6ZHFoYWV6ZHR5eWFqcWxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjM0NjksImV4cCI6MjA4ODkzOTQ2OX0.6VX3Z1FjxgZuBYALd2oU4bQl0nzbMcBUcc0nLW_DbvA';
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+    const form = document.getElementById('formLoginFila');
+    const mensagem = document.getElementById('mensagem');
+    const btnBuscarCliente = document.getElementById('btnBuscarCliente');
+
+    const campoCpf = document.getElementById('cpf');
+    const campoQtdPessoas = document.getElementById('qtdPessoas');
+    const campoNome = document.getElementById('nome');
+    const campoTelefone = document.getElementById('telefone');
+
+    function limparEstadoFila() {
+      sessionStorage.removeItem('fila_ativa');
+      sessionStorage.removeItem('fila_nome');
+      sessionStorage.removeItem('fila_cpf');
+      sessionStorage.removeItem('fila_telefone');
+      sessionStorage.removeItem('fila_qtd_pessoas');
+      sessionStorage.removeItem('fila_posicao');
+      sessionStorage.removeItem('fila_tempo_estimado');
+      sessionStorage.removeItem('fila_item_id');
+      sessionStorage.removeItem('cliente_id');
+      sessionStorage.removeItem('fila_mensagem_sucesso');
+    }
+
+    function carregarDadosSalvos() {
+      const cpfSalvo = sessionStorage.getItem('fila_cpf');
+      const qtdPessoasSalva = sessionStorage.getItem('fila_qtd_pessoas');
+      const nomeSalvo = sessionStorage.getItem('fila_nome');
+      const telefoneSalvo = sessionStorage.getItem('fila_telefone');
+
+      if (cpfSalvo) campoCpf.value = cpfSalvo;
+      if (qtdPessoasSalva) campoQtdPessoas.value = qtdPessoasSalva;
+      if (nomeSalvo) campoNome.value = nomeSalvo;
+      if (telefoneSalvo) campoTelefone.value = telefoneSalvo;
+    }
+
+    async function verificarFilaAtiva() {
+      const filaAtiva = sessionStorage.getItem('fila_ativa');
+      const filaItemId = sessionStorage.getItem('fila_item_id');
+
+      if (filaAtiva !== 'true' || !filaItemId) {
+        carregarDadosSalvos();
+        return;
+      }
+
+      try {
+        const { data, error } = await supabaseClient
+          .from('fila_item')
+          .select('id, status')
+          .eq('id', filaItemId)
+          .maybeSingle();
+
+        if (error || !data || data.status !== 'Aguardando') {
+          limparEstadoFila();
+          carregarDadosSalvos();
+          return;
+        }
+
+        window.location.href = 'fila_confirmada.html';
+      } catch (erro) {
+        console.error('Erro ao validar fila ativa:', erro);
+        limparEstadoFila();
+        carregarDadosSalvos();
+      }
+    }
+
+    async function buscarClientePorCpf() {
+      const cpf = campoCpf.value.trim();
+
+      mensagem.textContent = '';
+
+      if (!cpf) {
+        mensagem.textContent = 'Informe o CPF para buscar o cadastro.';
+        mensagem.style.color = 'red';
+        return;
+      }
+
+      btnBuscarCliente.disabled = true;
+      btnBuscarCliente.textContent = 'Buscando...';
+
+      try {
+        const { data, error } = await supabaseClient
+          .from('cliente')
+          .select('id, nome, telefone, cpf')
+          .eq('cpf', cpf)
+          .maybeSingle();
+
+        if (error) {
+          throw error;
+        }
+
+        if (data) {
+          campoNome.value = data.nome || '';
+          campoTelefone.value = data.telefone || '';
+
+          sessionStorage.setItem('cliente_id', data.id);
+
+          mensagem.textContent = 'Cadastro encontrado. Confira os dados antes de continuar.';
+          mensagem.style.color = 'green';
+        } else {
+          campoNome.value = '';
+          campoTelefone.value = '';
+          sessionStorage.removeItem('cliente_id');
+
+          mensagem.textContent = 'Este CPF não possui cadastro. Preencha nome e telefone para continuar.';
+          mensagem.style.color = '#d97706';
+        }
+      } catch (error) {
+        console.error('Erro ao buscar cliente:', error);
+        mensagem.textContent = 'Não foi possível consultar o cadastro no momento. Tente novamente.';
+        mensagem.style.color = 'red';
+      } finally {
+        btnBuscarCliente.disabled = false;
+        btnBuscarCliente.textContent = 'Buscar cadastro';
+      }
+    }
+
+    btnBuscarCliente.addEventListener('click', buscarClientePorCpf);
+
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const cpf = campoCpf.value.trim();
+      const qtdPessoas = campoQtdPessoas.value.trim();
+      const nome = campoNome.value.trim();
+      const telefone = campoTelefone.value.trim();
+
+      if (!cpf || !qtdPessoas || Number(qtdPessoas) < 1) {
+        mensagem.textContent = 'Preencha CPF e quantidade de pessoas corretamente.';
+        mensagem.style.color = 'red';
+        return;
+      }
+
+      if (!nome || !telefone) {
+        mensagem.textContent = 'Preencha nome e telefone para continuar.';
+        mensagem.style.color = 'red';
+        return;
+      }
+
+      mensagem.textContent = '';
+
+      sessionStorage.setItem('fila_cpf', cpf);
+      sessionStorage.setItem('fila_qtd_pessoas', qtdPessoas);
+      sessionStorage.setItem('fila_nome', nome);
+      sessionStorage.setItem('fila_telefone', telefone);
+
+      window.location.href = 'revisar_fila.html';
+    });
+
+    verificarFilaAtiva();
+  </script>
+</body>
+</html>

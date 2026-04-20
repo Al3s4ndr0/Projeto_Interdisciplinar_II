@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Qmesa - Acompanhar fila</title>
+  <link rel="stylesheet" href="../pags_css/style.css" />
+</head>
+<body class="tema-fila">
+  <main class="tela">
+    <section class="cartao cartao-acompanhamento">
+
+      <section class="painel-marca">
+        <div class="acoes-topo">
+          <a href="javascript:history.back()" class="botao-voltar" aria-label="Voltar">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15 6l-6 6 6 6"/>
+            </svg>
+          </a>
+
+          <a href="../pags_html/index.html" class="botao-home" aria-label="Ir para a tela inicial">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 10.5L12 3l9 7.5"/>
+              <path d="M5.5 9.5V21h13V9.5"/>
+              <path d="M9.5 21v-6h5v6"/>
+            </svg>
+          </a>
+        </div>
+      </section>
+
+      <section class="conteudo">
+        <h1 class="titulo titulo-acompanhamento" id="tituloAcompanhamento">
+          Estamos esperando os clientes atuais finalizarem
+        </h1>
+
+        <p class="subtitulo-acompanhamento" id="subtituloAcompanhamento">
+          Aproveite para olhar o Cardápio
+        </p>
+
+        <div class="barra-progresso">
+          <div class="barra-progresso-trilha">
+            <div class="barra-progresso-preenchimento" id="barraPreenchimento"></div>
+            <div class="barra-progresso-indicador" id="barraIndicador">1</div>
+          </div>
+        </div>
+
+        <div class="ilustracao-acompanhamento">
+          <img id="imagemStatus" src="../images/mesa_ocupada.png" alt="Ilustração da fila" />
+        </div>
+
+        <p class="tempo-medio" id="textoTempo">Tempo estimado: 10 minutos</p>
+        <p class="tempo-medio" id="textoTempoFila">Tempo na fila: 0 min</p>
+
+        <p id="mensagemSucesso" style="color: green; margin: 8px 0 0;"></p>
+        <p id="mensagemErro" style="color: #dc2626; margin: 8px 0 0;"></p>
+
+        <div class="acoes-acompanhamento">
+          <a href="cardapio.html" class="botao-primario" id="botaoPrincipal">Visitar restaurante</a>
+          <button type="button" class="botao-secundario" id="btnCancelar">Cancelar reserva</button>
+        </div>
+      </section>
+
+    </section>
+  </main>
+
+  <!-- MODAL CANCELAMENTO -->
+  <div id="modalCancelamento" class="modal">
+    <div class="modal-conteudo">
+      <h2>Cancelar reserva</h2>
+      <p>Tem certeza que deseja sair da fila?</p>
+
+      <div class="modal-acoes">
+        <button type="button" class="botao-secundario" onclick="fecharModalCancelamento()">
+          Voltar
+        </button>
+        <button type="button" class="botao-danger" onclick="confirmarCancelamento()">
+          Cancelar fila
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script>
+    const supabaseUrl = 'https://jlfbzdqhaezdtyyajqlk.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpsZmJ6ZHFoYWV6ZHR5eWFqcWxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjM0NjksImV4cCI6MjA4ODkzOTQ2OX0.6VX3Z1FjxgZuBYALd2oU4bQl0nzbMcBUcc0nLW_DbvA';
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+    const tituloAcompanhamento = document.getElementById('tituloAcompanhamento');
+    const subtituloAcompanhamento = document.getElementById('subtituloAcompanhamento');
+    const barraPreenchimento = document.getElementById('barraPreenchimento');
+    const barraIndicador = document.getElementById('barraIndicador');
+    const imagemStatus = document.getElementById('imagemStatus');
+    const textoTempo = document.getElementById('textoTempo');
+    const textoTempoFila = document.getElementById('textoTempoFila');
+    const mensagemSucesso = document.getElementById('mensagemSucesso');
+    const mensagemErro = document.getElementById('mensagemErro');
+    const botaoPrincipal = document.getElementById('botaoPrincipal');
+    const btnCancelar = document.getElementById('btnCancelar');
+    const modalCancelamento = document.getElementById('modalCancelamento');
+
+    const STATUS_EM_FILA = ['Aguardando', 'Preparando', 'Chamado'];
+    const TEMPO_MEDIO_POR_POSICAO = 10;
+
+    function limparEstadoFila() {
+      sessionStorage.removeItem('fila_ativa');
+      sessionStorage.removeItem('fila_nome');
+      sessionStorage.removeItem('fila_cpf');
+      sessionStorage.removeItem('fila_telefone');
+      sessionStorage.removeItem('fila_qtd_pessoas');
+      sessionStorage.removeItem('fila_posicao');
+      sessionStorage.removeItem('fila_tempo_estimado');
+      sessionStorage.removeItem('fila_item_id');
+      sessionStorage.removeItem('cliente_id');
+      sessionStorage.removeItem('fila_mensagem_sucesso');
+      sessionStorage.removeItem('fila_status_anterior');
+      sessionStorage.removeItem('fila_posicao_anterior');
+    }
+
+    function redirecionarInicio() {
+      limparEstadoFila();
+      window.location.href = 'login_entrar_fila.html';
+    }
+
+    function exibirMensagemSucesso() {
+      const texto = sessionStorage.getItem('fila_mensagem_sucesso');
+      if (texto) {
+        mensagemSucesso.textContent = texto;
+        sessionStorage.removeItem('fila_mensagem_sucesso');
+      }
+    }
+
+    function calcularTempoNaFila(horaEntrada) {
+      if (!horaEntrada) return '-';
+
+      const entrada = new Date(horaEntrada);
+      const agora = new Date();
+      const diffMs = agora - entrada;
+      const totalMin = Math.max(0, Math.floor(diffMs / 60000));
+
+      const horas = Math.floor(totalMin / 60);
+      const minutos = totalMin % 60;
+
+      if (horas > 0) {
+        return `${horas}h ${minutos}min`;
+      }
+
+      return `${totalMin} min`;
+    }
+
+    async function solicitarPermissaoNotificacao() {
+      if (!('Notification' in window)) return;
+
+      if (Notification.permission === 'default') {
+        try {
+          await Notification.requestPermission();
+        } catch (erro) {
+          console.warn('Não foi possível solicitar permissão de notificação.', erro);
+        }
+      }
+    }
+
+    function notificar(titulo, corpo) {
+      if (!('Notification' in window)) return;
+      if (Notification.permission !== 'granted') return;
+
+      try {
+        new Notification(titulo, { body: corpo });
+      } catch (erro) {
+        console.warn('Falha ao exibir notificação.', erro);
+      }
+    }
+
+    function tratarMudancas(statusAtual, posicaoAtual) {
+      const statusAnterior = sessionStorage.getItem('fila_status_anterior');
+      const posicaoAnterior = sessionStorage.getItem('fila_posicao_anterior');
+
+      if (statusAnterior && statusAnterior !== statusAtual) {
+        if (statusAtual === 'Preparando') {
+          notificar('Qmesa', 'Sua mesa está sendo preparada.');
+        } else if (statusAtual === 'Chamado') {
+          notificar('Qmesa', 'Sua mesa está pronta. Dirija-se ao balcão.');
+        } else if (statusAtual === 'Atendido') {
+          notificar('Qmesa', 'Seu atendimento foi concluído.');
+        } else if (statusAtual === 'Cancelado' || statusAtual === 'Desistente') {
+          notificar('Qmesa', 'Sua fila foi encerrada.');
+        }
+      }
+
+      if (
+        posicaoAnterior &&
+        String(posicaoAnterior) !== String(posicaoAtual) &&
+        STATUS_EM_FILA.includes(statusAtual)
+      ) {
+        notificar('Qmesa', `Sua posição na fila mudou para ${posicaoAtual}.`);
+      }
+
+      sessionStorage.setItem('fila_status_anterior', statusAtual);
+      sessionStorage.setItem('fila_posicao_anterior', posicaoAtual ?? '');
+    }
+
+    function definirBarra(status) {
+      let percentual = 30;
+
+      if (status === 'Aguardando') {
+        percentual = 30;
+      } else if (status === 'Preparando') {
+        percentual = 65;
+      } else if (status === 'Chamado') {
+        percentual = 100;
+      } else if (status === 'Atendido') {
+        percentual = 100;
+      } else if (status === 'Cancelado' || status === 'Desistente') {
+        percentual = 0;
+      }
+
+      barraPreenchimento.style.width = `${percentual}%`;
+
+      if (percentual <= 0) {
+        barraIndicador.style.left = '0%';
+        barraIndicador.style.transform = 'translate(0, -50%)';
+      } else if (percentual >= 100) {
+        barraIndicador.style.left = '100%';
+        barraIndicador.style.transform = 'translate(-100%, -50%)';
+      } else {
+        barraIndicador.style.left = `${percentual}%`;
+        barraIndicador.style.transform = 'translate(-50%, -50%)';
+      }
+    }
+
+    function definirVisualPorStatus(status, posicao, tempoEstimado, tempoNaFila) {
+      const posicaoNumero = Number(posicao) || 0;
+
+      if (status === 'Aguardando') {
+        tituloAcompanhamento.textContent = 'Estamos esperando os clientes atuais finalizarem';
+        subtituloAcompanhamento.textContent = 'Aproveite para olhar o Cardápio';
+        imagemStatus.src = '../images/mesa_ocupada.png';
+        imagemStatus.alt = 'Ilustração de clientes na mesa';
+        barraIndicador.textContent = posicaoNumero || '1';
+        textoTempo.textContent = `Tempo estimado: ${tempoEstimado} minutos`;
+        textoTempoFila.textContent = `Tempo na fila: ${tempoNaFila}`;
+        botaoPrincipal.textContent = 'Visitar restaurante';
+        botaoPrincipal.href = 'cardapio.html';
+        btnCancelar.style.display = 'inline-flex';
+      } else if (status === 'Preparando') {
+        tituloAcompanhamento.innerHTML = 'Estamos preparando sua mesa com carinho';
+        subtituloAcompanhamento.textContent = 'Agradecemos pela paciência';
+        imagemStatus.src = '../images/preparando_mesa.png';
+        imagemStatus.alt = 'Ilustração de preparação da mesa';
+        barraIndicador.textContent = posicaoNumero || '1';
+        textoTempo.textContent = `Tempo estimado: ${tempoEstimado} minutos`;
+        textoTempoFila.textContent = `Tempo na fila: ${tempoNaFila}`;
+        botaoPrincipal.textContent = 'Visitar restaurante';
+        botaoPrincipal.href = 'cardapio.html';
+        btnCancelar.style.display = 'inline-flex';
+      } else if (status === 'Chamado') {
+        tituloAcompanhamento.innerHTML = 'Sua mesa está pronta!<br>Dirija-se ao balcão';
+        subtituloAcompanhamento.textContent = 'O grande momento chegou!';
+        imagemStatus.src = '../images/mesa_pronta.png';
+        imagemStatus.alt = 'Ilustração de mesa pronta';
+        barraIndicador.textContent = '0';
+        textoTempo.textContent = 'Sua mesa ficará reservada por 5 minutos';
+        textoTempoFila.textContent = `Tempo na fila: ${tempoNaFila}`;
+        botaoPrincipal.textContent = 'Estou indo!';
+        botaoPrincipal.href = 'cardapio.html';
+        btnCancelar.style.display = 'inline-flex';
+      } else if (status === 'Atendido') {
+        tituloAcompanhamento.textContent = 'Atendimento concluído';
+        subtituloAcompanhamento.textContent = 'Obrigado pela preferência';
+        imagemStatus.src = '../images/mesa_pronta.png';
+        imagemStatus.alt = 'Atendimento concluído';
+        barraIndicador.textContent = '✓';
+        textoTempo.textContent = 'Seu atendimento foi finalizado com sucesso';
+        textoTempoFila.textContent = '';
+        botaoPrincipal.textContent = 'Avaliar experiência';
+        botaoPrincipal.href = 'experiencia_fila.html';
+        btnCancelar.style.display = 'none';
+      } else if (status === 'Cancelado' || status === 'Desistente') {
+        tituloAcompanhamento.textContent = 'Sua fila foi encerrada';
+        subtituloAcompanhamento.textContent = 'Você pode realizar uma nova entrada quando quiser';
+        imagemStatus.src = '../images/mesa_ocupada.png';
+        imagemStatus.alt = 'Fila encerrada';
+        barraIndicador.textContent = '-';
+        textoTempo.textContent = 'Sua reserva não está mais ativa';
+        textoTempoFila.textContent = '';
+        botaoPrincipal.textContent = 'Voltar ao início';
+        botaoPrincipal.href = 'index.html';
+        btnCancelar.style.display = 'none';
+      } else {
+        tituloAcompanhamento.textContent = 'Estamos acompanhando sua fila';
+        subtituloAcompanhamento.textContent = 'Atualize em instantes';
+        imagemStatus.src = '../images/mesa_ocupada.png';
+        imagemStatus.alt = 'Acompanhamento da fila';
+        barraIndicador.textContent = posicaoNumero || '-';
+        textoTempo.textContent = `Tempo estimado: ${tempoEstimado} minutos`;
+        textoTempoFila.textContent = `Tempo na fila: ${tempoNaFila}`;
+        botaoPrincipal.textContent = 'Visitar restaurante';
+        botaoPrincipal.href = 'cardapio.html';
+        btnCancelar.style.display = 'inline-flex';
+      }
+
+      definirBarra(status);
+    }
+
+    async function buscarPosicaoRealDaFila(fila) {
+      const { data: itensFila, error } = await supabaseClient
+        .from('fila_item')
+        .select('id, status, hora_entrada')
+        .eq('restaurante_id', fila.restaurante_id)
+        .order('hora_entrada', { ascending: true });
+
+      if (error) {
+        throw error;
+      }
+
+      const ativos = (itensFila || [])
+        .filter(item => STATUS_EM_FILA.includes(item.status));
+
+      const indice = ativos.findIndex(item => item.id === fila.id);
+      return indice >= 0 ? indice + 1 : null;
+    }
+
+    async function carregarAcompanhamento() {
+      const filaItemId = sessionStorage.getItem('fila_item_id');
+
+      if (!filaItemId) {
+        redirecionarInicio();
+        return;
+      }
+
+      mensagemErro.textContent = '';
+
+      try {
+        const { data: fila, error: erroFila } = await supabaseClient
+          .from('fila_item')
+          .select(`
+            id,
+            restaurante_id,
+            posicao,
+            status,
+            tempo_estimado,
+            numero_pessoas,
+            hora_entrada,
+            cliente:cliente_id (
+              nome,
+              cpf,
+              telefone
+            ),
+            restaurante:restaurante_id (
+              nome
+            )
+          `)
+          .eq('id', filaItemId)
+          .maybeSingle();
+
+        if (erroFila) {
+          throw erroFila;
+        }
+
+        if (!fila) {
+          redirecionarInicio();
+          return;
+        }
+
+        let posicaoAtual = null;
+
+        if (STATUS_EM_FILA.includes(fila.status)) {
+          posicaoAtual = await buscarPosicaoRealDaFila(fila);
+        }
+
+        const tempoEstimadoAtual = STATUS_EM_FILA.includes(fila.status) && posicaoAtual
+          ? posicaoAtual * TEMPO_MEDIO_POR_POSICAO
+          : (fila.tempo_estimado ?? 0);
+
+        const tempoNaFila = calcularTempoNaFila(fila.hora_entrada);
+
+        sessionStorage.setItem('fila_ativa', STATUS_EM_FILA.includes(fila.status) ? 'true' : 'false');
+        sessionStorage.setItem('fila_posicao', posicaoAtual ?? '');
+        sessionStorage.setItem('fila_tempo_estimado', tempoEstimadoAtual ?? '');
+        sessionStorage.setItem('fila_nome', fila.cliente?.nome || '');
+        sessionStorage.setItem('fila_cpf', fila.cliente?.cpf || '');
+        sessionStorage.setItem('fila_telefone', fila.cliente?.telefone || '');
+        sessionStorage.setItem('fila_qtd_pessoas', fila.numero_pessoas ?? '');
+
+        tratarMudancas(fila.status, posicaoAtual);
+        definirVisualPorStatus(fila.status, posicaoAtual, tempoEstimadoAtual, tempoNaFila);
+
+        if (fila.status === 'Atendido') {
+          sessionStorage.setItem('fila_status_final', 'Atendido');
+          window.location.href = 'experiencia_fila.html';
+          return;
+        }
+
+        if (fila.status === 'Cancelado' || fila.status === 'Desistente') {
+          limparEstadoFila();
+        }
+      } catch (erro) {
+        console.error('Erro ao carregar fila:', erro);
+        mensagemErro.textContent = 'Não foi possível consultar sua fila agora. Tente novamente.';
+      }
+    }
+
+    function abrirModalCancelamento() {
+      modalCancelamento.style.display = 'flex';
+    }
+
+    function fecharModalCancelamento() {
+      modalCancelamento.style.display = 'none';
+    }
+
+    async function confirmarCancelamento() {
+      const filaItemId = sessionStorage.getItem('fila_item_id');
+
+      if (!filaItemId) {
+        redirecionarInicio();
+        return;
+      }
+
+      mensagemErro.textContent = '';
+
+      try {
+        const { error } = await supabaseClient
+          .from('fila_item')
+          .update({
+            status: 'Cancelado',
+            posicao: 0,
+            tempo_estimado: 0
+          })
+          .eq('id', filaItemId);
+
+        if (error) {
+          throw error;
+        }
+
+        fecharModalCancelamento();
+        limparEstadoFila();
+        window.location.href = 'cancelamento_confirmado.html';
+      } catch (erro) {
+        console.error('Erro ao cancelar fila:', erro);
+        mensagemErro.textContent = 'Não foi possível cancelar sua reserva no momento.';
+      }
+    }
+
+    btnCancelar.addEventListener('click', abrirModalCancelamento);
+
+    window.addEventListener('click', (event) => {
+      if (event.target === modalCancelamento) {
+        fecharModalCancelamento();
+      }
+    });
+
+    exibirMensagemSucesso();
+    solicitarPermissaoNotificacao();
+    carregarAcompanhamento();
+    setInterval(carregarAcompanhamento, 5000);
+  </script>
+</body>
+</html>
