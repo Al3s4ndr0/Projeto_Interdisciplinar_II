@@ -32,66 +32,252 @@
         <h1 class="titulo titulo-experiencia">AGORA É SÓ<br>APROVEITAR!</h1>
 
         <p class="descricao descricao-experiencia">
-          Esperamos que sua experiência tenha sido
-          positiva. Compartilha com a gente!
+          Esperamos que sua experiência tenha sido positiva. Compartilha com a gente!
         </p>
 
-        <section class="bloco-nota">
-          <p class="pergunta-experiencia">Como foi o processo de espera?</p>
+        <form id="formExperienciaFila">
+          <section class="bloco-nota">
+            <p class="pergunta-experiencia">Como foi o processo de espera?</p>
 
-          <div class="estrelas">
-            <input type="radio" id="estrela5" name="avaliacao" value="5">
-            <label for="estrela5">★</label>
+            <div class="estrelas">
+              <input type="radio" id="estrela5" name="avaliacao" value="5">
+              <label for="estrela5">★</label>
 
-            <input type="radio" id="estrela4" name="avaliacao" value="4">
-            <label for="estrela4">★</label>
+              <input type="radio" id="estrela4" name="avaliacao" value="4">
+              <label for="estrela4">★</label>
 
-            <input type="radio" id="estrela3" name="avaliacao" value="3">
-            <label for="estrela3">★</label>
+              <input type="radio" id="estrela3" name="avaliacao" value="3">
+              <label for="estrela3">★</label>
 
-            <input type="radio" id="estrela2" name="avaliacao" value="2">
-            <label for="estrela2">★</label>
+              <input type="radio" id="estrela2" name="avaliacao" value="2">
+              <label for="estrela2">★</label>
 
-            <input type="radio" id="estrela1" name="avaliacao" value="1">
-            <label for="estrela1">★</label>
+              <input type="radio" id="estrela1" name="avaliacao" value="1">
+              <label for="estrela1">★</label>
+            </div>
+          </section>
+
+          <section class="bloco-pesquisa-experiencia">
+            <p class="pergunta-experiencia">O tempo de espera correspondeu ao informado?</p>
+
+            <label class="opcao-experiencia">
+              <input type="radio" name="tempo_espera" value="Sim, conforme previsto">
+              <span>Sim, conforme previsto</span>
+            </label>
+
+            <label class="opcao-experiencia">
+              <input type="radio" name="tempo_espera" value="Sim, esperei até menos que o previsto">
+              <span>Sim, esperei até menos que o previsto</span>
+            </label>
+
+            <label class="opcao-experiencia">
+              <input type="radio" name="tempo_espera" value="Não, esperei um pouco mais que o previsto">
+              <span>Não, esperei um pouco mais que o previsto</span>
+            </label>
+
+            <label class="opcao-experiencia">
+              <input type="radio" name="tempo_espera" value="Não, esperei muito mais que o previsto">
+              <span>Não, esperei muito mais que o previsto</span>
+            </label>
+          </section>
+
+          <section class="bloco-comentario-experiencia">
+            <p class="pergunta-experiencia">Gostaria de deixar algum comentário?</p>
+            <textarea
+              id="campoComentario"
+              class="campo-comentario"
+              placeholder="Digite sua mensagem aqui"
+            ></textarea>
+          </section>
+
+          <p id="mensagemExperiencia" style="margin-top: 12px; font-weight: 600;"></p>
+
+          <div class="acoes-experiencia">
+            <button type="submit" class="botao-primario" id="btnEnviarAvaliacao">
+              Enviar avaliação
+            </button>
           </div>
-        </section>
-
-        <section class="bloco-pesquisa-experiencia">
-          <p class="pergunta-experiencia">O tempo de espera correspondeu ao informado?</p>
-
-          <label class="opcao-experiencia">
-            <input type="radio" name="tempo_espera">
-            <span>Sim, conforme previsto</span>
-          </label>
-
-          <label class="opcao-experiencia">
-            <input type="radio" name="tempo_espera">
-            <span>Sim, esperei até menos que o previsto</span>
-          </label>
-
-          <label class="opcao-experiencia">
-            <input type="radio" name="tempo_espera">
-            <span>Não, esperei um pouco mais que o previsto</span>
-          </label>
-
-          <label class="opcao-experiencia">
-            <input type="radio" name="tempo_espera">
-            <span>Não, esperei muito mais que o previsto</span>
-          </label>
-        </section>
-
-        <section class="bloco-comentario-experiencia">
-          <p class="pergunta-experiencia">Gostaria de deixar algum comentário?</p>
-          <textarea class="campo-comentario" placeholder="Digite sua mensagem aqui"></textarea>
-        </section>
-
-        <div class="acoes-experiencia">
-          <a href="../pags_html/agradecimento_avaliacao.html" class="botao-primario">Enviar avaliação</a>
-        </div>
+        </form>
       </section>
 
     </section>
+
+    <div id="modalFeedbackExistente" class="modal">
+      <div class="modal-conteudo">
+        <h2>Você já avaliou</h2>
+        <p>Deseja manter sua avaliação ou editar?</p>
+
+        <div class="modal-acoes">
+          <button class="botao-secundario" onclick="fecharModal()">
+            Manter
+          </button>
+
+          <button class="botao-primario" onclick="editarFeedback()">
+            Editar avaliação
+          </button>
+        </div>
+      </div>
+    </div>
+
   </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script>
+const supabaseUrl = 'https://jlfbzdqhaezdtyyajqlk.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpsZmJ6ZHFoYWV6ZHR5eWFqcWxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjM0NjksImV4cCI6MjA4ODkzOTQ2OX0.6VX3Z1FjxgZuBYALd2oU4bQl0nzbMcBUcc0nLW_DbvA';
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+const form = document.getElementById('formExperienciaFila');
+const comentarioInput = document.getElementById('campoComentario');
+const msg = document.getElementById('mensagemExperiencia');
+const btn = document.getElementById('btnEnviarAvaliacao');
+
+let clienteId = null;
+let filaItemId = null;
+let feedbackId = null;
+
+function setMsg(texto, tipo='') {
+  msg.textContent = texto;
+  msg.style.color = tipo === 'erro' ? '#dc2626' : tipo === 'sucesso' ? '#16a34a' : '#555';
+}
+
+function abrirModal() {
+  document.getElementById('modalFeedbackExistente').style.display = 'flex';
+}
+function fecharModal() {
+  document.getElementById('modalFeedbackExistente').style.display = 'none';
+}
+
+function marcarNota(v) {
+  const el = document.querySelector(`input[name="avaliacao"][value="${v}"]`);
+  if (el) el.checked = true;
+}
+
+function marcarTempo(v) {
+  const el = document.querySelector(`input[name="tempo_espera"][value="${v}"]`);
+  if (el) el.checked = true;
+}
+
+async function obterClienteDaFila(id) {
+  const { data, error } = await supabaseClient
+    .from('fila_item')
+    .select('cliente_id')
+    .eq('id', id)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data?.cliente_id || null;
+}
+
+function editarFeedback() {
+  fecharModal();
+
+  // habilita edição
+  btnEnviarAvaliacao.disabled = false;
+
+  // feedback visual
+  setMensagemExperiencia('Edite sua avaliação e clique em salvar.');
+
+  // foco no comentário (melhora UX)
+  campoComentario.focus();
+}
+
+async function init() {
+  filaItemId = sessionStorage.getItem('fila_item_id');
+  clienteId = sessionStorage.getItem('cliente_id');
+
+  if (!filaItemId) {
+    setMsg('Fila não identificada.', 'erro');
+    return;
+  }
+
+  if (!clienteId) {
+    clienteId = await obterClienteDaFila(filaItemId);
+  }
+
+  if (!clienteId) {
+    setMsg('Cliente não identificado.', 'erro');
+    return;
+  }
+
+  // ✔ AGORA NA ORDEM CORRETA
+  const { data, error } = await supabaseClient
+    .from('feedback')
+    .select('*')
+    .eq('cliente_id', clienteId)
+    .eq('origem_id', filaItemId)
+    .eq('origem_tipo', 'fila_item')
+    .maybeSingle();
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  if (data) {
+    feedbackId = data.id;
+
+    marcarNota(data.nota);
+    marcarTempo(data.tempo_espera_resposta);
+    comentarioInput.value = data.comentario || '';
+
+    btn.textContent = 'Atualizar avaliação';
+
+    abrirModal();
+  }
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  if (btn.disabled) return;
+
+  const nota = document.querySelector('input[name="avaliacao"]:checked');
+  const tempo = document.querySelector('input[name="tempo_espera"]:checked');
+  const comentario = comentarioInput.value.trim();
+
+  if (!nota) return setMsg('Selecione uma nota.', 'erro');
+  if (!tempo) return setMsg('Responda o tempo.', 'erro');
+
+  btn.disabled = true;
+  btn.textContent = 'Salvando...';
+
+  try {
+    const payload = {
+      cliente_id: clienteId,
+      origem_id: filaItemId,
+      origem_tipo: 'fila_item',
+      nota: Number(nota.value),
+      tempo_espera_resposta: tempo.value,
+      comentario: comentario || null
+    };
+
+    const { error } = await supabaseClient
+      .from('feedback')
+      .upsert(payload, {
+        onConflict: 'cliente_id,origem_id,origem_tipo'
+      });
+
+    if (error) throw error;
+
+    setMsg('Avaliação salva com sucesso!', 'sucesso');
+
+    // ❗ NÃO remove session
+    // ❗ mantém para permitir edição
+
+    setTimeout(() => {
+      window.location.href = '../pags_html/agradecimento_avaliacao.html';
+    }, 800);
+
+  } catch (err) {
+    console.error(err);
+    setMsg('Erro ao salvar avaliação.', 'erro');
+    btn.disabled = false;
+    btn.textContent = feedbackId ? 'Atualizar avaliação' : 'Enviar avaliação';
+  }
+});
+
+init();
+</script>
 </body>
 </html>

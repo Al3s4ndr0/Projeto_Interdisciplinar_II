@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Qmesa - Dashboard do Gestor</title>
+  <link rel="stylesheet" href="../pags_css/dashboard.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="tema-fila tema-dashboard-gestor">
+  <div class="layout-gestor">
+
+    <aside class="sidebar-gestor" id="sidebarGestor">
+      <div class="sidebar-topo">
+        <div class="sidebar-topo-info">
+          <span class="sidebar-restaurante-label">Restaurante</span>
+          <strong class="sidebar-restaurante-nome">Qmesa Demo</strong>
+        </div>
+
+        <button type="button" class="btn-toggle-sidebar" id="btnToggleSidebar" aria-label="Recolher menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 7h16"></path>
+            <path d="M4 12h16"></path>
+            <path d="M4 17h16"></path>
+          </svg>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-nav-bloco">
+          <span class="sidebar-nav-titulo">Visão geral</span>
+
+          <a href="#" class="sidebar-link ativo">
+            <span class="sidebar-icone">
+              <svg viewBox="0 0 24 24"><path d="M4 20V10"></path><path d="M10 20V4"></path><path d="M16 20v-8"></path><path d="M22 20v-5"></path></svg>
+            </span>
+            <span class="sidebar-link-texto">
+              <span class="sidebar-link-titulo">Dashboard</span>
+              <span class="sidebar-link-subtitulo">Indicadores do gestor</span>
+            </span>
+          </a>
+
+          <a href="../pags_html/painel_operacional_fila.html" class="sidebar-link">
+            <span class="sidebar-icone">
+              <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"></rect><path d="M8 20h8"></path><path d="M12 16v4"></path></svg>
+            </span>
+            <span class="sidebar-link-texto">
+              <span class="sidebar-link-titulo">Painel operacional</span>
+              <span class="sidebar-link-subtitulo">Gestão em tempo real</span>
+            </span>
+          </a>
+        </div>
+
+        <div class="sidebar-nav-bloco">
+          <span class="sidebar-nav-titulo">Operação</span>
+
+          <a href="#" class="sidebar-link">
+            <span class="sidebar-icone">
+              <svg viewBox="0 0 24 24"><path d="M4 6h16"></path><path d="M7 12h10"></path><path d="M9 18h6"></path></svg>
+            </span>
+            <span class="sidebar-link-texto">
+              <span class="sidebar-link-titulo">Gerenciar cardápio</span>
+              <span class="sidebar-link-subtitulo">Itens, preços e categorias</span>
+            </span>
+          </a>
+
+          <a href="#" class="sidebar-link">
+            <span class="sidebar-icone">
+              <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4"></path><path d="M8 2v4"></path><path d="M3 10h18"></path></svg>
+            </span>
+            <span class="sidebar-link-texto">
+              <span class="sidebar-link-titulo">Reservas</span>
+              <span class="sidebar-link-subtitulo">Fluxo futuro do sistema</span>
+            </span>
+          </a>
+
+          <a href="#" class="sidebar-link">
+            <span class="sidebar-icone">
+              <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            </span>
+            <span class="sidebar-link-texto">
+              <span class="sidebar-link-titulo">Usuários</span>
+              <span class="sidebar-link-subtitulo">Perfis e permissões</span>
+            </span>
+          </a>
+        </div>
+
+        <div class="sidebar-nav-bloco">
+          <span class="sidebar-nav-titulo">Expansão</span>
+
+          <a href="#" class="sidebar-link">
+            <span class="sidebar-icone">
+              <svg viewBox="0 0 24 24"><rect x="4" y="4" width="5" height="5"></rect><rect x="15" y="4" width="5" height="5"></rect><rect x="4" y="15" width="5" height="5"></rect><path d="M15 15h1"></path><path d="M19 15h1"></path><path d="M15 19h1"></path><path d="M19 19h1"></path><path d="M17 17h1"></path></svg>
+            </span>
+            <span class="sidebar-link-texto">
+              <span class="sidebar-link-titulo">QR Code da fila</span>
+              <span class="sidebar-link-subtitulo">Gerar, exportar e imprimir</span>
+            </span>
+          </a>
+
+          <a href="#" class="sidebar-link">
+            <span class="sidebar-icone">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82"></path><path d="M4.6 9a1.65 1.65 0 0 0-.33-1.82"></path><path d="M9 4.6A1.65 1.65 0 0 0 7.18 4.27"></path><path d="M15 19.4a1.65 1.65 0 0 0 1.82.33"></path><path d="M4.6 15a1.65 1.65 0 0 1-.33 1.82"></path><path d="M19.4 9a1.65 1.65 0 0 1 .33-1.82"></path><path d="M15 4.6a1.65 1.65 0 0 1 1.82-.33"></path><path d="M9 19.4a1.65 1.65 0 0 1-1.82.33"></path></svg>
+            </span>
+            <span class="sidebar-link-texto">
+              <span class="sidebar-link-titulo">Configurações</span>
+              <span class="sidebar-link-subtitulo">Identidade e restaurante</span>
+            </span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-footer-avatar">GS</div>
+        <div class="sidebar-footer-texto">
+          <span class="sidebar-footer-nome">Gestor</span>
+          <span class="sidebar-footer-perfil">Acesso administrativo</span>
+        </div>
+      </div>
+    </aside>
+
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <section class="conteudo-gestor">
+      <div class="topbar-mobile">
+        <button type="button" class="btn-abrir-sidebar" id="btnAbrirSidebar">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 7h16"></path>
+            <path d="M4 12h16"></path>
+            <path d="M4 17h16"></path>
+          </svg>
+        </button>
+      </div>
+
+      <section class="dashboard-gestor-banner">
+        <div class="dashboard-gestor-banner-textos">
+          <h1 class="dashboard-gestor-banner-titulo">Dashboard do Gestor</h1>
+          <p class="dashboard-gestor-banner-subtitulo">Filas, feedbacks e visão executiva da operação</p>
+        </div>
+
+        <div class="dashboard-gestor-banner-logos">
+          <img
+            src="../images/logo_restaurante.png"
+            alt="Logo do restaurante"
+            class="dashboard-gestor-banner-logo-restaurante"
+          />
+          <img
+            src="../images/logo_qmesa_sem_fundo.png"
+            alt="Logo Qmesa"
+            class="dashboard-gestor-banner-logo-qmesa"
+          />
+        </div>
+      </section>
+
+      <section class="dashboard-gestor-filtros">
+        <div class="dashboard-gestor-filtros-linha">
+          <div class="dashboard-gestor-filtro">
+            <label for="filtroDataInicio">Data inicial</label>
+            <input type="date" id="filtroDataInicio" class="dashboard-gestor-campo" />
+          </div>
+
+          <div class="dashboard-gestor-filtro">
+            <label for="filtroDataFim">Data final</label>
+            <input type="date" id="filtroDataFim" class="dashboard-gestor-campo" />
+          </div>
+
+          <div class="dashboard-gestor-filtro">
+            <label for="filtroOrigem">Origem</label>
+            <select id="filtroOrigem" class="dashboard-gestor-campo">
+              <option value="">Todas</option>
+              <option value="fila_item">Fila</option>
+              <option value="cancelamento_fila">Cancelamento de fila</option>
+              <option value="reserva">Reserva</option>
+              <option value="cancelamento_reserva">Cancelamento de reserva</option>
+            </select>
+          </div>
+
+          <div class="dashboard-gestor-filtro">
+            <label for="filtroStatusFila">Status da fila</label>
+            <select id="filtroStatusFila" class="dashboard-gestor-campo">
+              <option value="">Todos</option>
+              <option value="Aguardando">Aguardando</option>
+              <option value="Preparando">Preparando</option>
+              <option value="Chamado">Chamado</option>
+              <option value="A caminho">A caminho</option>
+              <option value="Atendido">Atendido</option>
+              <option value="Desistente">Desistente</option>
+              <option value="Cancelado">Cancelado</option>
+            </select>
+          </div>
+
+          <div class="dashboard-gestor-filtro dashboard-gestor-filtro-acoes">
+            <button type="button" class="botao-primario" id="btnAplicarDashboard">
+              Aplicar filtros
+            </button>
+            <button type="button" class="botao-secundario" id="btnLimparDashboard">
+              Limpar
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="dashboard-gestor-grid-resumo">
+        <article class="dashboard-gestor-card">
+          <span class="dashboard-gestor-card-titulo">Entradas na fila</span>
+          <strong class="dashboard-gestor-card-numero" id="cardTotalFila">6</strong>
+          <span class="dashboard-gestor-card-apoio">Total de registros filtrados</span>
+        </article>
+
+        <article class="dashboard-gestor-card">
+          <span class="dashboard-gestor-card-titulo">Atendidos</span>
+          <strong class="dashboard-gestor-card-numero" id="cardTotalAtendidos">3</strong>
+          <span class="dashboard-gestor-card-apoio">Concluídos no período</span>
+        </article>
+
+        <article class="dashboard-gestor-card">
+          <span class="dashboard-gestor-card-titulo">Cancelados/Desistentes</span>
+          <strong class="dashboard-gestor-card-numero" id="cardTotalPerdas">3</strong>
+          <span class="dashboard-gestor-card-apoio">Perda de fila</span>
+        </article>
+
+        <article class="dashboard-gestor-card">
+          <span class="dashboard-gestor-card-titulo">Tempo médio de espera</span>
+          <strong class="dashboard-gestor-card-numero" id="cardTempoMedio">25 min</strong>
+          <span class="dashboard-gestor-card-apoio">Média calculada pela fila</span>
+        </article>
+
+        <article class="dashboard-gestor-card">
+          <span class="dashboard-gestor-card-titulo">Nota média</span>
+          <strong class="dashboard-gestor-card-numero" id="cardNotaMedia">3.8</strong>
+          <span class="dashboard-gestor-card-apoio">Feedback pós-atendimento</span>
+        </article>
+
+        <article class="dashboard-gestor-card">
+          <span class="dashboard-gestor-card-titulo">Reservas</span>
+          <strong class="dashboard-gestor-card-numero" id="cardReservas">2</strong>
+          <span class="dashboard-gestor-card-apoio">Preparado para expansão</span>
+        </article>
+      </section>
+
+      <section class="dashboard-gestor-graficos">
+        <div class="dashboard-gestor-bloco">
+          <div class="dashboard-gestor-bloco-header">
+            <div>
+              <h2 class="dashboard-gestor-bloco-titulo">Fila por status</h2>
+              <p class="dashboard-gestor-bloco-subtitulo">Gráfico de barras da operação</p>
+            </div>
+          </div>
+          <div class="grafico-chart">
+            <canvas id="graficoStatus"></canvas>
+          </div>
+        </div>
+
+        <div class="dashboard-gestor-bloco">
+          <div class="dashboard-gestor-bloco-header">
+            <div>
+              <h2 class="dashboard-gestor-bloco-titulo">Entradas por dia</h2>
+              <p class="dashboard-gestor-bloco-subtitulo">Volume diário de entradas</p>
+            </div>
+          </div>
+          <div class="grafico-chart">
+            <canvas id="graficoEntradas"></canvas>
+          </div>
+        </div>
+
+        <div class="dashboard-gestor-bloco">
+          <div class="dashboard-gestor-bloco-header">
+            <div>
+              <h2 class="dashboard-gestor-bloco-titulo">Feedback por origem</h2>
+              <p class="dashboard-gestor-bloco-subtitulo">Gráfico de pizza / rosca</p>
+            </div>
+          </div>
+          <div class="grafico-chart">
+            <canvas id="graficoOrigem"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <section class="dashboard-gestor-grid-inferior">
+        <div class="dashboard-gestor-bloco">
+          <div class="dashboard-gestor-bloco-header">
+            <div>
+              <h2 class="dashboard-gestor-bloco-titulo">Feedbacks</h2>
+              <p class="dashboard-gestor-bloco-subtitulo">Visão detalhada dos comentários e avaliações</p>
+            </div>
+          </div>
+
+          <div class="dashboard-gestor-tabela-wrap">
+            <table class="dashboard-gestor-tabela">
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Origem</th>
+                  <th>Cliente</th>
+                  <th>Nota</th>
+                  <th>Motivo / Tempo</th>
+                  <th>Comentário</th>
+                </tr>
+              </thead>
+              <tbody id="tabelaFeedbacks">
+                <tr>
+                  <td>14/03/2026, 19:50</td>
+                  <td><span class="badge-origem origem-reserva">reserva</span></td>
+                  <td>João Silva</td>
+                  <td>5</td>
+                  <td>-</td>
+                  <td>Atendimento excelente, fila bem organizada!</td>
+                </tr>
+                <tr>
+                  <td>13/03/2026, 19:50</td>
+                  <td><span class="badge-origem origem-fila_item">fila_item</span></td>
+                  <td>Maria Oliveira</td>
+                  <td>4</td>
+                  <td>-</td>
+                  <td>Gostei de acompanhar minha posição pelo celular.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="dashboard-gestor-mensagem" id="mensagemDashboard">Dashboard atualizado com sucesso.</p>
+        </div>
+
+        <div class="dashboard-gestor-coluna-lateral">
+          <div class="dashboard-gestor-bloco">
+            <div class="dashboard-gestor-bloco-header">
+              <div>
+                <h2 class="dashboard-gestor-bloco-titulo">QR Code rápido</h2>
+                <p class="dashboard-gestor-bloco-subtitulo">Atalho para gerar material do salão</p>
+              </div>
+            </div>
+
+            <div class="dashboard-gestor-qr">
+              <div class="dashboard-gestor-qr-preview" id="qrPreview">
+                QR<br>Preview
+              </div>
+
+              <div class="dashboard-gestor-qr-info">
+                <div class="dashboard-gestor-qr-link" id="linkFilaRestaurante">
+                  https://qmesa.app/r/restaurante-demo
+                </div>
+
+                <div class="dashboard-gestor-qr-acoes">
+                  <button type="button" class="btn-qr-primario">Gerar QR</button>
+                  <button type="button" class="btn-qr-secundario">Copiar link</button>
+                  <button type="button" class="btn-qr-secundario">Exportar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dashboard-gestor-bloco">
+            <div class="dashboard-gestor-bloco-header">
+              <div>
+                <h2 class="dashboard-gestor-bloco-titulo">Motivos mais frequentes</h2>
+                <p class="dashboard-gestor-bloco-subtitulo">Cancelamentos e desistências</p>
+              </div>
+            </div>
+
+            <div class="dashboard-gestor-lista">
+              <div class="dashboard-gestor-lista-item">
+                <span class="dashboard-gestor-lista-texto">Tempo de espera excedido</span>
+                <span class="dashboard-gestor-lista-valor">2</span>
+              </div>
+              <div class="dashboard-gestor-lista-item">
+                <span class="dashboard-gestor-lista-texto">Cliente desistiu espontaneamente</span>
+                <span class="dashboard-gestor-lista-valor">1</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer-gestor">
+        Desenvolvido por HS Solutions 2026
+      </footer>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const supabaseUrl = 'https://jlfbzdqhaezdtyyajqlk.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpsZmJ6ZHFoYWV6ZHR5eWFqcWxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjM0NjksImV4cCI6MjA4ODkzOTQ2OX0.6VX3Z1FjxgZuBYALd2oU4bQl0nzbMcBUcc0nLW_DbvA';
+  const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+  const RESTAURANTE_ID_FIXO = '00000000-0000-0000-0000-000000000001';
+
+  const sidebarGestor = document.getElementById('sidebarGestor');
+  const btnToggleSidebar = document.getElementById('btnToggleSidebar');
+  const btnAbrirSidebar = document.getElementById('btnAbrirSidebar');
+  const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+
+  const filtroDataInicio = document.getElementById('filtroDataInicio');
+  const filtroDataFim = document.getElementById('filtroDataFim');
+  const filtroOrigem = document.getElementById('filtroOrigem');
+  const filtroStatusFila = document.getElementById('filtroStatusFila');
+  const btnAplicarDashboard = document.getElementById('btnAplicarDashboard');
+  const btnLimparDashboard = document.getElementById('btnLimparDashboard');
+
+  const cardTotalFila = document.getElementById('cardTotalFila');
+  const cardTotalAtendidos = document.getElementById('cardTotalAtendidos');
+  const cardTotalPerdas = document.getElementById('cardTotalPerdas');
+  const cardTempoMedio = document.getElementById('cardTempoMedio');
+  const cardNotaMedia = document.getElementById('cardNotaMedia');
+  const cardReservas = document.getElementById('cardReservas');
+
+  const tabelaFeedbacks = document.getElementById('tabelaFeedbacks');
+  const mensagemDashboard = document.getElementById('mensagemDashboard');
+  const qrPreview = document.getElementById('qrPreview');
+  const linkFilaRestaurante = document.getElementById('linkFilaRestaurante');
+
+  let chartStatus = null;
+  let chartEntradas = null;
+  let chartOrigem = null;
+
+  function setMensagemDashboard(texto, tipo = '') {
+    mensagemDashboard.textContent = texto;
+
+    if (tipo === 'erro') {
+      mensagemDashboard.style.color = '#dc2626';
+    } else if (tipo === 'sucesso') {
+      mensagemDashboard.style.color = '#16a34a';
+    } else {
+      mensagemDashboard.style.color = '#4b5563';
+    }
+  }
+
+  function formatarDataHora(valor) {
+    if (!valor) return '-';
+    return new Date(valor).toLocaleString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
+  function classeOrigem(origem) {
+    return `badge-origem origem-${String(origem || '').replace(/\s+/g, '_')}`;
+  }
+
+  function obterIntervaloDatas() {
+    const inicio = filtroDataInicio.value;
+    const fim = filtroDataFim.value;
+
+    return {
+      inicio: inicio ? `${inicio}T00:00:00` : null,
+      fim: fim ? `${fim}T23:59:59` : null
+    };
+  }
+
+  function calcularMedia(numeros) {
+    if (!numeros.length) return null;
+    const soma = numeros.reduce((acc, valor) => acc + valor, 0);
+    return soma / numeros.length;
+  }
+
+  function atualizarCards(filas, feedbacks) {
+    const totalFila = filas.length;
+    const totalAtendidos = filas.filter(item => item.status === 'Atendido').length;
+    const totalPerdas = filas.filter(item => item.status === 'Cancelado' || item.status === 'Desistente').length;
+
+    const tempos = filas
+      .map(item => Number(item.tempo_estimado))
+      .filter(valor => !Number.isNaN(valor) && valor > 0);
+
+    const notas = feedbacks
+      .map(item => Number(item.nota))
+      .filter(valor => !Number.isNaN(valor) && valor > 0);
+
+    const totalReservas = feedbacks.filter(item => item.origem_tipo === 'reserva').length;
+
+    const tempoMedio = calcularMedia(tempos);
+    const notaMedia = calcularMedia(notas);
+
+    cardTotalFila.textContent = totalFila;
+    cardTotalAtendidos.textContent = totalAtendidos;
+    cardTotalPerdas.textContent = totalPerdas;
+    cardTempoMedio.textContent = tempoMedio ? `${Math.round(tempoMedio)} min` : '0 min';
+    cardNotaMedia.textContent = notaMedia ? notaMedia.toFixed(1) : '-';
+    cardReservas.textContent = totalReservas;
+  }
+
+  function renderizarTabelaFeedbacks(feedbacks) {
+    tabelaFeedbacks.innerHTML = '';
+
+    if (!feedbacks.length) {
+      tabelaFeedbacks.innerHTML = `
+        <tr>
+          <td colspan="6">Nenhum feedback encontrado no período.</td>
+        </tr>
+      `;
+      return;
+    }
+
+    feedbacks.forEach(item => {
+      const detalhe = item.motivo_cancelamento_resposta || item.tempo_espera_resposta || '-';
+
+      tabelaFeedbacks.innerHTML += `
+        <tr>
+          <td>${formatarDataHora(item.data_criacao)}</td>
+          <td><span class="${classeOrigem(item.origem_tipo)}">${item.origem_tipo || '-'}</span></td>
+          <td>${item.cliente?.nome || '-'}</td>
+          <td>${item.nota ?? '-'}</td>
+          <td>${detalhe}</td>
+          <td>${item.comentario || '-'}</td>
+        </tr>
+      `;
+    });
+  }
+
+  function destruirGraficosSeExistirem() {
+    if (chartStatus) {
+      chartStatus.destroy();
+      chartStatus = null;
+    }
+
+    if (chartEntradas) {
+      chartEntradas.destroy();
+      chartEntradas = null;
+    }
+
+    if (chartOrigem) {
+      chartOrigem.destroy();
+      chartOrigem = null;
+    }
+  }
+
+  function montarGraficoStatus(filas) {
+    const labels = ['Aguardando', 'Preparando', 'Chamado', 'A caminho', 'Atendido', 'Desistente', 'Cancelado'];
+    const valores = labels.map(status => filas.filter(item => item.status === status).length);
+
+    const ctx = document.getElementById('graficoStatus').getContext('2d');
+
+    chartStatus = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Quantidade',
+          data: valores,
+          backgroundColor: [
+            '#7bb51f',
+            '#3b82f6',
+            '#facc15',
+            '#60a5fa',
+            '#22c55e',
+            '#eab308',
+            '#9ca3af'
+          ],
+          borderRadius: 10,
+          borderSkipped: false
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false,
+            labels: {
+              font: { family: 'Poppins' }
+            }
+          }
+        },
+        scales: {
+          x: {
+            ticks: {
+              color: '#374151',
+              font: { family: 'Poppins' }
+            },
+            grid: { display: false }
+          },
+          y: {
+            beginAtZero: true,
+            ticks: {
+              color: '#374151',
+              precision: 0,
+              font: { family: 'Poppins' }
+            },
+            grid: {
+              color: '#e5e7eb'
+            }
+          }
+        }
+      }
+    });
+  }
+
+  function montarGraficoEntradasDia(filas) {
+    const agrupado = {};
+
+    filas.forEach(item => {
+      if (!item.hora_entrada) return;
+      const data = new Date(item.hora_entrada).toLocaleDateString('pt-BR');
+      agrupado[data] = (agrupado[data] || 0) + 1;
+    });
+
+    const diasOrdenados = Object.entries(agrupado).sort((a, b) => {
+      const [da, ma, aa] = a[0].split('/');
+      const [db, mb, ab] = b[0].split('/');
+      return new Date(`${aa}-${ma}-${da}`) - new Date(`${ab}-${mb}-${db}`);
+    });
+
+    const labels = diasOrdenados.map(item => item[0]).slice(-7);
+    const valores = diasOrdenados.map(item => item[1]).slice(-7);
+
+    const ctx = document.getElementById('graficoEntradas').getContext('2d');
+
+    chartEntradas = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Entradas',
+          data: valores,
+          backgroundColor: '#2563eb',
+          borderRadius: 10,
+          borderSkipped: false
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false,
+            labels: {
+              font: { family: 'Poppins' }
+            }
+          }
+        },
+        scales: {
+          x: {
+            ticks: {
+              color: '#374151',
+              font: { family: 'Poppins' }
+            },
+            grid: { display: false }
+          },
+          y: {
+            beginAtZero: true,
+            ticks: {
+              color: '#374151',
+              precision: 0,
+              font: { family: 'Poppins' }
+            },
+            grid: {
+              color: '#e5e7eb'
+            }
+          }
+        }
+      }
+    });
+  }
+
+  function montarGraficoOrigem(feedbacks) {
+    const origens = ['fila_item', 'cancelamento_fila', 'reserva', 'cancelamento_reserva'];
+    const labels = ['Fila', 'Cancelamento fila', 'Reserva', 'Cancelamento reserva'];
+    const valores = origens.map(origem => feedbacks.filter(item => item.origem_tipo === origem).length);
+
+    const ctx = document.getElementById('graficoOrigem').getContext('2d');
+
+    chartOrigem = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels,
+        datasets: [{
+          data: valores,
+          backgroundColor: ['#2563eb', '#f59e0b', '#16a34a', '#ec4899'],
+          borderColor: '#ffffff',
+          borderWidth: 4,
+          hoverOffset: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '62%',
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              color: '#374151',
+              usePointStyle: true,
+              padding: 18,
+              font: { family: 'Poppins' }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  async function carregarDashboardGestor() {
+    setMensagemDashboard('');
+
+    try {
+      const { inicio, fim } = obterIntervaloDatas();
+
+      let queryFilas = supabaseClient
+        .from('fila_item')
+        .select(`
+          id,
+          cliente_id,
+          status,
+          tempo_estimado,
+          hora_entrada,
+          numero_pessoas
+        `)
+        .eq('restaurante_id', RESTAURANTE_ID_FIXO)
+        .order('hora_entrada', { ascending: false });
+
+      if (inicio) {
+        queryFilas = queryFilas.gte('hora_entrada', inicio);
+      }
+
+      if (fim) {
+        queryFilas = queryFilas.lte('hora_entrada', fim);
+      }
+
+      if (filtroStatusFila.value) {
+        queryFilas = queryFilas.eq('status', filtroStatusFila.value);
+      }
+
+      let queryFeedbacks = supabaseClient
+        .from('feedback')
+        .select(`
+          id,
+          cliente_id,
+          origem_id,
+          origem_tipo,
+          nota,
+          comentario,
+          tempo_espera_resposta,
+          motivo_cancelamento_resposta,
+          data_criacao,
+          cliente:cliente_id (
+            nome
+          )
+        `)
+        .order('data_criacao', { ascending: false });
+
+      if (inicio) {
+        queryFeedbacks = queryFeedbacks.gte('data_criacao', inicio);
+      }
+
+      if (fim) {
+        queryFeedbacks = queryFeedbacks.lte('data_criacao', fim);
+      }
+
+      if (filtroOrigem.value) {
+        queryFeedbacks = queryFeedbacks.eq('origem_tipo', filtroOrigem.value);
+      }
+
+      const [{ data: filas, error: erroFilas }, { data: feedbacks, error: erroFeedbacks }] = await Promise.all([
+        queryFilas,
+        queryFeedbacks
+      ]);
+
+      if (erroFilas) throw erroFilas;
+      if (erroFeedbacks) throw erroFeedbacks;
+
+      const filasData = filas || [];
+      const feedbacksData = feedbacks || [];
+
+      atualizarCards(filasData, feedbacksData);
+      renderizarTabelaFeedbacks(feedbacksData);
+
+      destruirGraficosSeExistirem();
+      montarGraficoStatus(filasData);
+      montarGraficoEntradasDia(filasData);
+      montarGraficoOrigem(feedbacksData);
+
+      setMensagemDashboard('Dashboard atualizado com sucesso.', 'sucesso');
+    } catch (erro) {
+      console.error('Erro ao carregar dashboard do gestor:', erro);
+      setMensagemDashboard('Não foi possível carregar os dados do dashboard.', 'erro');
+    }
+  }
+
+  function limparFiltrosDashboard() {
+    filtroDataInicio.value = '';
+    filtroDataFim.value = '';
+    filtroOrigem.value = '';
+    filtroStatusFila.value = '';
+    carregarDashboardGestor();
+  }
+
+  btnAplicarDashboard.addEventListener('click', carregarDashboardGestor);
+  btnLimparDashboard.addEventListener('click', limparFiltrosDashboard);
+
+  carregarDashboardGestor();
+</script>
+  
+</body>
+</html>

@@ -49,10 +49,10 @@
           <input type="text" id="telefone" class="campo" placeholder="Qual é o seu telefone? *" required />
 
           <p class="texto-informativo">
-            Se o CPF já estiver cadastrado, seus dados serão carregados automaticamente.
+            Se o CPF já estiver cadastrado, preencha e clique em buscar cadastro.
           </p>
 
-          <button type="submit" class="botao-primario">
+          <button type="submit" class="botao-primario" id="btnContinuarFila">
             Continuar
           </button>
 
@@ -63,6 +63,58 @@
     </section>
   </main>
 
+  <!-- MODAL 1: FILA ATIVA ENCONTRADA -->
+  <div id="modalRetomarFila" class="modal">
+    <div class="modal-conteudo">
+      <h2>Fila ativa encontrada</h2>
+      <p id="textoModalRetomarFila">
+        Encontramos uma fila em andamento para este CPF.
+      </p>
+
+      <p id="dadosParciaisFila" style="font-size: 13px; line-height: 1.6; color: #666; margin: 0 0 18px;"></p>
+
+      <div class="modal-acoes">
+        <button type="button" class="botao-secundario" id="btnUsarOutroCpf">
+          Usar outro CPF
+        </button>
+        <button type="button" class="botao-primario" id="btnRetomarFila">
+          Retomar minha fila
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: CONFIRMAÇÃO DE IDENTIDADE -->
+  <div id="modalConfirmarRetomada" class="modal">
+    <div class="modal-conteudo">
+      <h2>Confirmar retomada</h2>
+      <p>
+        Para sua segurança, informe os <strong>4 últimos dígitos do telefone</strong> vinculado a esta fila.
+      </p>
+
+      <input
+        type="text"
+        id="inputConfirmacaoTelefone"
+        class="campo"
+        placeholder="Últimos 4 dígitos"
+        maxlength="4"
+        inputmode="numeric"
+        style="margin-bottom: 14px;"
+      />
+
+      <p id="mensagemConfirmacaoRetomada" style="min-height: 20px; margin-bottom: 12px; font-size: 14px;"></p>
+
+      <div class="modal-acoes">
+        <button type="button" class="botao-secundario" id="btnCancelarConfirmacaoRetomada">
+          Cancelar
+        </button>
+        <button type="button" class="botao-primario" id="btnConfirmarRetomada">
+          Confirmar e entrar
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script>
     const supabaseUrl = 'https://jlfbzdqhaezdtyyajqlk.supabase.co';
@@ -72,11 +124,29 @@
     const form = document.getElementById('formLoginFila');
     const mensagem = document.getElementById('mensagem');
     const btnBuscarCliente = document.getElementById('btnBuscarCliente');
+    const btnContinuarFila = document.getElementById('btnContinuarFila');
 
     const campoCpf = document.getElementById('cpf');
     const campoQtdPessoas = document.getElementById('qtdPessoas');
     const campoNome = document.getElementById('nome');
     const campoTelefone = document.getElementById('telefone');
+
+    const modalRetomarFila = document.getElementById('modalRetomarFila');
+    const textoModalRetomarFila = document.getElementById('textoModalRetomarFila');
+    const dadosParciaisFila = document.getElementById('dadosParciaisFila');
+    const btnRetomarFila = document.getElementById('btnRetomarFila');
+    const btnUsarOutroCpf = document.getElementById('btnUsarOutroCpf');
+
+    const modalConfirmarRetomada = document.getElementById('modalConfirmarRetomada');
+    const inputConfirmacaoTelefone = document.getElementById('inputConfirmacaoTelefone');
+    const mensagemConfirmacaoRetomada = document.getElementById('mensagemConfirmacaoRetomada');
+    const btnCancelarConfirmacaoRetomada = document.getElementById('btnCancelarConfirmacaoRetomada');
+    const btnConfirmarRetomada = document.getElementById('btnConfirmarRetomada');
+
+    const STATUS_EM_FILA = ['Aguardando', 'Preparando', 'Chamado'];
+
+    let filaAtivaEncontrada = null;
+    let clienteEncontrado = null;
 
     function limparEstadoFila() {
       sessionStorage.removeItem('fila_ativa');
@@ -103,7 +173,145 @@
       if (telefoneSalvo) campoTelefone.value = telefoneSalvo;
     }
 
-    async function verificarFilaAtiva() {
+    function abrirModalRetomarFila() {
+      modalRetomarFila.style.display = 'flex';
+    }
+
+    function fecharModalRetomarFila() {
+      modalRetomarFila.style.display = 'none';
+    }
+
+    function abrirModalConfirmarRetomada() {
+      mensagemConfirmacaoRetomada.textContent = '';
+      mensagemConfirmacaoRetomada.style.color = '';
+      inputConfirmacaoTelefone.value = '';
+      modalConfirmarRetomada.style.display = 'flex';
+      inputConfirmacaoTelefone.focus();
+    }
+
+    function fecharModalConfirmarRetomada() {
+      modalConfirmarRetomada.style.display = 'none';
+      mensagemConfirmacaoRetomada.textContent = '';
+      inputConfirmacaoTelefone.value = '';
+    }
+
+    function restaurarSessaoFila(cliente, fila) {
+      sessionStorage.setItem('cliente_id', cliente.id);
+      sessionStorage.setItem('fila_item_id', fila.id);
+      sessionStorage.setItem('fila_ativa', 'true');
+      sessionStorage.setItem('fila_nome', cliente.nome || '');
+      sessionStorage.setItem('fila_cpf', cliente.cpf || '');
+      sessionStorage.setItem('fila_telefone', cliente.telefone || '');
+      sessionStorage.setItem('fila_qtd_pessoas', fila.numero_pessoas ?? '');
+      sessionStorage.setItem('fila_posicao', fila.posicao ?? '');
+      sessionStorage.setItem('fila_tempo_estimado', fila.tempo_estimado ?? '');
+    }
+
+      function mascararNome(nome) {
+        const nomeLimpo = String(nome || '').trim();
+        if (!nomeLimpo) return 'Não informado';
+
+        if (nomeLimpo.length <= 2) {
+          return nomeLimpo.charAt(0) + '*';
+        }
+
+        return nomeLimpo.slice(0, 2) + '*'.repeat(Math.max(2, nomeLimpo.length - 2));
+      }
+
+    function somenteNumeros(valor) {
+      return String(valor || '').replace(/\D/g, '');
+    }
+
+    function mascararTelefone(telefone) {
+      const numeros = somenteNumeros(telefone);
+
+      if (!numeros) return 'Não informado';
+
+      const finais = numeros.slice(-4).padStart(4, '*');
+      return `******${finais}`;
+    }
+
+    function ultimos4Digitos(telefone) {
+      return somenteNumeros(telefone).slice(-4);
+    }
+
+    function prepararNovoFluxoCpf() {
+      filaAtivaEncontrada = null;
+      clienteEncontrado = null;
+
+      campoNome.value = '';
+      campoTelefone.value = '';
+      sessionStorage.removeItem('cliente_id');
+
+      mensagem.textContent = 'Informe outro CPF para seguir com um novo atendimento.';
+      mensagem.style.color = '#d97706';
+
+      campoCpf.focus();
+      campoCpf.select();
+    }
+
+    async function buscarFilaAtivaPorCliente(clienteId) {
+      const { data, error } = await supabaseClient
+        .from('fila_item')
+        .select(`
+          id,
+          status,
+          posicao,
+          tempo_estimado,
+          numero_pessoas,
+          hora_entrada,
+          restaurante_id
+        `)
+        .eq('cliente_id', clienteId)
+        .in('status', STATUS_EM_FILA)
+        .order('hora_entrada', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (error) {
+        throw error;
+      }
+
+      return data;
+    }
+
+    async function buscarClienteBaseadoNoCpf(cpf) {
+      const { data, error } = await supabaseClient
+        .from('cliente')
+        .select('id, nome, telefone, cpf')
+        .eq('cpf', cpf)
+        .maybeSingle();
+
+      if (error) {
+        throw error;
+      }
+
+      return data;
+    }
+
+    function preencherCamposCliente(cliente) {
+      campoNome.value = cliente?.nome || '';
+      campoTelefone.value = cliente?.telefone || '';
+    }
+
+    function exibirModalFilaAtiva(cliente, filaAtiva) {
+      clienteEncontrado = cliente;
+      filaAtivaEncontrada = filaAtiva;
+
+      textoModalRetomarFila.textContent =
+        'Encontramos uma fila em andamento vinculada a este CPF.';
+
+      dadosParciaisFila.innerHTML = `
+        <strong>Nome cadastrado:</strong> ${mascararNome(cliente.nome)}
+      `;
+
+      mensagem.textContent = 'Já existe uma fila ativa vinculada a este CPF.';
+      mensagem.style.color = '#d97706';
+
+      abrirModalRetomarFila();
+    }
+
+    async function verificarFilaAtivaSessao() {
       const filaAtiva = sessionStorage.getItem('fila_ativa');
       const filaItemId = sessionStorage.getItem('fila_item_id');
 
@@ -119,13 +327,17 @@
           .eq('id', filaItemId)
           .maybeSingle();
 
-        if (error || !data || data.status !== 'Aguardando') {
+        if (error || !data || !STATUS_EM_FILA.includes(data.status)) {
           limparEstadoFila();
           carregarDadosSalvos();
           return;
         }
 
-        window.location.href = 'fila_confirmada.html';
+        if (data.status === 'Aguardando') {
+          window.location.href = 'fila_confirmada.html';
+        } else {
+          window.location.href = 'acompanhar_fila.html';
+        }
       } catch (erro) {
         console.error('Erro ao validar fila ativa:', erro);
         limparEstadoFila();
@@ -133,10 +345,12 @@
       }
     }
 
-    async function buscarClientePorCpf() {
+    async function processarBuscaCpf() {
       const cpf = campoCpf.value.trim();
 
       mensagem.textContent = '';
+      filaAtivaEncontrada = null;
+      clienteEncontrado = null;
 
       if (!cpf) {
         mensagem.textContent = 'Informe o CPF para buscar o cadastro.';
@@ -148,21 +362,18 @@
       btnBuscarCliente.textContent = 'Buscando...';
 
       try {
-        const { data, error } = await supabaseClient
-          .from('cliente')
-          .select('id, nome, telefone, cpf')
-          .eq('cpf', cpf)
-          .maybeSingle();
+        const cliente = await buscarClienteBaseadoNoCpf(cpf);
 
-        if (error) {
-          throw error;
-        }
+        if (cliente) {
+          preencherCamposCliente(cliente);
+          sessionStorage.setItem('cliente_id', cliente.id);
 
-        if (data) {
-          campoNome.value = data.nome || '';
-          campoTelefone.value = data.telefone || '';
+          const filaAtiva = await buscarFilaAtivaPorCliente(cliente.id);
 
-          sessionStorage.setItem('cliente_id', data.id);
+          if (filaAtiva) {
+            exibirModalFilaAtiva(cliente, filaAtiva);
+            return;
+          }
 
           mensagem.textContent = 'Cadastro encontrado. Confira os dados antes de continuar.';
           mensagem.style.color = 'green';
@@ -184,15 +395,40 @@
       }
     }
 
-    btnBuscarCliente.addEventListener('click', buscarClientePorCpf);
+    async function validarFilaAtivaAntesDeContinuar(cpf) {
+      const cliente = await buscarClienteBaseadoNoCpf(cpf);
 
-    form.addEventListener('submit', function (event) {
+      if (!cliente) {
+        sessionStorage.removeItem('cliente_id');
+        return false;
+      }
+
+      clienteEncontrado = cliente;
+      sessionStorage.setItem('cliente_id', cliente.id);
+
+      const filaAtiva = await buscarFilaAtivaPorCliente(cliente.id);
+
+      if (filaAtiva) {
+        exibirModalFilaAtiva(cliente, filaAtiva);
+        return true;
+      }
+
+      return false;
+    }
+
+    btnBuscarCliente.addEventListener('click', processarBuscaCpf);
+
+    form.addEventListener('submit', async function (event) {
       event.preventDefault();
 
       const cpf = campoCpf.value.trim();
       const qtdPessoas = campoQtdPessoas.value.trim();
       const nome = campoNome.value.trim();
       const telefone = campoTelefone.value.trim();
+
+      mensagem.textContent = '';
+      filaAtivaEncontrada = null;
+      clienteEncontrado = null;
 
       if (!cpf || !qtdPessoas || Number(qtdPessoas) < 1) {
         mensagem.textContent = 'Preencha CPF e quantidade de pessoas corretamente.';
@@ -206,17 +442,93 @@
         return;
       }
 
-      mensagem.textContent = '';
+      btnContinuarFila.disabled = true;
+      btnContinuarFila.textContent = 'Validando...';
 
-      sessionStorage.setItem('fila_cpf', cpf);
-      sessionStorage.setItem('fila_qtd_pessoas', qtdPessoas);
-      sessionStorage.setItem('fila_nome', nome);
-      sessionStorage.setItem('fila_telefone', telefone);
+      try {
+        const possuiFilaAtiva = await validarFilaAtivaAntesDeContinuar(cpf);
 
-      window.location.href = 'revisar_fila.html';
+        if (possuiFilaAtiva) {
+          return;
+        }
+
+        sessionStorage.setItem('fila_cpf', cpf);
+        sessionStorage.setItem('fila_qtd_pessoas', qtdPessoas);
+        sessionStorage.setItem('fila_nome', nome);
+        sessionStorage.setItem('fila_telefone', telefone);
+
+        window.location.href = 'revisar_fila.html';
+      } catch (error) {
+        console.error('Erro ao validar CPF/fila ativa:', error);
+        mensagem.textContent = 'Não foi possível validar os dados no momento. Tente novamente.';
+        mensagem.style.color = 'red';
+      } finally {
+        btnContinuarFila.disabled = false;
+        btnContinuarFila.textContent = 'Continuar';
+      }
     });
 
-    verificarFilaAtiva();
+    btnRetomarFila.addEventListener('click', function () {
+      if (!clienteEncontrado || !filaAtivaEncontrada) {
+        fecharModalRetomarFila();
+        return;
+      }
+
+      fecharModalRetomarFila();
+      abrirModalConfirmarRetomada();
+    });
+
+    btnUsarOutroCpf.addEventListener('click', function () {
+      fecharModalRetomarFila();
+      prepararNovoFluxoCpf();
+    });
+
+    btnCancelarConfirmacaoRetomada.addEventListener('click', function () {
+      fecharModalConfirmarRetomada();
+    });
+
+    btnConfirmarRetomada.addEventListener('click', function () {
+      if (!clienteEncontrado || !filaAtivaEncontrada) {
+        fecharModalConfirmarRetomada();
+        return;
+      }
+
+      const telefoneInformado = inputConfirmacaoTelefone.value.trim();
+      const telefoneEsperado = ultimos4Digitos(clienteEncontrado.telefone);
+
+      if (!/^\d{4}$/.test(telefoneInformado)) {
+        mensagemConfirmacaoRetomada.textContent = 'Informe exatamente os 4 últimos dígitos do telefone.';
+        mensagemConfirmacaoRetomada.style.color = 'red';
+        return;
+      }
+
+      if (telefoneInformado !== telefoneEsperado) {
+        mensagemConfirmacaoRetomada.textContent = 'Os dígitos informados não conferem com a fila encontrada.';
+        mensagemConfirmacaoRetomada.style.color = 'red';
+        return;
+      }
+
+      restaurarSessaoFila(clienteEncontrado, filaAtivaEncontrada);
+      fecharModalConfirmarRetomada();
+
+      if (filaAtivaEncontrada.status === 'Aguardando') {
+        window.location.href = 'fila_confirmada.html';
+      } else {
+        window.location.href = 'acompanhar_fila.html';
+      }
+    });
+
+    window.addEventListener('click', function (event) {
+      if (event.target === modalRetomarFila) {
+        fecharModalRetomarFila();
+      }
+
+      if (event.target === modalConfirmarRetomada) {
+        fecharModalConfirmarRetomada();
+      }
+    });
+
+    verificarFilaAtivaSessao();
   </script>
 </body>
 </html>

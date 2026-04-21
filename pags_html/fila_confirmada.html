@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Qmesa - Entrou na fila</title>
   <link rel="stylesheet" href="../pags_css/style.css" />
-  <style>
-  </style>
 </head>
 <body class="tema-fila">
   <main class="tela">
@@ -66,6 +64,23 @@
     </section>
   </main>
 
+  <!-- MODAL CANCELAMENTO -->
+  <div id="modalCancelamento" class="modal">
+    <div class="modal-conteudo">
+      <h2>Cancelar reserva</h2>
+      <p>Tem certeza que deseja sair da fila?</p>
+
+      <div class="modal-acoes">
+        <button type="button" class="botao-secundario" onclick="fecharModalCancelamento()">
+          Voltar
+        </button>
+        <button type="button" class="botao-danger" onclick="confirmarCancelamento()">
+          Cancelar fila
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script>
     const supabaseUrl = 'https://jlfbzdqhaezdtyyajqlk.supabase.co';
@@ -79,6 +94,10 @@
     const mensagemErro = document.getElementById('mensagemErro');
     const btnAcompanhar = document.getElementById('btnAcompanhar');
     const btnCancelar = document.getElementById('btnCancelar');
+    const modalCancelamento = document.getElementById('modalCancelamento');
+
+    const STATUS_EM_FILA = ['Aguardando', 'Preparando', 'Chamado', 'A caminho'];
+    const TEMPO_MEDIO_POR_POSICAO = 10;
 
     function limparEstadoFila() {
       sessionStorage.removeItem('fila_ativa');
@@ -91,9 +110,15 @@
       sessionStorage.removeItem('fila_item_id');
       sessionStorage.removeItem('cliente_id');
       sessionStorage.removeItem('fila_mensagem_sucesso');
+      sessionStorage.removeItem('fila_status_anterior');
+      sessionStorage.removeItem('fila_posicao_anterior');
     }
 
     function ordinalPorExtenso(posicao) {
+      const numero = Number(posicao);
+
+      if (!numero || numero < 1) return '-';
+
       const mapa = {
         1: 'PRIMEIRO',
         2: 'SEGUNDO',
@@ -106,7 +131,8 @@
         9: 'NONO',
         10: 'DÉCIMO'
       };
-      return mapa[posicao] || `${posicao}º`;
+
+      return mapa[numero] || `${numero}º`;
     }
 
     function exibirMensagemSucesso() {
@@ -114,6 +140,14 @@
       if (texto) {
         mensagemSucesso.textContent = texto;
       }
+    }
+
+    function abrirModalCancelamento() {
+      modalCancelamento.style.display = 'flex';
+    }
+
+    function fecharModalCancelamento() {
+      modalCancelamento.style.display = 'none';
     }
 
     async function carregarFilaConfirmada() {
@@ -125,6 +159,8 @@
         return;
       }
 
+      mensagemErro.textContent = '';
+
       try {
         const { data: fila, error } = await supabaseClient
           .from('fila_item')
@@ -133,7 +169,8 @@
             restaurante_id,
             posicao,
             status,
-            tempo_estimado
+            tempo_estimado,
+            hora_entrada
           `)
           .eq('id', filaItemId)
           .maybeSingle();
@@ -148,48 +185,53 @@
           return;
         }
 
-        if (fila.status !== 'Aguardando') {
-          window.location.href = 'acompanhar_fila.html';
+        if (!STATUS_EM_FILA.includes(fila.status)) {
+          if (fila.status === 'Atendido') {
+            window.location.href = 'experiencia_fila.html';
+          } else {
+            limparEstadoFila();
+            window.location.href = 'login_entrar_fila.html';
+          }
           return;
         }
 
-        const { data: aguardando, error: erroAguardando } = await supabaseClient
+        const { data: filaAtiva, error: erroFilaAtiva } = await supabaseClient
           .from('fila_item')
-          .select('id, posicao')
+          .select('id, status, hora_entrada')
           .eq('restaurante_id', fila.restaurante_id)
-          .eq('status', 'Aguardando')
-          .order('posicao', { ascending: true });
+          .in('status', STATUS_EM_FILA)
+          .order('hora_entrada', { ascending: true });
 
-        if (erroAguardando) {
-          throw erroAguardando;
+        if (erroFilaAtiva) {
+          throw erroFilaAtiva;
         }
 
-        const indiceAtual = aguardando.findIndex(item => item.id === fila.id);
-        const posicaoAtual = indiceAtual >= 0 ? indiceAtual + 1 : fila.posicao;
+        const indiceAtual = (filaAtiva || []).findIndex(item => item.id === fila.id);
+        const posicaoAtual = indiceAtual >= 0 ? indiceAtual + 1 : '-';
+        const tempoEstimadoAtual = indiceAtual >= 0
+          ? (indiceAtual + 1) * TEMPO_MEDIO_POR_POSICAO
+          : (fila.tempo_estimado ?? '-');
 
-        numeroFila.textContent = posicaoAtual ?? '-';
-        textoPosicao.innerHTML = `Você é o <strong>${ordinalPorExtenso(posicaoAtual)}</strong> na fila`;
-        textoTempo.innerHTML = `Seu tempo médio de espera é:<br>${fila.tempo_estimado ?? '-'} minuto(s)`;
+        numeroFila.textContent = posicaoAtual;
+        textoPosicao.innerHTML = `Você é o <strong>${ordinalPorExtenso(Number(posicaoAtual))}</strong> na fila`;
+        textoTempo.innerHTML = `Seu tempo médio de espera é:<br>${tempoEstimadoAtual} minuto(s)`;
 
         sessionStorage.setItem('fila_ativa', 'true');
         sessionStorage.setItem('fila_posicao', posicaoAtual);
-        sessionStorage.setItem('fila_tempo_estimado', fila.tempo_estimado ?? '');
+        sessionStorage.setItem('fila_tempo_estimado', tempoEstimadoAtual);
       } catch (erro) {
         console.error('Erro ao carregar fila confirmada:', erro);
         mensagemErro.textContent = 'Não foi possível consultar sua fila agora. Tente novamente.';
       }
     }
 
-    async function cancelarFila() {
+    async function confirmarCancelamento() {
       const filaItemId = sessionStorage.getItem('fila_item_id');
+      const clienteId = sessionStorage.getItem('cliente_id');
 
       if (!filaItemId) {
         limparEstadoFila();
         window.location.href = 'login_entrar_fila.html';
-        return;
-      }
-
-      if (!confirm('Deseja realmente cancelar sua reserva na fila?')) {
         return;
       }
 
@@ -200,13 +242,22 @@
       try {
         const { error } = await supabaseClient
           .from('fila_item')
-          .update({ status: 'Cancelado' })
+          .update({
+            status: 'Cancelado',
+            posicao: 0,
+            tempo_estimado: 0
+          })
           .eq('id', filaItemId);
 
         if (error) {
           throw error;
         }
 
+        // salva referência do cancelamento para o fluxo de comentário
+        sessionStorage.setItem('fila_cancelada_item_id', filaItemId);
+        sessionStorage.setItem('fila_cancelada_cliente_id', clienteId || '');
+
+        fecharModalCancelamento();
         limparEstadoFila();
         window.location.href = 'cancelamento_confirmado.html';
       } catch (erro) {
@@ -217,14 +268,28 @@
       }
     }
 
+    function cancelarFila() {
+      abrirModalCancelamento();
+    }
+
     btnAcompanhar.addEventListener('click', () => {
       window.location.href = 'acompanhar_fila.html';
     });
 
     btnCancelar.addEventListener('click', cancelarFila);
 
+    window.addEventListener('click', (event) => {
+      if (event.target === modalCancelamento) {
+        fecharModalCancelamento();
+      }
+    });
+
     exibirMensagemSucesso();
     carregarFilaConfirmada();
+
+    setInterval(() => {
+      carregarFilaConfirmada();
+    }, 5000);
   </script>
 </body>
 </html>

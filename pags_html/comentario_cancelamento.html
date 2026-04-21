@@ -6,7 +6,7 @@
   <title>Qmesa - Comentário do cancelamento</title>
   <link rel="stylesheet" href="../pags_css/style.css">
 </head>
-<body class="tema-cancelamento">
+<body class="tema-fila">
 
   <main class="tela">
     <section class="cartao cartao-experiencia">
@@ -36,48 +36,272 @@
       <section class="conteudo">
         <h1 class="titulo-experiencia">Antes de ir, poderia nos contar o que aconteceu?</h1>
 
-        <div class="bloco-pesquisa-experiencia">
-          <p class="pergunta-experiencia">Qual é o motivo do cancelamento?</p>
+        <form id="formComentarioCancelamento">
+          <div class="bloco-pesquisa-experiencia">
+            <p class="pergunta-experiencia">Qual é o motivo do cancelamento?</p>
 
-          <label class="opcao-experiencia">
-            <input type="radio" name="motivo_cancelamento">
-            <span>Tive um imprevisto</span>
-          </label>
+            <label class="opcao-experiencia">
+              <input type="radio" name="motivo_cancelamento" value="Tive um imprevisto">
+              <span>Tive um imprevisto</span>
+            </label>
 
-          <label class="opcao-experiencia">
-            <input type="radio" name="motivo_cancelamento">
-            <span>Esperei demais</span>
-          </label>
+            <label class="opcao-experiencia">
+              <input type="radio" name="motivo_cancelamento" value="Esperei demais">
+              <span>Esperei demais</span>
+            </label>
 
-          <label class="opcao-experiencia">
-            <input type="radio" name="motivo_cancelamento">
-            <span>Consegui mesa em outro lugar</span>
-          </label>
+            <label class="opcao-experiencia">
+              <input type="radio" name="motivo_cancelamento" value="Consegui mesa em outro lugar">
+              <span>Consegui mesa em outro lugar</span>
+            </label>
 
-          <label class="opcao-experiencia">
-            <input type="radio" name="motivo_cancelamento">
-            <span>Outro motivo? Qual?</span>
-          </label>
-        </div>
+            <label class="opcao-experiencia">
+              <input type="radio" name="motivo_cancelamento" value="Outro motivo">
+              <span>Outro motivo</span>
+            </label>
+          </div>
 
-        <div class="bloco-comentario-experiencia">
-          <p class="pergunta-experiencia">Gostaria de deixar algum comentário?</p>
-          <textarea class="campo-comentario" placeholder="Digite sua mensagem aqui"></textarea>
-        </div>
+          <div class="bloco-comentario-experiencia">
+            <p class="pergunta-experiencia">Gostaria de deixar algum comentário?</p>
+            <textarea
+              id="campoComentario"
+              class="campo-comentario"
+              placeholder="Digite sua mensagem aqui"
+            ></textarea>
+          </div>
 
-        <div class="acoes-confirmacao">
-          <a href="../pags_html/comentario_cancelamento_enviado.html" class="botao-primario">
-            Enviar avaliação
-          </a>
+          <p id="mensagemComentarioCancelamento" style="margin-top: 12px; font-weight: 600; min-height: 20px;"></p>
 
-          <a href="../pags_html/index.html" class="botao-secundario">
-            Cancelar envio do comentário
-          </a>
-        </div>
+          <div class="acoes-confirmacao">
+            <button type="submit" class="botao-primario" id="btnEnviarComentarioCancelamento">
+              Enviar avaliação
+            </button>
+
+            <a href="../pags_html/index.html" class="botao-secundario">
+              Cancelar envio do comentário
+            </a>
+          </div>
+        </form>
       </section>
 
     </section>
   </main>
 
+  <!-- MODAL FEEDBACK EXISTENTE -->
+  <div id="modalFeedbackExistente" class="modal">
+    <div class="modal-conteudo">
+      <h2>Comentário já enviado</h2>
+      <p id="textoModalFeedbackExistente">
+        Você já enviou um comentário para este cancelamento. Deseja manter ou editar?
+      </p>
+
+      <div class="modal-acoes">
+        <button type="button" class="botao-secundario" onclick="manterComentarioExistente()">
+          Manter
+        </button>
+
+        <button type="button" class="botao-primario" onclick="editarComentarioExistente()">
+          Editar comentário
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script>
+    const supabaseUrl = 'https://jlfbzdqhaezdtyyajqlk.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpsZmJ6ZHFoYWV6ZHR5eWFqcWxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjM0NjksImV4cCI6MjA4ODkzOTQ2OX0.6VX3Z1FjxgZuBYALd2oU4bQl0nzbMcBUcc0nLW_DbvA';
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+    const formComentarioCancelamento = document.getElementById('formComentarioCancelamento');
+    const campoComentario = document.getElementById('campoComentario');
+    const mensagemComentarioCancelamento = document.getElementById('mensagemComentarioCancelamento');
+    const btnEnviarComentarioCancelamento = document.getElementById('btnEnviarComentarioCancelamento');
+    const modalFeedbackExistente = document.getElementById('modalFeedbackExistente');
+    const textoModalFeedbackExistente = document.getElementById('textoModalFeedbackExistente');
+
+    let feedbackExistenteId = null;
+    let clienteIdAtual = null;
+    let filaCanceladaItemIdAtual = null;
+
+    function setMensagem(texto, tipo = '') {
+      mensagemComentarioCancelamento.textContent = texto;
+
+      if (tipo === 'erro') {
+        mensagemComentarioCancelamento.style.color = '#dc2626';
+      } else if (tipo === 'sucesso') {
+        mensagemComentarioCancelamento.style.color = '#16a34a';
+      } else {
+        mensagemComentarioCancelamento.style.color = '#4b5563';
+      }
+    }
+
+    function marcarMotivo(valor) {
+      const radio = document.querySelector(`input[name="motivo_cancelamento"][value="${valor}"]`);
+      if (radio) {
+        radio.checked = true;
+      }
+    }
+
+    function abrirModalFeedbackExistente() {
+      modalFeedbackExistente.style.display = 'flex';
+    }
+
+    function fecharModalFeedbackExistente() {
+      modalFeedbackExistente.style.display = 'none';
+    }
+
+    function manterComentarioExistente() {
+      fecharModalFeedbackExistente();
+      setMensagem('');
+      btnEnviarComentarioCancelamento.disabled = true;
+      btnEnviarComentarioCancelamento.textContent = 'Comentário já enviado';
+    }
+
+    function editarComentarioExistente() {
+      textoModalFeedbackExistente.textContent = 'Edite seu comentário e clique em atualizar para salvar as mudanças.';
+      setTimeout(() => {
+        fecharModalFeedbackExistente();
+        btnEnviarComentarioCancelamento.disabled = false;
+        btnEnviarComentarioCancelamento.textContent = 'Atualizar avaliação';
+        campoComentario.focus();
+      }, 250);
+    }
+
+    async function obterClienteDaFilaSeNecessario(filaItemId) {
+      const { data, error } = await supabaseClient
+        .from('fila_item')
+        .select('cliente_id')
+        .eq('id', filaItemId)
+        .maybeSingle();
+
+      if (error) {
+        throw error;
+      }
+
+      return data?.cliente_id || null;
+    }
+
+    async function carregarFeedbackCancelamentoExistente() {
+      filaCanceladaItemIdAtual = sessionStorage.getItem('fila_cancelada_item_id');
+      clienteIdAtual = sessionStorage.getItem('fila_cancelada_cliente_id');
+
+      if (!filaCanceladaItemIdAtual) {
+        setMensagem('Não foi possível identificar a fila cancelada.', 'erro');
+        return;
+      }
+
+      if (!clienteIdAtual) {
+        clienteIdAtual = await obterClienteDaFilaSeNecessario(filaCanceladaItemIdAtual);
+      }
+
+      if (!clienteIdAtual) {
+        setMensagem('Não foi possível identificar o cliente deste cancelamento.', 'erro');
+        return;
+      }
+
+      const { data, error } = await supabaseClient
+        .from('feedback')
+        .select('id, motivo_cancelamento_resposta, comentario')
+        .eq('cliente_id', clienteIdAtual)
+        .eq('origem_id', filaCanceladaItemIdAtual)
+        .eq('origem_tipo', 'cancelamento_fila')
+        .maybeSingle();
+
+      if (error) {
+        throw error;
+      }
+
+      if (!data) {
+        feedbackExistenteId = null;
+        btnEnviarComentarioCancelamento.disabled = false;
+        btnEnviarComentarioCancelamento.textContent = 'Enviar avaliação';
+        return;
+      }
+
+      feedbackExistenteId = data.id;
+
+      if (data.motivo_cancelamento_resposta) {
+        marcarMotivo(data.motivo_cancelamento_resposta);
+      }
+
+      campoComentario.value = data.comentario || '';
+      btnEnviarComentarioCancelamento.textContent = 'Atualizar avaliação';
+      btnEnviarComentarioCancelamento.disabled = true;
+
+      abrirModalFeedbackExistente();
+    }
+
+    formComentarioCancelamento.addEventListener('submit', async function (event) {
+      event.preventDefault();
+
+      if (btnEnviarComentarioCancelamento.disabled) return;
+
+      const motivoSelecionado = document.querySelector('input[name="motivo_cancelamento"]:checked');
+      const comentario = campoComentario.value.trim();
+
+      if (!motivoSelecionado) {
+        setMensagem('Selecione o motivo do cancelamento.', 'erro');
+        return;
+      }
+
+      if (!filaCanceladaItemIdAtual) {
+        setMensagem('Não foi possível identificar a fila cancelada.', 'erro');
+        return;
+      }
+
+      if (!clienteIdAtual) {
+        setMensagem('Não foi possível identificar o cliente deste cancelamento.', 'erro');
+        return;
+      }
+
+      btnEnviarComentarioCancelamento.disabled = true;
+      btnEnviarComentarioCancelamento.textContent = 'Salvando...';
+      setMensagem('');
+
+      try {
+        const payload = {
+          cliente_id: clienteIdAtual,
+          origem_id: filaCanceladaItemIdAtual,
+          origem_tipo: 'cancelamento_fila',
+          motivo_cancelamento_resposta: motivoSelecionado.value,
+          comentario: comentario || null
+        };
+
+        const { error } = await supabaseClient
+          .from('feedback')
+          .upsert(payload, {
+            onConflict: 'cliente_id,origem_id,origem_tipo'
+          });
+
+        if (error) {
+          throw error;
+        }
+
+        setMensagem('Comentário salvo com sucesso!', 'sucesso');
+
+        setTimeout(() => {
+          window.location.href = '../pags_html/comentario_cancelamento_enviado.html';
+        }, 700);
+      } catch (erro) {
+        console.error('Erro ao salvar comentário de cancelamento:', erro);
+        setMensagem('Não foi possível salvar seu comentário agora. Tente novamente.', 'erro');
+        btnEnviarComentarioCancelamento.disabled = false;
+        btnEnviarComentarioCancelamento.textContent =
+          feedbackExistenteId ? 'Atualizar avaliação' : 'Enviar avaliação';
+      }
+    });
+
+    window.addEventListener('click', (event) => {
+      if (event.target === modalFeedbackExistente) {
+        fecharModalFeedbackExistente();
+      }
+    });
+
+    carregarFeedbackCancelamentoExistente().catch((erro) => {
+      console.error('Erro ao carregar comentário de cancelamento existente:', erro);
+      setMensagem('Não foi possível carregar o comentário anterior.', 'erro');
+    });
+  </script>
 </body>
 </html>

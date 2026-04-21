@@ -47,6 +47,11 @@
       </article>
 
       <article class="dashboard-operacional-card">
+        <span class="dashboard-operacional-card-titulo">A caminho</span>
+        <strong class="dashboard-operacional-card-numero" id="totalACaminho">0</strong>
+      </article>
+
+      <article class="dashboard-operacional-card">
         <span class="dashboard-operacional-card-titulo">Atendido</span>
         <strong class="dashboard-operacional-card-numero" id="totalAtendido">0</strong>
       </article>
@@ -66,9 +71,21 @@
           <option value="Aguardando">Aguardando</option>
           <option value="Preparando">Preparando</option>
           <option value="Chamado">Chamado</option>
+          <option value="A caminho">A caminho</option>
           <option value="Atendido">Atendido</option>
           <option value="Desistente">Desistente</option>
           <option value="Cancelado">Cancelado</option>
+        </select>
+      </div>
+
+      <div class="dashboard-operacional-filtro">
+        <label for="filtroPessoas">Pessoas</label>
+        <select id="filtroPessoas" class="dashboard-operacional-campo">
+          <option value="" selected>Todas</option>
+          <option value="1">1 pessoa</option>
+          <option value="2">2 pessoas</option>
+          <option value="3-4">3 a 4 pessoas</option>
+          <option value="5+">5 ou mais</option>
         </select>
       </div>
 
@@ -85,6 +102,10 @@
       <div class="dashboard-operacional-filtro dashboard-operacional-filtro-acoes">
         <button class="botao-primario" id="btnAplicarFiltros">
           Aplicar filtros
+        </button>
+
+        <button class="botao-secundario" id="btnNovaFila" type="button">
+          + Nova fila
         </button>
       </div>
     </section>
@@ -115,26 +136,167 @@
 
       <p id="mensagemPainel"></p>
     </section>
-
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <div class="modal-fila-overlay" id="modalFilaOverlay">
+    <div class="modal-fila" role="dialog" aria-modal="true" aria-labelledby="modalFilaTitulo">
+      <div class="modal-fila-header">
+        <h2 class="modal-fila-titulo" id="modalFilaTitulo">Editar fila</h2>
+        <button class="modal-fila-fechar" id="btnFecharModalFila" type="button" aria-label="Fechar modal">&times;</button>
+      </div>
 
+      <div class="modal-fila-body">
+        <form id="formFilaModal">
+          <input type="hidden" id="modalModo" value="criar" />
+          <input type="hidden" id="modalFilaItemId" value="" />
+          <input type="hidden" id="modalClienteId" value="" />
+
+          <div class="modal-fila-grid">
+            <div class="modal-fila-campo col-span-2">
+              <label for="modalNome">Nome do cliente</label>
+              <input type="text" id="modalNome" maxlength="120" required />
+            </div>
+
+            <div class="modal-fila-campo">
+              <label for="modalCpf">CPF</label>
+              <input type="text" id="modalCpf" maxlength="20" placeholder="Somente números ou formatado" />
+            </div>
+
+            <div class="modal-fila-campo">
+              <label for="modalTelefone">Telefone</label>
+              <input type="text" id="modalTelefone" maxlength="20" placeholder="(00) 00000-0000" />
+            </div>
+
+            <div class="modal-fila-campo">
+              <label for="modalPessoas">Quantidade de pessoas</label>
+              <input type="number" id="modalPessoas" min="1" max="30" value="1" required />
+            </div>
+
+            <div class="modal-fila-campo">
+              <label for="modalStatus">Status inicial</label>
+              <select id="modalStatus">
+                <option value="Aguardando" selected>Aguardando</option>
+                <option value="Preparando">Preparando</option>
+                <option value="Chamado">Chamado</option>
+                <option value="A caminho">A caminho</option>
+                <option value="Atendido">Atendido</option>
+                <option value="Desistente">Desistente</option>
+                <option value="Cancelado">Cancelado</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="modal-fila-acoes">
+            <button type="button" class="botao-secundario" id="btnCancelarModalFila">Cancelar</button>
+            <button type="submit" class="botao-primario" id="btnSalvarModalFila">Salvar</button>
+          </div>
+
+          <p class="modal-fila-mensagem" id="modalFilaMensagem"></p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-status-overlay" id="modalStatusOverlay">
+    <div class="modal-status" role="dialog" aria-modal="true" aria-labelledby="modalStatusTitulo">
+      <div class="modal-status-header">
+        <h2 class="modal-status-titulo" id="modalStatusTitulo">Confirmar alteração</h2>
+        <button class="modal-status-fechar" id="btnFecharModalStatus" type="button" aria-label="Fechar modal">&times;</button>
+      </div>
+
+      <div class="modal-status-body">
+        <p class="modal-status-texto" id="modalStatusTexto">
+          Deseja alterar o status?
+        </p>
+
+        <div id="blocoMotivoStatus" style="display:none; margin-bottom: 18px; text-align: left;">
+          <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:12px;">
+            <label for="modalMotivoStatus" style="font-size:13px; font-weight:600; color:#1f1f1f;">
+              Motivo
+            </label>
+            <select id="modalMotivoStatus" class="dashboard-operacional-campo">
+              <option value="">Selecione um motivo</option>
+            </select>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <label for="modalObservacaoStatus" style="font-size:13px; font-weight:600; color:#1f1f1f;">
+              Observação adicional
+            </label>
+            <textarea
+              id="modalObservacaoStatus"
+              rows="4"
+              style="width:100%; border:1px solid #d1d5db; border-radius:10px; padding:12px; resize:vertical; font-size:14px;"
+              placeholder="Opcional"
+            ></textarea>
+          </div>
+
+          <p id="mensagemModalStatus" style="margin-top:10px; font-size:13px; font-weight:600; min-height:18px;"></p>
+        </div>
+
+        <div class="modal-status-acoes">
+          <button type="button" class="botao-secundario" id="btnCancelarModalStatus">
+            Cancelar
+          </button>
+          <button type="button" class="botao-primario" id="btnConfirmarModalStatus">
+            Confirmar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script>
     const supabaseUrl = 'https://jlfbzdqhaezdtyyajqlk.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpsZmJ6ZHFoYWV6ZHR5eWFqcWxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjM0NjksImV4cCI6MjA4ODkzOTQ2OX0.6VX3Z1FjxgZuBYALd2oU4bQl0nzbMcBUcc0nLW_DbvA';
     const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
+    const STATUS_EM_FILA = ['Aguardando', 'Preparando', 'Chamado', 'A caminho'];
+
+    const modalStatusOverlay = document.getElementById('modalStatusOverlay');
+    const modalStatusTexto = document.getElementById('modalStatusTexto');
+    const btnFecharModalStatus = document.getElementById('btnFecharModalStatus');
+    const btnCancelarModalStatus = document.getElementById('btnCancelarModalStatus');
+    const btnConfirmarModalStatus = document.getElementById('btnConfirmarModalStatus');
+    const blocoMotivoStatus = document.getElementById('blocoMotivoStatus');
+    const modalMotivoStatus = document.getElementById('modalMotivoStatus');
+    const modalObservacaoStatus = document.getElementById('modalObservacaoStatus');
+    const mensagemModalStatus = document.getElementById('mensagemModalStatus');
+
+    let alteracaoStatusPendente = null;
+
     const tabelaFila = document.getElementById('tabelaFila');
     const filtroStatus = document.getElementById('filtroStatus');
     const filtroBusca = document.getElementById('filtroBusca');
+    const filtroPessoas = document.getElementById('filtroPessoas');
     const mensagemPainel = document.getElementById('mensagemPainel');
 
     const totalAguardando = document.getElementById('totalAguardando');
     const totalPreparando = document.getElementById('totalPreparando');
     const totalChamado = document.getElementById('totalChamado');
+    const totalACaminho = document.getElementById('totalACaminho');
     const totalAtendido = document.getElementById('totalAtendido');
     const totalAtiva = document.getElementById('totalAtiva');
+
+    const btnAplicarFiltros = document.getElementById('btnAplicarFiltros');
+    const btnNovaFila = document.getElementById('btnNovaFila');
+
+    const modalFilaOverlay = document.getElementById('modalFilaOverlay');
+    const modalFilaTitulo = document.getElementById('modalFilaTitulo');
+    const btnFecharModalFila = document.getElementById('btnFecharModalFila');
+    const btnCancelarModalFila = document.getElementById('btnCancelarModalFila');
+    const formFilaModal = document.getElementById('formFilaModal');
+    const modalFilaMensagem = document.getElementById('modalFilaMensagem');
+
+    const modalModo = document.getElementById('modalModo');
+    const modalFilaItemId = document.getElementById('modalFilaItemId');
+    const modalClienteId = document.getElementById('modalClienteId');
+    const modalNome = document.getElementById('modalNome');
+    const modalCpf = document.getElementById('modalCpf');
+    const modalTelefone = document.getElementById('modalTelefone');
+    const modalPessoas = document.getElementById('modalPessoas');
+    const modalStatus = document.getElementById('modalStatus');
 
     const RESTAURANTE_ID_FIXO = '00000000-0000-0000-0000-000000000001';
 
@@ -151,12 +313,37 @@
       }
     }
 
+    function setMensagemModal(texto, tipo = '') {
+      modalFilaMensagem.textContent = texto;
+
+      if (tipo === 'erro') {
+        modalFilaMensagem.style.color = '#d62828';
+      } else if (tipo === 'sucesso') {
+        modalFilaMensagem.style.color = '#1f8a3d';
+      } else {
+        modalFilaMensagem.style.color = '#374151';
+      }
+    }
+
+    function setMensagemModalStatus(texto, tipo = '') {
+      mensagemModalStatus.textContent = texto;
+
+      if (tipo === 'erro') {
+        mensagemModalStatus.style.color = '#d62828';
+      } else if (tipo === 'sucesso') {
+        mensagemModalStatus.style.color = '#1f8a3d';
+      } else {
+        mensagemModalStatus.style.color = '#374151';
+      }
+    }
+
     function classeStatus(status) {
       const valor = String(status || '').toLowerCase();
 
       if (valor === 'aguardando') return 'dashboard-operacional-status dashboard-operacional-status-aguardando';
       if (valor === 'preparando') return 'dashboard-operacional-status dashboard-operacional-status-preparando';
       if (valor === 'chamado') return 'dashboard-operacional-status dashboard-operacional-status-chamado';
+      if (valor === 'a caminho') return 'dashboard-operacional-status dashboard-operacional-status-caminho';
       if (valor === 'atendido') return 'dashboard-operacional-status dashboard-operacional-status-atendido';
       if (valor === 'desistente') return 'dashboard-operacional-status dashboard-operacional-status-desistente';
       if (valor === 'cancelado') return 'dashboard-operacional-status dashboard-operacional-status-cancelado';
@@ -164,17 +351,221 @@
       return 'dashboard-operacional-status';
     }
 
+    function obterMotivosPorStatus(status) {
+      if (status === 'Desistente') {
+        return [
+          'Cliente desistiu espontaneamente',
+          'Não respondeu ao chamado',
+          'Tempo de espera excedido',
+          'Mudança de planos',
+          'Outro motivo'
+        ];
+      }
+
+      if (status === 'Cancelado') {
+        return [
+          'Cancelado a pedido do cliente',
+          'Cadastro duplicado',
+          'Erro operacional',
+          'Fila encerrada manualmente',
+          'Outro motivo'
+        ];
+      }
+
+      return [];
+    }
+
+    function preencherMotivosStatus(status) {
+      const motivos = obterMotivosPorStatus(status);
+
+      modalMotivoStatus.innerHTML = '<option value="">Selecione um motivo</option>';
+
+      motivos.forEach(motivo => {
+        const option = document.createElement('option');
+        option.value = motivo;
+        option.textContent = motivo;
+        modalMotivoStatus.appendChild(option);
+      });
+    }
+
+    function abrirModalStatus(id, status) {
+      alteracaoStatusPendente = { id, status };
+      modalStatusTexto.textContent = `Deseja alterar o status para "${status}"?`;
+      setMensagemModalStatus('');
+      modalMotivoStatus.value = '';
+      modalObservacaoStatus.value = '';
+
+      if (status === 'Desistente' || status === 'Cancelado') {
+        preencherMotivosStatus(status);
+        blocoMotivoStatus.style.display = 'block';
+      } else {
+        blocoMotivoStatus.style.display = 'none';
+      }
+
+      modalStatusOverlay.classList.add('ativo');
+    }
+
+    function fecharModalStatus() {
+      alteracaoStatusPendente = null;
+      modalStatusOverlay.classList.remove('ativo');
+      blocoMotivoStatus.style.display = 'none';
+      modalMotivoStatus.innerHTML = '<option value="">Selecione um motivo</option>';
+      modalObservacaoStatus.value = '';
+      setMensagemModalStatus('');
+    }
+
+    async function salvarFeedbackOperacional(filaItemId, status, motivo, observacao) {
+      const { data: fila, error: erroFila } = await supabaseClient
+        .from('fila_item')
+        .select('id, cliente_id')
+        .eq('id', filaItemId)
+        .maybeSingle();
+
+      if (erroFila) throw erroFila;
+      if (!fila?.cliente_id) {
+        throw new Error('Cliente não identificado para salvar feedback.');
+      }
+
+      const motivoFinal = status === 'Desistente'
+        ? `Desistência operacional - ${motivo}`
+        : `Cancelamento operacional - ${motivo}`;
+
+      const comentarioFinal = observacao?.trim()
+        ? `[Painel operacional] ${observacao.trim()}`
+        : null;
+
+      const payloadFeedback = {
+        cliente_id: fila.cliente_id,
+        origem_id: filaItemId,
+        origem_tipo: 'cancelamento_fila',
+        motivo_cancelamento_resposta: motivoFinal,
+        comentario: comentarioFinal
+      };
+
+      const { error: erroFeedback } = await supabaseClient
+        .from('feedback')
+        .upsert(payloadFeedback, {
+          onConflict: 'cliente_id,origem_id,origem_tipo'
+        });
+
+      if (erroFeedback) throw erroFeedback;
+    }
+
+    async function confirmarAlteracaoStatus() {
+      if (!alteracaoStatusPendente) return;
+
+      const { id, status, acao } = alteracaoStatusPendente;
+
+      let motivo = '';
+      let observacao = '';
+
+      // 🔹 CASOS QUE EXIGEM MOTIVO
+      if (status === 'Desistente' || status === 'Cancelado') {
+        motivo = modalMotivoStatus.value;
+        observacao = modalObservacaoStatus.value || '';
+
+        if (!motivo) {
+          setMensagemModalStatus('Selecione um motivo para continuar.', 'erro');
+          modalMotivoStatus.focus();
+          return;
+        }
+      }
+
+      // 🔹 FECHA MODAL ANTES DE EXECUTAR
+      fecharModalStatus();
+
+      // 🔹 MONTA PAYLOAD
+      const payload = { status };
+
+      if (['Atendido', 'Desistente', 'Cancelado'].includes(status)) {
+        payload.posicao = 0;
+        payload.tempo_estimado = 0;
+      }
+
+      if (status === 'Aguardando') {
+        payload.posicao = 0;
+        payload.tempo_estimado = 0;
+      }
+
+      try {
+        // 🔹 ATUALIZA STATUS
+        const { error } = await supabaseClient
+          .from('fila_item')
+          .update(payload)
+          .eq('id', id);
+
+        if (error) throw error;
+
+        // 🔹 SALVA FEEDBACK (SÓ CANCELADO / DESISTENTE)
+        if (status === 'Desistente' || status === 'Cancelado') {
+          try {
+            const { data: fila, error: erroFila } = await supabaseClient
+              .from('fila_item')
+              .select('cliente_id')
+              .eq('id', id)
+              .maybeSingle();
+
+            if (erroFila) throw erroFila;
+
+            if (fila?.cliente_id) {
+              const motivoFinal = status === 'Desistente'
+                ? `Desistência operacional - ${motivo}`
+                : `Cancelamento operacional - ${motivo}`;
+
+              const comentarioFinal = observacao?.trim()
+                ? `[Painel] ${observacao.trim()}`
+                : null;
+
+              const { error: erroFeedback } = await supabaseClient
+                .from('feedback')
+                .upsert({
+                  cliente_id: fila.cliente_id,
+                  origem_id: id,
+                  origem_tipo: 'cancelamento_fila',
+                  motivo_cancelamento_resposta: motivoFinal,
+                  comentario: comentarioFinal
+                }, {
+                  onConflict: 'cliente_id,origem_id,origem_tipo'
+                });
+
+              if (erroFeedback) throw erroFeedback;
+            }
+
+          } catch (erroFeedback) {
+            console.error('Erro ao salvar feedback:', erroFeedback);
+            setMensagem('Status alterado, mas não foi possível salvar o motivo.', 'erro');
+          }
+        }
+
+        // 🔹 RECALCULA FILA
+        await recalcularPosicoes();
+        await carregarFila();
+
+        // 🔹 MENSAGEM FINAL
+        if (acao === 'reativar') {
+          setMensagem('Pessoa recolocada na fila com sucesso.', 'sucesso');
+        } else {
+          setMensagem(`Status alterado para "${status}" com sucesso.`, 'sucesso');
+        }
+
+      } catch (erro) {
+        console.error('Erro ao alterar status:', erro);
+        setMensagem('Erro ao alterar status. Tente novamente.', 'erro');
+      }
+    }
+
     function atualizarResumo(itens) {
       totalAguardando.textContent = itens.filter(i => i.status === 'Aguardando').length;
       totalPreparando.textContent = itens.filter(i => i.status === 'Preparando').length;
       totalChamado.textContent = itens.filter(i => i.status === 'Chamado').length;
+      totalACaminho.textContent = itens.filter(i => i.status === 'A caminho').length;
       totalAtendido.textContent = itens.filter(i => i.status === 'Atendido').length;
-      totalAtiva.textContent = itens.filter(i => ['Aguardando', 'Preparando', 'Chamado'].includes(i.status)).length;
+      totalAtiva.textContent = itens.filter(i => STATUS_EM_FILA.includes(i.status)).length;
     }
 
     function montarMapaPosicoesDinamicas(itens) {
       const emFila = itens
-        .filter(item => ['Aguardando', 'Preparando', 'Chamado'].includes(item.status))
+        .filter(item => STATUS_EM_FILA.includes(item.status))
         .sort((a, b) => new Date(a.hora_entrada) - new Date(b.hora_entrada));
 
       const mapa = {};
@@ -216,6 +607,23 @@
       return 'dashboard-operacional-tempo-normal';
     }
 
+    function aplicarFiltroPessoas(itens) {
+      const faixa = filtroPessoas.value;
+
+      if (!faixa) return itens;
+
+      return itens.filter(item => {
+        const qtd = Number(item.numero_pessoas || 0);
+
+        if (faixa === '1') return qtd === 1;
+        if (faixa === '2') return qtd === 2;
+        if (faixa === '3-4') return qtd >= 3 && qtd <= 4;
+        if (faixa === '5+') return qtd >= 5;
+
+        return true;
+      });
+    }
+
     function renderizarTabela(itens, mapaPosicoes) {
       tabelaFila.innerHTML = '';
 
@@ -229,7 +637,8 @@
       }
 
       itens.forEach(item => {
-        const estaNaFila = ['Aguardando', 'Preparando', 'Chamado'].includes(item.status);
+        const estaNaFila = STATUS_EM_FILA.includes(item.status);
+        const classeLinha = item.status === 'A caminho' ? 'linha-a-caminho' : '';
 
         const posicaoDinamica = estaNaFila
           ? (mapaPosicoes[item.id] ?? '-')
@@ -243,22 +652,24 @@
         const classeTempo = classeTempoFila(item.hora_entrada);
 
         let botoes = `
+          <button class="dashboard-operacional-btn btn-aguardando" onclick="alterar('${item.id}','Aguardando')">Aguardar</button>
           <button class="dashboard-operacional-btn btn-preparando" onclick="alterar('${item.id}','Preparando')">Prep</button>
           <button class="dashboard-operacional-btn btn-chamar" onclick="alterar('${item.id}','Chamado')">Chamar</button>
+          <button class="dashboard-operacional-btn btn-caminho" onclick="alterar('${item.id}','A caminho')">A caminho</button>
           <button class="dashboard-operacional-btn btn-atendido" onclick="alterar('${item.id}','Atendido')">OK</button>
           <button class="dashboard-operacional-btn btn-desistente" onclick="alterar('${item.id}','Desistente')">Desistiu</button>
           <button class="dashboard-operacional-btn btn-cancelado" onclick="alterar('${item.id}','Cancelado')">Cancelar</button>
-          <button class="dashboard-operacional-btn btn-editar" onclick="editarCliente('${item.id}')">✏️</button>
+          <button class="dashboard-operacional-btn btn-editar" onclick="abrirModalEdicao('${item.id}')">✏️</button>
         `;
 
         if (['Cancelado', 'Desistente'].includes(item.status)) {
           botoes += `
-            <button class="dashboard-operacional-btn btn-reativar" onclick="reativarFila('${item.id}')">Reativar</button>
+            <button class="dashboard-operacional-btn btn-reativar" onclick="abrirModalReativacao('${item.id}')">Reativar</button>
           `;
         }
 
         tabelaFila.innerHTML += `
-          <tr>
+          <tr class="${classeLinha}">
             <td>${posicaoDinamica}</td>
             <td>${item.cliente?.nome || '-'}</td>
             <td>${item.cliente?.cpf || '-'}</td>
@@ -280,6 +691,71 @@
           </tr>
         `;
       });
+    }
+
+    function limparFormularioModal() {
+      modalModo.value = 'criar';
+      modalFilaItemId.value = '';
+      modalClienteId.value = '';
+      modalNome.value = '';
+      modalCpf.value = '';
+      modalTelefone.value = '';
+      modalPessoas.value = 1;
+      modalStatus.value = 'Aguardando';
+      setMensagemModal('');
+    }
+
+    function abrirModalNovaFila() {
+      limparFormularioModal();
+      modalModo.value = 'criar';
+      modalFilaTitulo.textContent = 'Nova entrada na fila';
+      modalStatus.disabled = false;
+      modalFilaOverlay.classList.add('ativo');
+      modalNome.focus();
+    }
+
+    async function abrirModalEdicao(filaItemId) {
+      limparFormularioModal();
+      modalModo.value = 'editar';
+      modalFilaItemId.value = filaItemId;
+      modalFilaTitulo.textContent = 'Editar dados da fila';
+
+      const { data: fila, error: erroFila } = await supabaseClient
+        .from('fila_item')
+        .select(`
+          id,
+          cliente_id,
+          numero_pessoas,
+          status,
+          cliente:cliente_id (
+            id,
+            nome,
+            cpf,
+            telefone
+          )
+        `)
+        .eq('id', filaItemId)
+        .maybeSingle();
+
+      if (erroFila || !fila) {
+        setMensagem('Não foi possível carregar os dados para edição.', 'erro');
+        return;
+      }
+
+      modalClienteId.value = fila.cliente_id || '';
+      modalNome.value = fila.cliente?.nome || '';
+      modalCpf.value = fila.cliente?.cpf || '';
+      modalTelefone.value = fila.cliente?.telefone || '';
+      modalPessoas.value = fila.numero_pessoas ?? 1;
+      modalStatus.value = fila.status || 'Aguardando';
+
+      modalFilaOverlay.classList.add('ativo');
+      modalNome.focus();
+    }
+
+    function fecharModalFila() {
+      modalFilaOverlay.classList.remove('ativo');
+      limparFormularioModal();
     }
 
     async function carregarFila() {
@@ -305,7 +781,7 @@
         .order('hora_entrada', { ascending: true });
 
       if (filtroStatus.value === 'em_fila') {
-        query = query.in('status', ['Aguardando', 'Preparando', 'Chamado']);
+        query = query.in('status', STATUS_EM_FILA);
       } else if (filtroStatus.value) {
         query = query.eq('status', filtroStatus.value);
       }
@@ -328,6 +804,8 @@
           return nome.includes(busca) || cpf.includes(busca) || telefone.includes(busca);
         });
       }
+
+      itens = aplicarFiltroPessoas(itens);
 
       const { data: todosDoRestaurante, error: erroResumo } = await supabaseClient
         .from('fila_item')
@@ -353,7 +831,7 @@
         .from('fila_item')
         .select('id, hora_entrada')
         .eq('restaurante_id', RESTAURANTE_ID_FIXO)
-        .in('status', ['Aguardando', 'Preparando', 'Chamado'])
+        .in('status', STATUS_EM_FILA)
         .order('hora_entrada', { ascending: true });
 
       if (error) {
@@ -383,126 +861,179 @@
       return true;
     }
 
-    async function alterar(id, status) {
-      const confirmar = confirm(`Deseja alterar o status para "${status}"?`);
-      if (!confirmar) return;
+    function alterar(id, status) {
+      abrirModalStatus(id, status);
+    }
 
-      const payload = { status };
+    async function salvarModalFila(event) {
+      event.preventDefault();
+      setMensagemModal('');
 
-      if (['Atendido', 'Desistente', 'Cancelado'].includes(status)) {
-        payload.posicao = 0;
-        payload.tempo_estimado = 0;
-      }
+      const nome = modalNome.value.trim();
+      const cpf = modalCpf.value.trim();
+      const telefone = modalTelefone.value.trim();
+      const numeroPessoas = Number(modalPessoas.value);
+      const statusSelecionado = modalStatus.value;
 
-      const { error } = await supabaseClient
-        .from('fila_item')
-        .update(payload)
-        .eq('id', id);
-
-      if (error) {
-        setMensagem('Erro ao alterar status: ' + error.message, 'erro');
+      if (!nome) {
+        setMensagemModal('Informe o nome do cliente.', 'erro');
+        modalNome.focus();
         return;
       }
 
-      await recalcularPosicoes();
-      await carregarFila();
-      setMensagem(`Status alterado para "${status}" com sucesso.`, 'sucesso');
-    }
+      if (!numeroPessoas || numeroPessoas < 1) {
+        setMensagemModal('Informe uma quantidade válida de pessoas.', 'erro');
+        modalPessoas.focus();
+        return;
+      }
 
-    async function editarCliente(filaItemId) {
-      const { data: fila, error: erroFila } = await supabaseClient
-        .from('fila_item')
-        .select(`
-          id,
-          cliente_id,
-          numero_pessoas,
-          cliente:cliente_id (
+      if (modalModo.value === 'editar') {
+        const clienteId = modalClienteId.value;
+        const filaItemId = modalFilaItemId.value;
+
+        const { error: erroCliente } = await supabaseClient
+          .from('cliente')
+          .update({
             nome,
             cpf,
             telefone
-          )
-        `)
-        .eq('id', filaItemId)
-        .maybeSingle();
+          })
+          .eq('id', clienteId);
 
-      if (erroFila || !fila) {
-        setMensagem('Não foi possível carregar os dados para edição.', 'erro');
+        if (erroCliente) {
+          setMensagemModal('Erro ao atualizar cliente: ' + erroCliente.message, 'erro');
+          return;
+        }
+
+        const payloadFila = {
+          numero_pessoas: numeroPessoas,
+          status: statusSelecionado
+        };
+
+        if (['Atendido', 'Desistente', 'Cancelado'].includes(statusSelecionado)) {
+          payloadFila.posicao = 0;
+          payloadFila.tempo_estimado = 0;
+        }
+
+        if (statusSelecionado === 'Aguardando') {
+          payloadFila.posicao = 0;
+          payloadFila.tempo_estimado = 0;
+        }
+
+        const { error: erroFila } = await supabaseClient
+          .from('fila_item')
+          .update(payloadFila)
+          .eq('id', filaItemId);
+
+        if (erroFila) {
+          setMensagemModal('Erro ao atualizar fila: ' + erroFila.message, 'erro');
+          return;
+        }
+
+        await recalcularPosicoes();
+        await carregarFila();
+        fecharModalFila();
+        setMensagem('Dados da fila atualizados com sucesso.', 'sucesso');
         return;
       }
 
-      const nome = prompt('Nome do cliente:', fila.cliente?.nome || '');
-      if (nome === null) return;
-
-      const cpf = prompt('CPF do cliente:', fila.cliente?.cpf || '');
-      if (cpf === null) return;
-
-      const telefone = prompt('Telefone do cliente:', fila.cliente?.telefone || '');
-      if (telefone === null) return;
-
-      const pessoas = prompt('Quantidade de pessoas:', fila.numero_pessoas ?? '');
-      if (pessoas === null) return;
-
-      const { error: erroCliente } = await supabaseClient
+      const { data: clienteCriado, error: erroCliente } = await supabaseClient
         .from('cliente')
-        .update({
-          nome: nome.trim(),
-          cpf: cpf.trim(),
-          telefone: telefone.trim()
+        .insert({
+          nome,
+          cpf,
+          telefone
         })
-        .eq('id', fila.cliente_id);
+        .select('id')
+        .single();
 
-      if (erroCliente) {
-        setMensagem('Erro ao atualizar cliente: ' + erroCliente.message, 'erro');
+      if (erroCliente || !clienteCriado) {
+        setMensagemModal('Erro ao criar cliente: ' + (erroCliente?.message || 'sem retorno do banco'), 'erro');
         return;
       }
 
-      const { error: erroFilaUpdate } = await supabaseClient
+      const payloadNovaFila = {
+        restaurante_id: RESTAURANTE_ID_FIXO,
+        cliente_id: clienteCriado.id,
+        numero_pessoas: numeroPessoas,
+        status: statusSelecionado,
+        posicao: 0,
+        tempo_estimado: 0,
+        hora_entrada: new Date().toISOString()
+      };
+
+      const { error: erroNovaFila } = await supabaseClient
         .from('fila_item')
-        .update({
-          numero_pessoas: Number(pessoas)
-        })
-        .eq('id', filaItemId);
+        .insert(payloadNovaFila);
 
-      if (erroFilaUpdate) {
-        setMensagem('Erro ao atualizar dados da fila: ' + erroFilaUpdate.message, 'erro');
-        return;
-      }
-
-      await carregarFila();
-      setMensagem('Dados atualizados com sucesso.', 'sucesso');
-    }
-
-    async function reativarFila(id) {
-      const confirmar = confirm('Deseja recolocar esta pessoa na fila?');
-      if (!confirmar) return;
-
-      const { error } = await supabaseClient
-        .from('fila_item')
-        .update({
-          status: 'Aguardando',
-          posicao: 0,
-          tempo_estimado: 0
-        })
-        .eq('id', id);
-
-      if (error) {
-        setMensagem('Erro ao reativar fila: ' + error.message, 'erro');
+      if (erroNovaFila) {
+        setMensagemModal('Erro ao criar fila: ' + erroNovaFila.message, 'erro');
         return;
       }
 
       await recalcularPosicoes();
       await carregarFila();
-      setMensagem('Pessoa recolocada na fila com sucesso.', 'sucesso');
+      fecharModalFila();
+      setMensagem('Nova entrada criada com sucesso.', 'sucesso');
     }
 
-    document.getElementById('btnAplicarFiltros').addEventListener('click', carregarFila);
+    function abrirModalReativacao(id) {
+      alteracaoStatusPendente = { id, status: 'Aguardando', acao: 'reativar' };
+      modalStatusTexto.textContent = 'Deseja recolocar esta pessoa na fila como "Aguardando"?';
+      blocoMotivoStatus.style.display = 'none';
+      setMensagemModalStatus('');
+      modalStatusOverlay.classList.add('ativo');
+    }
+
+    btnAplicarFiltros.addEventListener('click', carregarFila);
+    btnNovaFila.addEventListener('click', abrirModalNovaFila);
+    btnFecharModalFila.addEventListener('click', fecharModalFila);
+    btnCancelarModalFila.addEventListener('click', fecharModalFila);
+    formFilaModal.addEventListener('submit', salvarModalFila);
+    btnFecharModalStatus.addEventListener('click', fecharModalStatus);
+    btnCancelarModalStatus.addEventListener('click', fecharModalStatus);
+    btnConfirmarModalStatus.addEventListener('click', confirmarAlteracaoStatus);
+
+    modalStatusOverlay.addEventListener('click', function (event) {
+      if (event.target === modalStatusOverlay) {
+        fecharModalStatus();
+      }
+    });
+
+    modalFilaOverlay.addEventListener('click', function (event) {
+      if (event.target === modalFilaOverlay) {
+        fecharModalFila();
+      }
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') {
+        if (modalFilaOverlay.classList.contains('ativo')) {
+          fecharModalFila();
+        }
+
+        if (modalStatusOverlay.classList.contains('ativo')) {
+          fecharModalStatus();
+        }
+      }
+    });
 
     async function iniciarPainel() {
       await carregarFila();
-      setInterval(carregarFila, 5000);
+
+      setInterval(() => {
+        if (!modalFilaOverlay.classList.contains('ativo') && !modalStatusOverlay.classList.contains('ativo')) {
+          carregarFila();
+        }
+      }, 5000);
     }
 
     iniciarPainel();
+
+    window.alterar = alterar;
+    window.reativarFila = reativarFila;
+    window.abrirModalEdicao = abrirModalEdicao;
+    window.fecharModalStatus = fecharModalStatus;
   </script>
 </body>
 </html>
