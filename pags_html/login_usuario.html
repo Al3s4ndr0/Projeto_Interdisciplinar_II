@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Qmesa - Acesso Interno</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../config.js"></script>
+  <script src="../pags_js/config-loader.js"></script>
+</head>
+<body class="login-body">
+  <div class="login-container">
+    <div class="login-branding">
+      <div class="branding-content">
+        <div class="branding-logo">
+          <img src="../images/logo_qmesa_sem_fundo.png" alt="Qmesa" />
+        </div>
+        <h1 class="branding-title">Qmesa</h1>
+        <p class="branding-subtitle">Acesso interno para admin, gestor e operador do restaurante</p>
+
+        <div class="branding-features">
+          <div class="feature-item">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                <path d="M2 17l10 5 10-5"/>
+                <path d="M2 12l10 5 10-5"/>
+              </svg>
+            </div>
+            <span>Gestao eficiente</span>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+            </div>
+            <span>Perfis com permissoes</span>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22,4 12,14.01 9,11.01"/>
+              </svg>
+            </div>
+            <span>Operacao segura</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="login-form-container">
+      <div class="login-form-wrapper">
+        <form class="login-form active" id="loginForm">
+          <div class="form-header">
+            <h2>Acesse o painel interno</h2>
+            <p>Entre com seu usuario e senha para acessar o ambiente administrativo</p>
+          </div>
+
+          <div class="form-group">
+            <label for="usuario">Usuario</label>
+            <div class="input-wrapper">
+              <input
+                type="text"
+                id="usuario"
+                class="form-input"
+                placeholder="Digite seu usuario"
+                required
+                maxlength="100"
+                autocomplete="username"
+              />
+              <div class="input-icon">
+                <svg viewBox="0 0 24 24">
+                  <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="password">Senha</label>
+            <div class="input-wrapper">
+              <input
+                type="password"
+                id="password"
+                class="form-input"
+                placeholder="Digite sua senha"
+                required
+                autocomplete="current-password"
+              />
+              <button type="button" class="input-toggle" onclick="togglePassword('password')">
+                <svg viewBox="0 0 24 24" class="eye-open">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+                <svg viewBox="0 0 24 24" class="eye-closed" style="display: none;">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                  <line x1="1" y1="1" x2="23" y2="23"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-options">
+            <label class="checkbox-label">
+              <input type="checkbox" id="remember" />
+              <span class="checkbox-custom"></span>
+              Manter conectado
+            </label>
+            <a href="#" class="forgot-link" onclick="showPasswordReset(); return false;">Preciso redefinir a senha</a>
+          </div>
+
+          <button type="submit" class="btn-primary">
+            <span class="btn-text">Entrar</span>
+            <span class="btn-loading" style="display: none;">
+              <svg class="spinner" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/>
+              </svg>
+              Entrando...
+            </span>
+          </button>
+
+          <div class="form-message" id="loginMessage" style="display: none;"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="resetModal" style="display: none;">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Redefinir senha</h3>
+        <button type="button" class="modal-close" onclick="hidePasswordReset()">
+          <svg viewBox="0 0 24 24">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <form id="resetForm">
+        <p>Informe seu usuario para registrar o pedido de redefinicao.</p>
+        <div class="form-group">
+          <label for="resetUsuario">Usuario</label>
+          <div class="input-wrapper">
+            <input
+              type="text"
+              id="resetUsuario"
+              class="form-input"
+              placeholder="Digite seu usuario"
+              maxlength="100"
+              autocomplete="username"
+              required
+            />
+            <div class="input-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" onclick="hidePasswordReset()">Cancelar</button>
+          <button type="submit" class="btn-primary">Solicitar redefinicao</button>
+        </div>
+        <div class="form-message" id="resetMessage" style="display: none;"></div>
+      </form>
+    </div>
+  </div>
+
+  <link rel="stylesheet" href="../pags_css/login_usuario.css" />
+  <script src="../pags_js/login_usuario.js"></script>
+</body>
+</html>

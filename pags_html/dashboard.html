@@ -6,6 +6,8 @@
   <title>Qmesa - Dashboard do Gestor</title>
   <link rel="stylesheet" href="../pags_css/dashboard.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="../config.js"></script>
+  <script src="../pags_js/config-loader.js"></script>
 </head>
 <body class="tema-fila tema-dashboard-gestor">
   <div class="layout-gestor">
@@ -14,7 +16,7 @@
       <div class="sidebar-topo">
         <div class="sidebar-topo-info">
           <span class="sidebar-restaurante-label">Restaurante</span>
-          <strong class="sidebar-restaurante-nome">Qmesa Demo</strong>
+          <strong class="sidebar-restaurante-nome" id="nomeRestauranteSidebar">Qmesa Demo</strong>
         </div>
 
         <button type="button" class="btn-toggle-sidebar" id="btnToggleSidebar" aria-label="Recolher menu">
@@ -54,7 +56,7 @@
         <div class="sidebar-nav-bloco">
           <span class="sidebar-nav-titulo">Operação</span>
 
-          <a href="#" class="sidebar-link">
+          <a href="../pags_html/gestao_cardapio.html" class="sidebar-link">
             <span class="sidebar-icone">
               <svg viewBox="0 0 24 24"><path d="M4 6h16"></path><path d="M7 12h10"></path><path d="M9 18h6"></path></svg>
             </span>
@@ -111,10 +113,11 @@
       </nav>
 
       <div class="sidebar-footer">
-        <div class="sidebar-footer-avatar">GS</div>
+        <div class="sidebar-footer-avatar" id="avatarUsuarioSidebar">GS</div>
         <div class="sidebar-footer-texto">
-          <span class="sidebar-footer-nome">Gestor</span>
-          <span class="sidebar-footer-perfil">Acesso administrativo</span>
+          <span class="sidebar-footer-nome" id="nomeUsuarioSidebar">Gestor</span>
+          <span class="sidebar-footer-perfil" id="perfilUsuarioSidebar">Acesso administrativo</span>
+          <button type="button" class="sidebar-footer-logout" id="btnLogoutSidebar">Logout</button>
         </div>
       </div>
     </aside>
@@ -380,16 +383,24 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  const supabaseUrl = 'https://jlfbzdqhaezdtyyajqlk.supabase.co';
-  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpsZmJ6ZHFoYWV6ZHR5eWFqcWxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjM0NjksImV4cCI6MjA4ODkzOTQ2OX0.6VX3Z1FjxgZuBYALd2oU4bQl0nzbMcBUcc0nLW_DbvA';
+  const supabaseUrl = (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.URL) || 'https://jlfbzdqhaezdtyyajqlk.supabase.co';
+  const supabaseKey = (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.ANON_KEY) || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpsZmJ6ZHFoYWV6ZHR5eWFqcWxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjM0NjksImV4cCI6MjA4ODkzOTQ2OX0.6VX3Z1FjxgZuBYALd2oU4bQl0nzbMcBUcc0nLW_DbvA';
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
-
-  const RESTAURANTE_ID_FIXO = '00000000-0000-0000-0000-000000000001';
+  const STORAGE_KEY = 'qmesa_auth';
+  const sessaoLocal = localStorage.getItem(STORAGE_KEY);
+  const sessaoTemporaria = sessionStorage.getItem(STORAGE_KEY);
+  const sessaoAtual = sessaoLocal ? JSON.parse(sessaoLocal) : (sessaoTemporaria ? JSON.parse(sessaoTemporaria) : null);
+  const RESTAURANTE_ID_FIXO = sessaoAtual?.restaurante_id || '00000000-0000-0000-0000-000000000001';
 
   const sidebarGestor = document.getElementById('sidebarGestor');
   const btnToggleSidebar = document.getElementById('btnToggleSidebar');
   const btnAbrirSidebar = document.getElementById('btnAbrirSidebar');
   const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+  const nomeRestauranteSidebar = document.getElementById('nomeRestauranteSidebar');
+  const avatarUsuarioSidebar = document.getElementById('avatarUsuarioSidebar');
+  const nomeUsuarioSidebar = document.getElementById('nomeUsuarioSidebar');
+  const perfilUsuarioSidebar = document.getElementById('perfilUsuarioSidebar');
+  const btnLogoutSidebar = document.getElementById('btnLogoutSidebar');
 
   const filtroDataInicio = document.getElementById('filtroDataInicio');
   const filtroDataFim = document.getElementById('filtroDataFim');
@@ -413,6 +424,43 @@
   let chartStatus = null;
   let chartEntradas = null;
   let chartOrigem = null;
+
+  function formatarRole(role) {
+    if (role === 'admin') return 'Acesso administrador';
+    if (role === 'gestor') return 'Acesso gestor';
+    return 'Acesso operador';
+  }
+
+  function preencherContextoUsuario() {
+    const usuario = sessaoAtual?.usuario || 'Gestor';
+    const role = sessaoAtual?.role || 'gestor';
+    const avatar = usuario.slice(0, 2).toUpperCase();
+
+    if (avatarUsuarioSidebar) avatarUsuarioSidebar.textContent = avatar;
+    if (nomeUsuarioSidebar) nomeUsuarioSidebar.textContent = usuario;
+    if (perfilUsuarioSidebar) perfilUsuarioSidebar.textContent = formatarRole(role);
+  }
+
+  async function carregarNomeRestaurante() {
+    if (!RESTAURANTE_ID_FIXO || !nomeRestauranteSidebar) return;
+
+    const { data, error } = await supabaseClient
+      .from('restaurante')
+      .select('nome')
+      .eq('id', RESTAURANTE_ID_FIXO)
+      .single();
+
+    if (!error && data?.nome) {
+      nomeRestauranteSidebar.textContent = data.nome;
+    }
+  }
+
+  function logout() {
+    localStorage.removeItem(STORAGE_KEY);
+    sessionStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem('remember_user');
+    window.location.href = '../pags_html/login_usuario.html';
+  }
 
   function setMensagemDashboard(texto, tipo = '') {
     mensagemDashboard.textContent = texto;
@@ -791,7 +839,10 @@
 
   btnAplicarDashboard.addEventListener('click', carregarDashboardGestor);
   btnLimparDashboard.addEventListener('click', limparFiltrosDashboard);
+  btnLogoutSidebar?.addEventListener('click', logout);
 
+  preencherContextoUsuario();
+  carregarNomeRestaurante();
   carregarDashboardGestor();
 </script>
   

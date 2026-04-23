@@ -3,13 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Qmesa - Cardápio</title>
+  <title>Qmesa - Cardapio</title>
   <link rel="stylesheet" href="../pags_css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../config.js"></script>
+  <script src="../pags_js/config-loader.js"></script>
 </head>
 <body class="tema-fila">
   <main class="tela">
     <section class="cartao cartao-formulario cartao-cardapio">
-
       <section class="painel-imagem">
         <div class="acoes-topo">
           <a href="javascript:history.back()" class="botao-voltar" aria-label="Voltar">
@@ -38,108 +40,11 @@
         <h1 class="titulo">MENU</h1>
 
         <div class="abas-cardapio-area">
-          <nav class="abas-cardapio">
-            <button class="aba-cardapio ativa" data-filter="all">Ver tudo</button>
-            <button class="aba-cardapio" data-filter="entradas">Entradas</button>
-            <button class="aba-cardapio" data-filter="principais">Pratos principais</button>
-            <button class="aba-cardapio" data-filter="sobremesas">Sobremesas</button>
-            <button class="aba-cardapio" data-filter="bebidas">Bebidas</button>
-          </nav>
+          <nav class="abas-cardapio" id="abasCardapio"></nav>
         </div>
 
-        <section class="grade-cardapio">
-
-          <article class="item-cardapio" data-category="principais">
-            <img src="../images/prato_1.jpg" alt="Bife à parmegiana" />
-            <div class="corpo-item-cardapio">
-              <h2>BIFE À PARMEGIANA</h2>
-              <p class="preco-item">R$ 56,90</p>
-              <p class="descricao-item">Filé bovino empanado, molho artesanal, queijo gratinado e acompanhamento da casa.</p>
-            </div>
-          </article>
-
-          <article class="item-cardapio" data-category="principais">
-            <img src="../images/prato_2.png" alt="Salmão grelhado" />
-            <div class="corpo-item-cardapio">
-              <h2>SALMÃO GRELHADO</h2>
-              <p class="preco-item">R$ 62,50</p>
-              <p class="descricao-item">Salmão grelhado com legumes salteados e arroz aromático.</p>
-            </div>
-          </article>
-
-          <article class="item-cardapio" data-category="principais">
-            <img src="../images/prato_3.png" alt="Risoto de funghi" />
-            <div class="corpo-item-cardapio">
-              <h2>RISOTO DE FUNGHI</h2>
-              <p class="preco-item">R$ 48,90</p>
-              <p class="descricao-item">Arroz arbóreo cremoso com cogumelos selecionados e toque de parmesão.</p>
-            </div>
-          </article>
-
-          <article class="item-cardapio" data-category="principais">
-            <img src="../images/prato_4.png" alt="Frango ao molho de ervas" />
-            <div class="corpo-item-cardapio">
-              <h2>FRANGO AO MOLHO DE ERVAS</h2>
-              <p class="preco-item">R$ 42,90</p>
-              <p class="descricao-item">Peito de frango grelhado com molho leve de ervas e purê rústico.</p>
-            </div>
-          </article>
-
-          <article class="item-cardapio" data-category="entradas">
-            <img src="../images/entrada_1.png" alt="Bruschetta especial" />
-            <div class="corpo-item-cardapio">
-              <h2>BRUSCHETTA ESPECIAL</h2>
-              <p class="preco-item">R$ 24,90</p>
-              <p class="descricao-item">Fatias crocantes com tomate fresco, manjericão e toque de azeite.</p>
-            </div>
-          </article>
-
-          <article class="item-cardapio" data-category="entradas">
-            <img src="../images/entrada_2.png" alt="Batata rústica" />
-            <div class="corpo-item-cardapio">
-              <h2>BATATA RÚSTICA</h2>
-              <p class="preco-item">R$ 21,50</p>
-              <p class="descricao-item">Batatas crocantes servidas com molho especial da casa.</p>
-            </div>
-          </article>
-
-          <article class="item-cardapio" data-category="sobremesas">
-            <img src="../images/sobremesa_1.png" alt="Cheesecake de frutas vermelhas" />
-            <div class="corpo-item-cardapio">
-              <h2>CHEESECAKE</h2>
-              <p class="preco-item">R$ 19,90</p>
-              <p class="descricao-item">Cheesecake cremoso com cobertura de frutas vermelhas.</p>
-            </div>
-          </article>
-
-          <article class="item-cardapio" data-category="sobremesas">
-            <img src="../images/sobremesa_2.png" alt="Petit gâteau" />
-            <div class="corpo-item-cardapio">
-              <h2>PETIT GÂTEAU</h2>
-              <p class="preco-item">R$ 22,90</p>
-              <p class="descricao-item">Bolinho de chocolate com recheio cremoso e sorvete de baunilha.</p>
-            </div>
-          </article>
-
-          <article class="item-cardapio" data-category="bebidas">
-            <img src="../images/bebida_1.png" alt="Refrigerante lata" />
-            <div class="corpo-item-cardapio">
-              <h2>REFRIGERANTE LATA</h2>
-              <p class="preco-item">R$ 7,50</p>
-              <p class="descricao-item">Consulte os sabores disponíveis no restaurante.</p>
-            </div>
-          </article>
-
-          <article class="item-cardapio" data-category="bebidas">
-            <img src="../images/bebida_2.png" alt="Suco natural" />
-            <div class="corpo-item-cardapio">
-              <h2>SUCO NATURAL</h2>
-              <p class="preco-item">R$ 11,90</p>
-              <p class="descricao-item">Sucos preparados na hora com frutas frescas.</p>
-            </div>
-          </article>
-
-        </section>
+        <section class="grade-cardapio" id="gradeCardapio"></section>
+        <p class="descricao-item" id="mensagemCardapio" style="margin-top: 16px; display: none;"></p>
       </section>
 
       <script src="../pags_js/cardapio.js"></script>

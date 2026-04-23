@@ -236,6 +236,24 @@ body.tema-fila.tema-dashboard-gestor{
   color: rgba(255,255,255,0.7);
 }
 
+.sidebar-footer-logout{
+  margin-top: 8px;
+  align-self: flex-start;
+  border: 0;
+  background: transparent;
+  color: rgba(255,255,255,0.82);
+  padding: 0;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.sidebar-footer-logout:hover{
+  color: #ffffff;
+}
+
 .conteudo-gestor{
   flex: 1;
   min-width: 0;
