@@ -5,10 +5,132 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Qmesa - Painel Operacional</title>
   <link rel="stylesheet" href="../pags_css/style.css" />
+  <link rel="stylesheet" href="../pags_css/dashboard.css" />
+  <script src="../config.js"></script>
+  <script src="../pags_js/config-loader.js"></script>
+  <script src="../pags_js/auth_guard.js"></script>
 </head>
 
 <body class="tema-fila tema-dashboard-operacional">
-  <main class="dashboard-operacional">
+  <div class="layout-gestor">
+    <aside class="sidebar-gestor" id="sidebarGestor">
+      <div class="sidebar-topo">
+        <div class="sidebar-topo-info">
+          <span class="sidebar-restaurante-label">Restaurante</span>
+          <strong class="sidebar-restaurante-nome" id="nomeRestauranteSidebar">Qmesa Demo</strong>
+        </div>
+
+        <button type="button" class="btn-toggle-sidebar" id="btnToggleSidebar" aria-label="Recolher menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 7h16"></path>
+            <path d="M4 12h16"></path>
+            <path d="M4 17h16"></path>
+          </svg>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-nav-bloco">
+          <span class="sidebar-nav-titulo">Visão geral</span>
+
+          <a href="../pags_html/dashboard.html" class="sidebar-link" id="linkDashboard">
+            <span class="sidebar-icone">
+              <svg viewBox="0 0 24 24"><path d="M4 20V10"></path><path d="M10 20V4"></path><path d="M16 20v-8"></path><path d="M22 20v-5"></path></svg>
+            </span>
+            <span class="sidebar-link-texto">
+              <span class="sidebar-link-titulo">Dashboard</span>
+              <span class="sidebar-link-subtitulo">Indicadores do gestor</span>
+            </span>
+          </a>
+
+          <a href="../pags_html/painel_operacional_fila.html" class="sidebar-link ativo">
+            <span class="sidebar-icone">
+              <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"></rect><path d="M8 20h8"></path><path d="M12 16v4"></path></svg>
+            </span>
+            <span class="sidebar-link-texto">
+              <span class="sidebar-link-titulo">Painel operacional</span>
+              <span class="sidebar-link-subtitulo">Gestão em tempo real</span>
+            </span>
+          </a>
+        </div>
+
+        <div class="sidebar-nav-bloco">
+          <span class="sidebar-nav-titulo">Operação</span>
+
+          <a href="../pags_html/gestao_cardapio.html" class="sidebar-link">
+            <span class="sidebar-icone">
+              <svg viewBox="0 0 24 24"><path d="M4 6h16"></path><path d="M7 12h10"></path><path d="M9 18h6"></path></svg>
+            </span>
+            <span class="sidebar-link-texto">
+              <span class="sidebar-link-titulo">Gerenciar cardápio</span>
+              <span class="sidebar-link-subtitulo">Itens, preços e categorias</span>
+            </span>
+          </a>
+
+          <a href="../pags_html/reservas_gestao.html" class="sidebar-link">
+            <span class="sidebar-icone">
+              <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4"></path><path d="M8 2v4"></path><path d="M3 10h18"></path></svg>
+            </span>
+            <span class="sidebar-link-texto">
+              <span class="sidebar-link-titulo">Reservas</span>
+              <span class="sidebar-link-subtitulo">Agenda e status</span>
+            </span>
+          </a>
+
+          <a href="../pags_html/mapa_mesas.html" class="sidebar-link">
+            <span class="sidebar-icone">
+              <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="6" rx="2"></rect><path d="M5 11v8"></path><path d="M19 11v8"></path><path d="M8 19h8"></path></svg>
+            </span>
+            <span class="sidebar-link-texto">
+              <span class="sidebar-link-titulo">Mesas</span>
+              <span class="sidebar-link-subtitulo">Mapa e capacidade</span>
+            </span>
+          </a>
+
+          <a href="../pags_html/usuarios_perfis.html" class="sidebar-link" id="linkUsuarios">
+            <span class="sidebar-icone">
+              <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            </span>
+            <span class="sidebar-link-texto">
+              <span class="sidebar-link-titulo">Usuários</span>
+              <span class="sidebar-link-subtitulo">Perfis e permissões</span>
+            </span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-footer-avatar" id="avatarUsuarioSidebar">OP</div>
+        <div class="sidebar-footer-texto">
+          <span class="sidebar-footer-nome" id="nomeUsuarioSidebar">Operador</span>
+          <span class="sidebar-footer-perfil" id="perfilUsuarioSidebar">Acesso operacional</span>
+          <button type="button" class="sidebar-footer-logout" id="btnLogoutSidebar" aria-label="Sair da sessao">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M10 17l5-5-5-5"></path>
+              <path d="M15 12H3"></path>
+              <path d="M21 19V5a2 2 0 0 0-2-2h-5"></path>
+              <path d="M14 21h5a2 2 0 0 0 2-2"></path>
+            </svg>
+            <span>Sair</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <section class="conteudo-gestor">
+      <div class="topbar-mobile">
+        <button type="button" class="btn-abrir-sidebar" id="btnAbrirSidebar" aria-label="Abrir menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 7h16"></path>
+            <path d="M4 12h16"></path>
+            <path d="M4 17h16"></path>
+          </svg>
+        </button>
+      </div>
+
+      <main class="dashboard-operacional">
 
     <section class="dashboard-operacional-banner">
       <div class="dashboard-operacional-banner-textos">
@@ -161,6 +283,8 @@
       </div>
     </section>
   </main>
+  </section>
+  </div>
 
   <div class="modal-fila-overlay" id="modalFilaOverlay">
     <div class="modal-fila" role="dialog" aria-modal="true" aria-labelledby="modalFilaTitulo">
@@ -270,11 +394,16 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    const supabaseUrl = 'https://jlfbzdqhaezdtyyajqlk.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpsZmJ6ZHFoYWV6ZHR5eWFqcWxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjM0NjksImV4cCI6MjA4ODkzOTQ2OX0.6VX3Z1FjxgZuBYALd2oU4bQl0nzbMcBUcc0nLW_DbvA';
+    const supabaseUrl = window.SUPABASE_CONFIG?.URL || 'https://jlfbzdqhaezdtyyajqlk.supabase.co';
+    const supabaseKey = window.SUPABASE_CONFIG?.ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpsZmJ6ZHFoYWV6ZHR5eWFqcWxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjM0NjksImV4cCI6MjA4ODkzOTQ2OX0.6VX3Z1FjxgZuBYALd2oU4bQl0nzbMcBUcc0nLW_DbvA';
     const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+    const sessaoAtual = window.QmesaAuth.exigirAutenticacao(['operador', 'gestor', 'admin']);
+
+    if (!sessaoAtual) {
+      throw new Error('Acesso ao painel operacional bloqueado por falta de autenticacao.');
+    }
 
     const STATUS_EM_FILA = ['Aguardando', 'Preparando', 'Chamado', 'A caminho'];
 
@@ -326,7 +455,81 @@
     const modalPessoas = document.getElementById('modalPessoas');
     const modalStatus = document.getElementById('modalStatus');
 
-    const RESTAURANTE_ID_FIXO = '00000000-0000-0000-0000-000000000001';
+    const RESTAURANTE_ID_FIXO = sessaoAtual.restaurante_id;
+
+    const sidebarGestor = document.getElementById('sidebarGestor');
+    const btnToggleSidebar = document.getElementById('btnToggleSidebar');
+    const btnAbrirSidebar = document.getElementById('btnAbrirSidebar');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+    const topbarMobile = document.querySelector('.topbar-mobile');
+    const nomeRestauranteSidebar = document.getElementById('nomeRestauranteSidebar');
+    const avatarUsuarioSidebar = document.getElementById('avatarUsuarioSidebar');
+    const nomeUsuarioSidebar = document.getElementById('nomeUsuarioSidebar');
+    const perfilUsuarioSidebar = document.getElementById('perfilUsuarioSidebar');
+    const btnLogoutSidebar = document.getElementById('btnLogoutSidebar');
+    const linkDashboard = document.getElementById('linkDashboard');
+    const linkUsuarios = document.getElementById('linkUsuarios');
+
+    function formatarRole(role) {
+      if (role === 'admin') return 'Acesso administrador';
+      if (role === 'gestor') return 'Acesso gestor';
+      return 'Acesso operador';
+    }
+
+    function preencherContextoUsuario() {
+      const usuario = sessaoAtual.usuario || 'Operador';
+      const role = sessaoAtual.role || 'operador';
+      const avatar = usuario.slice(0, 2).toUpperCase();
+
+      if (avatarUsuarioSidebar) avatarUsuarioSidebar.textContent = avatar;
+      if (nomeUsuarioSidebar) nomeUsuarioSidebar.textContent = usuario;
+      if (perfilUsuarioSidebar) perfilUsuarioSidebar.textContent = formatarRole(role);
+
+      if (role === 'operador') {
+        if (sidebarGestor) sidebarGestor.style.display = 'none';
+        if (sidebarBackdrop) sidebarBackdrop.style.display = 'none';
+        if (topbarMobile) topbarMobile.style.display = 'none';
+      } else {
+        if (linkDashboard) linkDashboard.style.display = '';
+        if (linkUsuarios) linkUsuarios.style.display = '';
+      }
+    }
+
+    async function carregarNomeRestaurante() {
+      if (!RESTAURANTE_ID_FIXO || !nomeRestauranteSidebar) return;
+
+      const { data, error } = await supabaseClient
+        .from('restaurante')
+        .select('nome')
+        .eq('id', RESTAURANTE_ID_FIXO)
+        .single();
+
+      if (!error && data?.nome) {
+        nomeRestauranteSidebar.textContent = data.nome;
+      }
+    }
+
+    function alternarSidebarDesktop() {
+      sidebarGestor?.classList.toggle('recolhida');
+    }
+
+    function abrirSidebarMobile() {
+      sidebarGestor?.classList.add('aberta');
+      sidebarBackdrop?.classList.add('ativo');
+    }
+
+    function fecharSidebarMobile() {
+      sidebarGestor?.classList.remove('aberta');
+      sidebarBackdrop?.classList.remove('ativo');
+    }
+
+    btnLogoutSidebar?.addEventListener('click', () => window.QmesaAuth.logout());
+    btnToggleSidebar?.addEventListener('click', alternarSidebarDesktop);
+    btnAbrirSidebar?.addEventListener('click', abrirSidebarMobile);
+    sidebarBackdrop?.addEventListener('click', fecharSidebarMobile);
+
+    preencherContextoUsuario();
+    carregarNomeRestaurante();
 
     function obterIntervaloHoje() {
       const inicio = new Date();
@@ -912,6 +1115,7 @@
         const nome = reserva.nome_cliente || reserva.cliente?.nome || '-';
         const cpf = reserva.cpf_cliente || reserva.cliente?.cpf || '';
         const telefone = reserva.telefone_cliente || reserva.cliente?.telefone || '';
+        const email = reserva.email_cliente || reserva.cliente?.email || '';
         const mesa = reserva.mesa_id || 'A definir';
 
         reservasFuturasLista.innerHTML += `
@@ -924,6 +1128,7 @@
             <div class="dashboard-reserva-cliente">
               <strong>${escaparHtml(nome)}</strong>
               <span>${escaparHtml(formatarTelefone(telefone))} ${cpf ? ' - CPF ' + escaparHtml(formatarCPF(cpf)) : ''}</span>
+              <span>${escaparHtml(email || 'Email nao informado')}</span>
             </div>
 
             <div class="dashboard-reserva-detalhes">
@@ -954,10 +1159,12 @@
           nome_cliente,
           cpf_cliente,
           telefone_cliente,
+          email_cliente,
           cliente:cliente_id (
             nome,
             cpf,
-            telefone
+            telefone,
+            email
           )
         `)
         .eq('restaurante_id', RESTAURANTE_ID_FIXO)

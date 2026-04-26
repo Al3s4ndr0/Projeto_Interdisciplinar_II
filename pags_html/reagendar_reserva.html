@@ -97,6 +97,11 @@
               <input type="text" id="telefoneReagendamento" class="campo campo-reserva" maxlength="15" required />
             </div>
 
+            <div class="grupo-campo">
+              <label for="emailReagendamento" class="label-campo">Email</label>
+              <input type="email" id="emailReagendamento" class="campo campo-reserva" required />
+            </div>
+
             <div class="acoes-reserva-fluxo tem-voltar tem-cancelamento">
               <button type="button" class="botao-secundario" onclick="history.back()">
                 Voltar
@@ -147,6 +152,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
   <script>
     const supabaseClient = window.supabase.createClient(
@@ -155,6 +161,13 @@
     );
 
     const RESTAURANTE_ID = '00000000-0000-0000-0000-000000000001';
+    const RESTAURANTE_NOME = 'Mangálhos Grill';
+    const LINK_CONSULTA_RESERVAS = `${window.location.origin}${window.location.pathname.replace('reagendar_reserva.html', 'consultar_reservas.html')}`;
+    const EMAILJS_CONFIG = {
+      publicKey: '1AI1-s7z0WFVbln51',
+      serviceId: 'service_tz8g5dg',
+      templateMovimentacaoId: 'template_7rbmg7s'
+    };
 
     const formReagendarReserva = document.getElementById('formReagendarReserva');
     const dataReagendamento = document.getElementById('dataReagendamento');
@@ -163,6 +176,7 @@
     const nomeReagendamento = document.getElementById('nomeReagendamento');
     const cpfReagendamento = document.getElementById('cpfReagendamento');
     const telefoneReagendamento = document.getElementById('telefoneReagendamento');
+    const emailReagendamento = document.getElementById('emailReagendamento');
     const btnMenosReagendamento = document.getElementById('btnMenosReagendamento');
     const btnMaisReagendamento = document.getElementById('btnMaisReagendamento');
     const btnAtualizarReserva = document.getElementById('btnAtualizarReserva');
@@ -196,6 +210,12 @@
       return valor;
     }
 
+    function formatarDataBR(dataISO) {
+      if (!dataISO) return '';
+      const [ano, mes, dia] = dataISO.split('-');
+      return `${dia}/${mes}/${ano}`;
+    }
+
     function formatarTelefone(valor) {
       let numeros = somenteNumeros(valor).slice(0, 11);
 
@@ -208,6 +228,84 @@
       }
 
       return numeros;
+    }
+
+    function validarEmail(valor) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(valor || '').trim());
+    }
+
+    function emailJSConfigurado(templateId) {
+      return Boolean(
+        window.emailjs &&
+        EMAILJS_CONFIG.publicKey &&
+        EMAILJS_CONFIG.serviceId &&
+        templateId &&
+        !EMAILJS_CONFIG.publicKey.includes('COLE_') &&
+        !EMAILJS_CONFIG.serviceId.includes('COLE_') &&
+        !templateId.includes('COLE_')
+      );
+    }
+
+    function inicializarEmailJS(templateId) {
+      if (!emailJSConfigurado(templateId)) return false;
+
+      emailjs.init({
+        publicKey: EMAILJS_CONFIG.publicKey
+      });
+
+      return true;
+    }
+
+    function montarParametrosEmailReserva(reserva) {
+      const emailDestino = String(reserva.email || '').trim().toLowerCase();
+
+      if (!validarEmail(emailDestino)) {
+        throw new Error('Email de destino invalido para envio da reserva.');
+      }
+
+      return {
+        email: emailDestino,
+        to_email: emailDestino,
+        recipient: emailDestino,
+        reply_to: emailDestino,
+        user_email: emailDestino,
+        to_name: reserva.nome,
+        nome_cliente: reserva.nome,
+        email_cliente: emailDestino,
+        cpf_cliente: formatarCPF(reserva.cpf),
+        telefone_cliente: formatarTelefone(reserva.telefone),
+        restaurante_nome: RESTAURANTE_NOME,
+        data_reserva: formatarDataBR(reserva.data),
+        horario_reserva: reserva.horario,
+        qtd_pessoas: `${reserva.qtdPessoas} pessoa(s)`,
+        reserva_id: reserva.id,
+        link_reserva: LINK_CONSULTA_RESERVAS,
+        tipo_movimentacao: reserva.tipoMovimentacao || 'Reserva atualizada',
+        titulo_movimentacao: reserva.tituloMovimentacao || 'Reserva atualizada',
+        mensagem_movimentacao: reserva.mensagemMovimentacao || 'Sua reserva foi atualizada com sucesso.',
+        cor_movimentacao: reserva.corMovimentacao || '#407C5A',
+        cta_movimentacao: reserva.ctaMovimentacao || 'Consultar ou ajustar reserva',
+        rodape_movimentacao: reserva.rodapeMovimentacao || 'Obrigado por usar o Qmesa. Esperamos voce no horario reservado.',
+        dados_anteriores_texto: reserva.dadosAnterioresTexto || '',
+        data_reserva_anterior: reserva.dataAnterior ? formatarDataBR(reserva.dataAnterior) : '',
+        horario_reserva_anterior: reserva.horarioAnterior || '',
+        qtd_pessoas_anterior: reserva.qtdPessoasAnterior ? `${reserva.qtdPessoasAnterior} pessoa(s)` : ''
+      };
+    }
+
+    async function enviarEmailReserva(templateId, reserva, contexto) {
+      if (!inicializarEmailJS(templateId)) {
+        console.info(`EmailJS ainda nao configurado para ${contexto}. Email nao enviado.`);
+        return false;
+      }
+
+      await emailjs.send(
+        EMAILJS_CONFIG.serviceId,
+        templateId,
+        montarParametrosEmailReserva(reserva)
+      );
+
+      return true;
     }
 
     function montarDataHoraReserva(data, horario) {
@@ -267,6 +365,36 @@
 
         if (error) throw error;
 
+        if (reservaAtual) {
+          const partes = separarDataHora(reservaAtual.data_hora);
+
+          try {
+            await enviarEmailReserva(
+              EMAILJS_CONFIG.templateMovimentacaoId,
+              {
+                id: reservaId,
+                nome: reservaAtual.nome_cliente || reservaAtual.cliente?.nome || '',
+                cpf: reservaAtual.cpf_cliente || reservaAtual.cliente?.cpf || '',
+                telefone: reservaAtual.telefone_cliente || reservaAtual.cliente?.telefone || '',
+                email: reservaAtual.email_cliente || reservaAtual.cliente?.email || '',
+                data: partes.data,
+                horario: partes.horario,
+                qtdPessoas: reservaAtual.num_pessoas,
+                tipoMovimentacao: 'Reserva cancelada',
+                tituloMovimentacao: 'Reserva cancelada',
+                mensagemMovimentacao: 'Sua reserva foi cancelada.',
+                corMovimentacao: '#6b7280',
+                ctaMovimentacao: 'Consultar minhas reservas',
+                rodapeMovimentacao: 'Tudo certo por aqui. Quando quiser, voce pode fazer uma nova reserva pelo Qmesa.',
+                dadosAnterioresTexto: ''
+              },
+              'cancelamento de reserva'
+            );
+          } catch (erroEmail) {
+            console.warn('Reserva cancelada, mas o email de cancelamento nao foi enviado:', erroEmail);
+          }
+        }
+
         sessionStorage.setItem('reserva_cancelada_id', reservaId);
         if (reservaAtual?.cliente_id) {
           sessionStorage.setItem('reserva_cancelada_cliente_id', reservaAtual.cliente_id);
@@ -304,10 +432,12 @@
           nome_cliente,
           cpf_cliente,
           telefone_cliente,
+          email_cliente,
           cliente:cliente_id (
             nome,
             cpf,
-            telefone
+            telefone,
+            email
           )
         `)
         .eq('id', reservaId)
@@ -329,6 +459,7 @@
       nomeReagendamento.value = data.nome_cliente || data.cliente?.nome || '';
       cpfReagendamento.value = formatarCPF(data.cpf_cliente || data.cliente?.cpf || '');
       telefoneReagendamento.value = formatarTelefone(data.telefone_cliente || data.cliente?.telefone || '');
+      emailReagendamento.value = data.email_cliente || data.cliente?.email || '';
     }
 
     async function existeReservaNoNovoHorario(cpf, clienteId, data, horario) {
@@ -381,6 +512,7 @@
       const nome = nomeReagendamento.value.trim();
       const cpf = somenteNumeros(cpfReagendamento.value || reservaAtual.cpf_cliente || reservaAtual.cliente?.cpf);
       const telefone = somenteNumeros(telefoneReagendamento.value);
+      const email = emailReagendamento.value.trim().toLowerCase();
 
       if (!data || data < hojeISO()) {
         mostrarMensagem('Escolha uma data atual ou futura.');
@@ -402,11 +534,21 @@
         return;
       }
 
+      if (!validarEmail(email)) {
+        mostrarMensagem('Informe um email valido para receber a confirmacao.');
+        return;
+      }
+
       btnAtualizarReserva.disabled = true;
       btnAtualizarReserva.textContent = 'Atualizando...';
       mensagemReagendamento.textContent = '';
 
       try {
+        const reservaAnterior = {
+          data: separarDataHora(reservaAtual.data_hora).data,
+          horario: separarDataHora(reservaAtual.data_hora).horario,
+          qtdPessoas: reservaAtual.num_pessoas
+        };
         const duplicada = await existeReservaNoNovoHorario(cpf, reservaAtual.cliente_id, data, horario);
 
         if (duplicada) {
@@ -423,7 +565,8 @@
             num_pessoas: qtdPessoas,
             nome_cliente: nome,
             cpf_cliente: cpf,
-            telefone_cliente: telefone
+            telefone_cliente: telefone,
+            email_cliente: email
           })
           .eq('id', reservaAtual.id);
 
@@ -431,7 +574,7 @@
 
         const { error: erroCliente } = await supabaseClient
           .from('cliente')
-          .update({ nome, telefone, cpf })
+          .update({ nome, telefone, cpf, email })
           .eq('id', reservaAtual.cliente_id);
 
         if (erroCliente) throw erroCliente;
@@ -442,7 +585,37 @@
         sessionStorage.setItem('reserva_nome', nome);
         sessionStorage.setItem('reserva_cpf', cpf);
         sessionStorage.setItem('reserva_telefone', telefone);
+        sessionStorage.setItem('reserva_email', email);
         sessionStorage.setItem('reserva_cliente_id', reservaAtual.cliente_id);
+
+        try {
+          await enviarEmailReserva(
+            EMAILJS_CONFIG.templateMovimentacaoId,
+            {
+              id: reservaAtual.id,
+              nome,
+              cpf,
+              telefone,
+              email,
+              data,
+              horario,
+              qtdPessoas,
+              dataAnterior: reservaAnterior.data,
+              horarioAnterior: reservaAnterior.horario,
+              qtdPessoasAnterior: reservaAnterior.qtdPessoas,
+              tipoMovimentacao: 'Reserva atualizada',
+              tituloMovimentacao: 'Reserva atualizada',
+              mensagemMovimentacao: 'Sua reserva foi atualizada com sucesso.',
+              corMovimentacao: '#407C5A',
+              ctaMovimentacao: 'Consultar ou ajustar reserva',
+              rodapeMovimentacao: 'Obrigado por usar o Qmesa. Esperamos voce no horario reservado.',
+              dadosAnterioresTexto: `Antes: ${formatarDataBR(reservaAnterior.data)} as ${reservaAnterior.horario} - ${reservaAnterior.qtdPessoas} pessoa(s)`
+            },
+            'atualizacao de reserva'
+          );
+        } catch (erroEmail) {
+          console.warn('Reserva atualizada, mas o email de atualizacao nao foi enviado:', erroEmail);
+        }
 
         window.location.href = '../pags_html/reagendamento_confirmado.html';
       } catch (error) {

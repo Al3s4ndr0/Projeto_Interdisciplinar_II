@@ -9,6 +9,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../config.js"></script>
   <script src="../pags_js/config-loader.js"></script>
+  <script src="../pags_js/auth_guard.js"></script>
 </head>
 <body class="tema-fila tema-dashboard-gestor">
   <div class="layout-gestor">
@@ -65,6 +66,60 @@
               <span class="sidebar-link-subtitulo">Itens, precos e categorias</span>
             </span>
           </a>
+
+          <a href="../pags_html/reservas_gestao.html" class="sidebar-link">
+            <span class="sidebar-icone">
+              <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4"></path><path d="M8 2v4"></path><path d="M3 10h18"></path></svg>
+            </span>
+            <span class="sidebar-link-texto">
+              <span class="sidebar-link-titulo">Reservas</span>
+              <span class="sidebar-link-subtitulo">Agenda e status</span>
+            </span>
+          </a>
+
+          <a href="../pags_html/mapa_mesas.html" class="sidebar-link">
+            <span class="sidebar-icone">
+              <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="6" rx="2"></rect><path d="M5 11v8"></path><path d="M19 11v8"></path><path d="M8 19h8"></path></svg>
+            </span>
+            <span class="sidebar-link-texto">
+              <span class="sidebar-link-titulo">Mesas</span>
+              <span class="sidebar-link-subtitulo">Mapa e capacidade</span>
+            </span>
+          </a>
+
+          <a href="../pags_html/usuarios_perfis.html" class="sidebar-link">
+            <span class="sidebar-icone">
+              <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            </span>
+            <span class="sidebar-link-texto">
+              <span class="sidebar-link-titulo">Usuarios</span>
+              <span class="sidebar-link-subtitulo">Perfis e permissoes</span>
+            </span>
+          </a>
+        </div>
+
+        <div class="sidebar-nav-bloco">
+          <span class="sidebar-nav-titulo">Expansao</span>
+
+          <a href="#" class="sidebar-link">
+            <span class="sidebar-icone">
+              <svg viewBox="0 0 24 24"><rect x="4" y="4" width="5" height="5"></rect><rect x="15" y="4" width="5" height="5"></rect><rect x="4" y="15" width="5" height="5"></rect><path d="M15 15h1"></path><path d="M19 15h1"></path><path d="M15 19h1"></path><path d="M19 19h1"></path><path d="M17 17h1"></path></svg>
+            </span>
+            <span class="sidebar-link-texto">
+              <span class="sidebar-link-titulo">QR Code da fila</span>
+              <span class="sidebar-link-subtitulo">Gerar, exportar e imprimir</span>
+            </span>
+          </a>
+
+          <a href="#" class="sidebar-link">
+            <span class="sidebar-icone">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82"></path><path d="M4.6 9a1.65 1.65 0 0 0-.33-1.82"></path><path d="M9 4.6A1.65 1.65 0 0 0 7.18 4.27"></path><path d="M15 19.4a1.65 1.65 0 0 0 1.82.33"></path><path d="M4.6 15a1.65 1.65 0 0 1-.33 1.82"></path><path d="M19.4 9a1.65 1.65 0 0 1 .33-1.82"></path><path d="M15 4.6a1.65 1.65 0 0 1 1.82-.33"></path><path d="M9 19.4a1.65 1.65 0 0 1-1.82.33"></path></svg>
+            </span>
+            <span class="sidebar-link-texto">
+              <span class="sidebar-link-titulo">Configuracoes</span>
+              <span class="sidebar-link-subtitulo">Identidade e restaurante</span>
+            </span>
+          </a>
         </div>
       </nav>
 
@@ -73,7 +128,15 @@
         <div class="sidebar-footer-texto">
           <span class="sidebar-footer-nome" id="nomeUsuarioSidebar">Usuario interno</span>
           <span class="sidebar-footer-perfil" id="perfilUsuarioSidebar">Acesso operacional</span>
-          <button type="button" class="sidebar-footer-logout" id="btnLogoutSidebar">Logout</button>
+          <button type="button" class="sidebar-footer-logout" id="btnLogoutSidebar" aria-label="Sair da sessao">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M10 17l5-5-5-5"></path>
+              <path d="M15 12H3"></path>
+              <path d="M21 19V5a2 2 0 0 0-2-2h-5"></path>
+              <path d="M14 21h5a2 2 0 0 0 2-2"></path>
+            </svg>
+            <span>Sair</span>
+          </button>
         </div>
       </div>
     </aside>

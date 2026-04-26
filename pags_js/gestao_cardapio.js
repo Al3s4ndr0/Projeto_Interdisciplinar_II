@@ -40,8 +40,13 @@ const elementos = {
     sidebarBackdrop: document.getElementById('sidebarBackdrop')
 };
 
+let isMaster = false;
+
 document.addEventListener('DOMContentLoaded', async () => {
-    sessaoAtual = obterSessao();
+    sessaoAtual = window.QmesaAuth?.exigirAutenticacao(['gestor', 'admin', 'master']);
+    if (!sessaoAtual) return;
+
+    isMaster = sessaoAtual.role === 'master';
     preencherContextoUsuario();
     inicializarEventListeners();
     await carregarItensCardapio();
@@ -75,6 +80,10 @@ function inicializarEventListeners() {
 }
 
 function obterSessao() {
+    if (window.QmesaAuth) {
+        return window.QmesaAuth.lerSessao();
+    }
+
     const sessaoLocal = window.localStorage.getItem(STORAGE_KEY);
     if (sessaoLocal) return JSON.parse(sessaoLocal);
 
@@ -95,7 +104,7 @@ function preencherContextoUsuario() {
 }
 
 async function carregarItensCardapio() {
-    if (!sessaoAtual?.restaurante_id) {
+    if (!sessaoAtual?.restaurante_id && !isMaster) {
         mostrarErro('Sessao sem restaurante vinculado. Faca login novamente.');
         return;
     }
@@ -103,11 +112,16 @@ async function carregarItensCardapio() {
     try {
         await carregarRestaurante();
 
-        const { data, error } = await supabaseClient
+        let query = supabaseClient
             .from('item_cardapio')
             .select('id, restaurante_id, nome, descricao, preco, categoria, disponivel')
-            .eq('restaurante_id', sessaoAtual.restaurante_id)
             .order('nome');
+
+        if (!isMaster) {
+            query = query.eq('restaurante_id', sessaoAtual.restaurante_id);
+        }
+
+        const { data, error } = await query;
 
         if (error) throw error;
 
@@ -122,6 +136,13 @@ async function carregarItensCardapio() {
 }
 
 async function carregarRestaurante() {
+    if (isMaster) {
+        if (elementos.nomeRestauranteSidebar) {
+            elementos.nomeRestauranteSidebar.textContent = 'Todos os restaurantes';
+        }
+        return;
+    }
+
     if (!sessaoAtual?.restaurante_id) return;
 
     const { data, error } = await supabaseClient
@@ -266,7 +287,7 @@ function fecharModal() {
 async function salvarItem(e) {
     e.preventDefault();
 
-    if (!sessaoAtual?.restaurante_id) {
+    if (!sessaoAtual?.restaurante_id && !isMaster) {
         mostrarErro('Sessao invalida para salvar itens.');
         return;
     }
@@ -374,6 +395,11 @@ function fecharSidebarMobile() {
 }
 
 function logout() {
+    if (window.QmesaAuth) {
+        window.QmesaAuth.logout();
+        return;
+    }
+
     window.localStorage.removeItem(STORAGE_KEY);
     window.sessionStorage.removeItem(STORAGE_KEY);
     window.localStorage.removeItem('remember_user');

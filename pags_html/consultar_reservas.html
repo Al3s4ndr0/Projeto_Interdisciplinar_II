@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Qmesa - Consultar reservas</title>
+  <link rel="stylesheet" href="../pags_css/style.css" />
+</head>
+<body class="tema-reserva">
+
+  <main class="tela">
+    <section class="cartao cartao-formulario">
+
+      <section class="painel-imagem">
+        <div class="acoes-topo">
+          <a href="javascript:history.back()" class="botao-voltar" aria-label="Voltar">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15 6l-6 6 6 6"/>
+            </svg>
+          </a>
+
+          <a href="../pags_html/index.html" class="botao-home" aria-label="Ir para inicio">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 10.5L12 3l9 7.5"/>
+              <path d="M5.5 9.5V21h13V9.5"/>
+              <path d="M9.5 21v-6h5v6"/>
+            </svg>
+          </a>
+        </div>
+
+        <img src="../images/banner_restaurante.png" alt="Imagem do restaurante" class="imagem-restaurante" />
+
+        <div class="selo">
+          <img src="../images/logo_restaurante.png" alt="Logo do restaurante" />
+        </div>
+      </section>
+
+      <section class="conteudo">
+        <div class="bloco-identificacao bloco-reserva">
+          <h1 class="titulo titulo-centralizado">Consultar reservas</h1>
+
+          <p class="descricao-fila">
+            Informe seu CPF para visualizar suas reservas futuras e ajustar os dados quando necessario.
+          </p>
+
+          <form class="formulario formulario-identificacao formulario-reserva" id="formConsultaReservas">
+            <div class="grupo-campo">
+              <label for="cpfConsultaReservas" class="label-campo">CPF</label>
+              <input
+                type="text"
+                id="cpfConsultaReservas"
+                class="campo campo-reserva"
+                placeholder="Qual e o seu CPF? *"
+                maxlength="14"
+                required
+              />
+            </div>
+
+            <div class="acoes-reserva-fluxo">
+              <button type="submit" class="botao-primario" id="btnConsultarReservas">
+                Consultar
+              </button>
+            </div>
+
+            <p id="mensagemConsultaReservas" class="mensagem-formulario"></p>
+          </form>
+
+          <section class="reservas-consulta-lista" id="reservasConsultaLista" aria-live="polite"></section>
+        </div>
+      </section>
+
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+  <script>
+    const supabaseClient = window.supabase.createClient(
+      'https://jlfbzdqhaezdtyyajqlk.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpsZmJ6ZHFoYWV6ZHR5eWFqcWxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjM0NjksImV4cCI6MjA4ODkzOTQ2OX0.6VX3Z1FjxgZuBYALd2oU4bQl0nzbMcBUcc0nLW_DbvA'
+    );
+
+    const RESTAURANTE_ID = '00000000-0000-0000-0000-000000000001';
+
+    const formConsultaReservas = document.getElementById('formConsultaReservas');
+    const cpfConsultaReservas = document.getElementById('cpfConsultaReservas');
+    const btnConsultarReservas = document.getElementById('btnConsultarReservas');
+    const mensagemConsultaReservas = document.getElementById('mensagemConsultaReservas');
+    const reservasConsultaLista = document.getElementById('reservasConsultaLista');
+    const STORAGE_CPF_CONSULTA = 'consulta_reservas_cpf';
+
+    function somenteNumeros(valor) {
+      return String(valor || '').replace(/\D/g, '');
+    }
+
+    function escaparHtml(valor) {
+      return String(valor ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    function validarCPF(cpf) {
+      cpf = somenteNumeros(cpf);
+
+      if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
+
+      let soma = 0;
+      let resto;
+
+      for (let i = 1; i <= 9; i++) {
+        soma += parseInt(cpf.substring(i - 1, i)) * (11 - i);
+      }
+
+      resto = (soma * 10) % 11;
+      if (resto === 10 || resto === 11) resto = 0;
+      if (resto !== parseInt(cpf.substring(9, 10))) return false;
+
+      soma = 0;
+
+      for (let i = 1; i <= 10; i++) {
+        soma += parseInt(cpf.substring(i - 1, i)) * (12 - i);
+      }
+
+      resto = (soma * 10) % 11;
+      if (resto === 10 || resto === 11) resto = 0;
+
+      return resto === parseInt(cpf.substring(10, 11));
+    }
+
+    function formatarCPF(cpf) {
+      let valor = somenteNumeros(cpf).slice(0, 11);
+      valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
+      valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
+      valor = valor.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+      return valor;
+    }
+
+    function formatarTelefone(valor) {
+      let numeros = somenteNumeros(valor).slice(0, 11);
+
+      if (numeros.length <= 10) {
+        numeros = numeros.replace(/(\d{2})(\d)/, '($1) $2');
+        numeros = numeros.replace(/(\d{4})(\d)/, '$1-$2');
+      } else {
+        numeros = numeros.replace(/(\d{2})(\d)/, '($1) $2');
+        numeros = numeros.replace(/(\d{5})(\d)/, '$1-$2');
+      }
+
+      return numeros;
+    }
+
+    function formatarDataHora(dataHora) {
+      const data = new Date(dataHora);
+      return {
+        data: data.toLocaleDateString('pt-BR'),
+        hora: data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+      };
+    }
+
+    function limparMensagem() {
+      mensagemConsultaReservas.textContent = '';
+    }
+
+    function mostrarMensagem(texto, tipo = 'erro') {
+      mensagemConsultaReservas.textContent = texto;
+      mensagemConsultaReservas.style.color = tipo === 'sucesso' ? 'green' : tipo === 'alerta' ? '#d97706' : 'red';
+    }
+
+    function abrirReagendamento(reservaId) {
+      sessionStorage.setItem('reserva_id', reservaId);
+      window.location.href = '../pags_html/reagendar_reserva.html';
+    }
+
+    function unirReservas(...listas) {
+      const reservasPorId = new Map();
+
+      listas.flat().forEach(reserva => {
+        if (reserva?.id) {
+          reservasPorId.set(reserva.id, reserva);
+        }
+      });
+
+      return Array.from(reservasPorId.values())
+        .sort((a, b) => new Date(a.data_hora) - new Date(b.data_hora));
+    }
+
+    function renderizarReservas(reservas) {
+      reservasConsultaLista.innerHTML = '';
+
+      if (!reservas.length) {
+        reservasConsultaLista.innerHTML = `
+          <article class="reserva-consulta-vazia">
+            <strong>Nenhuma reserva futura encontrada.</strong>
+            <span>Confira o CPF informado ou faca uma nova reserva.</span>
+          </article>
+        `;
+        return;
+      }
+
+      reservas.forEach(reserva => {
+        const partes = formatarDataHora(reserva.data_hora);
+        const nome = reserva.nome_cliente || reserva.cliente?.nome || '-';
+        const cpf = reserva.cpf_cliente || reserva.cliente?.cpf || '';
+        const telefone = reserva.telefone_cliente || reserva.cliente?.telefone || '';
+        const email = reserva.email_cliente || reserva.cliente?.email || '';
+
+        reservasConsultaLista.innerHTML += `
+          <article class="reserva-consulta-item">
+            <div class="reserva-consulta-data">
+              <strong>${escaparHtml(partes.hora)}</strong>
+              <span>${escaparHtml(partes.data)}</span>
+            </div>
+
+            <div class="reserva-consulta-dados">
+              <strong>${escaparHtml(nome)}</strong>
+              <span>${escaparHtml(formatarCPF(cpf))}</span>
+              <span>${escaparHtml(formatarTelefone(telefone))}</span>
+              <span>${escaparHtml(email || 'Email nao informado')}</span>
+            </div>
+
+            <div class="reserva-consulta-detalhes">
+              <span>${escaparHtml(String(reserva.num_pessoas))} pessoa(s)</span>
+              <span>Status: ${escaparHtml(reserva.status || 'Pendente')}</span>
+            </div>
+
+            <button type="button" class="botao-primario reserva-consulta-editar" data-reserva-id="${escaparHtml(reserva.id)}">
+              Editar
+            </button>
+          </article>
+        `;
+      });
+    }
+
+    async function consultarReservas() {
+      const cpf = somenteNumeros(cpfConsultaReservas.value);
+
+      limparMensagem();
+      reservasConsultaLista.innerHTML = '';
+
+      if (!validarCPF(cpf)) {
+        mostrarMensagem('CPF invalido. Verifique o numero informado.');
+        return;
+      }
+
+      btnConsultarReservas.disabled = true;
+      btnConsultarReservas.textContent = 'Consultando...';
+      sessionStorage.setItem(STORAGE_CPF_CONSULTA, cpf);
+
+      try {
+        const agora = new Date().toISOString();
+        const selectReservas = `
+          id,
+          cliente_id,
+          data_hora,
+          num_pessoas,
+          status,
+          nome_cliente,
+          cpf_cliente,
+          telefone_cliente,
+          email_cliente,
+          cliente:cliente_id (
+            nome,
+            cpf,
+            telefone,
+            email
+          )
+        `;
+
+        const { data: reservasPorCpf, error } = await supabaseClient
+          .from('reserva')
+          .select(selectReservas)
+          .eq('restaurante_id', RESTAURANTE_ID)
+          .neq('status', 'Cancelada')
+          .gte('data_hora', agora)
+          .eq('cpf_cliente', cpf)
+          .order('data_hora', { ascending: true });
+
+        if (error) throw error;
+
+        const { data: cliente, error: erroCliente } = await supabaseClient
+          .from('cliente')
+          .select('id')
+          .eq('cpf', cpf)
+          .maybeSingle();
+
+        if (erroCliente) throw erroCliente;
+
+        let reservasPorCliente = [];
+
+        if (cliente?.id) {
+          const { data: reservasCliente, error: erroReservasCliente } = await supabaseClient
+            .from('reserva')
+            .select(selectReservas)
+            .eq('restaurante_id', RESTAURANTE_ID)
+            .neq('status', 'Cancelada')
+            .gte('data_hora', agora)
+            .eq('cliente_id', cliente.id)
+            .order('data_hora', { ascending: true });
+
+          if (erroReservasCliente) throw erroReservasCliente;
+
+          reservasPorCliente = reservasCliente || [];
+        }
+
+        const reservas = unirReservas(reservasPorCpf || [], reservasPorCliente);
+
+        renderizarReservas(reservas);
+
+        if (reservas.length) {
+          mostrarMensagem(`${reservas.length} reserva(s) encontrada(s).`, 'sucesso');
+        }
+      } catch (error) {
+        console.error('Erro ao consultar reservas:', error);
+        mostrarMensagem('Nao foi possivel consultar suas reservas no momento.');
+      } finally {
+        btnConsultarReservas.disabled = false;
+        btnConsultarReservas.textContent = 'Consultar';
+      }
+    }
+
+    cpfConsultaReservas.addEventListener('input', function () {
+      cpfConsultaReservas.value = formatarCPF(cpfConsultaReservas.value);
+      limparMensagem();
+    });
+
+    reservasConsultaLista.addEventListener('click', function (event) {
+      const botao = event.target.closest('[data-reserva-id]');
+      if (!botao) return;
+      abrirReagendamento(botao.dataset.reservaId);
+    });
+
+    formConsultaReservas.addEventListener('submit', function (event) {
+      event.preventDefault();
+      consultarReservas();
+    });
+
+    function carregarCPFConsultaSalvo() {
+      const cpfSalvo = sessionStorage.getItem(STORAGE_CPF_CONSULTA);
+
+      if (!cpfSalvo) return;
+
+      cpfConsultaReservas.value = formatarCPF(cpfSalvo);
+
+      if (validarCPF(cpfSalvo)) {
+        consultarReservas();
+      }
+    }
+
+    carregarCPFConsultaSalvo();
+  </script>
+</body>
+</html>

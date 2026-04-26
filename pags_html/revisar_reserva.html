@@ -40,11 +40,35 @@
           <h1 class="titulo titulo-centralizado">Revise seus dados antes de efetuar a reserva</h1>
 
           <div class="formulario formulario-identificacao">
-            <input type="text" class="campo campo-reserva" id="revDataHorario" readonly />
-            <input type="text" class="campo campo-reserva" id="revNome" readonly />
-            <input type="text" class="campo campo-reserva" id="revCpf" readonly />
-            <input type="text" class="campo campo-reserva" id="revTelefone" readonly />
-            <input type="text" class="campo campo-reserva" id="revQtdPessoas" readonly />
+            <label class="grupo-campo">
+              <span class="label-campo">Data e horario</span>
+              <input type="text" class="campo campo-reserva" id="revDataHorario" readonly />
+            </label>
+
+            <label class="grupo-campo">
+              <span class="label-campo">Nome</span>
+              <input type="text" class="campo campo-reserva" id="revNome" readonly />
+            </label>
+
+            <label class="grupo-campo">
+              <span class="label-campo">CPF</span>
+              <input type="text" class="campo campo-reserva" id="revCpf" readonly />
+            </label>
+
+            <label class="grupo-campo">
+              <span class="label-campo">Telefone</span>
+              <input type="text" class="campo campo-reserva" id="revTelefone" readonly />
+            </label>
+
+            <label class="grupo-campo">
+              <span class="label-campo">Email</span>
+              <input type="text" class="campo campo-reserva" id="revEmail" readonly />
+            </label>
+
+            <label class="grupo-campo">
+              <span class="label-campo">Quantidade de pessoas</span>
+              <input type="text" class="campo campo-reserva" id="revQtdPessoas" readonly />
+            </label>
           </div>
 
           <div class="acoes acoes-reserva-fluxo">
@@ -65,6 +89,7 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
   <script>
     const supabaseClient = window.supabase.createClient(
@@ -73,11 +98,19 @@
     );
 
     const RESTAURANTE_ID = '00000000-0000-0000-0000-000000000001';
+    const RESTAURANTE_NOME = 'Mangálhos Grill';
+    const LINK_CONSULTA_RESERVAS = `${window.location.origin}${window.location.pathname.replace('revisar_reserva.html', 'consultar_reservas.html')}`;
+    const EMAILJS_CONFIG = {
+      publicKey: '1AI1-s7z0WFVbln51',
+      serviceId: 'service_tz8g5dg',
+      templateId: 'template_txotkgm'
+    };
 
     const revDataHorario = document.getElementById('revDataHorario');
     const revNome = document.getElementById('revNome');
     const revCpf = document.getElementById('revCpf');
     const revTelefone = document.getElementById('revTelefone');
+    const revEmail = document.getElementById('revEmail');
     const revQtdPessoas = document.getElementById('revQtdPessoas');
     const btnConfirmarReserva = document.getElementById('btnConfirmarReserva');
     const mensagemRevisaoReserva = document.getElementById('mensagemRevisaoReserva');
@@ -114,6 +147,72 @@
       return valor;
     }
 
+    function validarEmail(valor) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(valor || '').trim());
+    }
+
+    function emailJSConfigurado() {
+      return Boolean(
+        window.emailjs &&
+        EMAILJS_CONFIG.publicKey &&
+        EMAILJS_CONFIG.serviceId &&
+        EMAILJS_CONFIG.templateId &&
+        !EMAILJS_CONFIG.publicKey.includes('COLE_') &&
+        !EMAILJS_CONFIG.serviceId.includes('COLE_') &&
+        !EMAILJS_CONFIG.templateId.includes('COLE_')
+      );
+    }
+
+    function inicializarEmailJS() {
+      if (!emailJSConfigurado()) return false;
+
+      emailjs.init({
+        publicKey: EMAILJS_CONFIG.publicKey
+      });
+
+      return true;
+    }
+
+    async function enviarEmailConfirmacaoReserva(reserva) {
+      if (!inicializarEmailJS()) {
+        console.info('EmailJS ainda nao configurado. Email de confirmacao nao enviado.');
+        return false;
+      }
+
+      const emailDestino = String(reserva.email || '').trim().toLowerCase();
+
+      if (!validarEmail(emailDestino)) {
+        throw new Error('Email de destino invalido para envio da confirmacao.');
+      }
+
+      const parametros = {
+        email: emailDestino,
+        to_email: emailDestino,
+        recipient: emailDestino,
+        reply_to: emailDestino,
+        user_email: emailDestino,
+        to_name: reserva.nome,
+        nome_cliente: reserva.nome,
+        email_cliente: emailDestino,
+        cpf_cliente: formatarCPF(reserva.cpf),
+        telefone_cliente: formatarTelefone(reserva.telefone),
+        restaurante_nome: RESTAURANTE_NOME,
+        data_reserva: formatarDataBR(reserva.data),
+        horario_reserva: reserva.horario,
+        qtd_pessoas: `${reserva.qtdPessoas} pessoa(s)`,
+        reserva_id: reserva.id,
+        link_reserva: LINK_CONSULTA_RESERVAS
+      };
+
+      await emailjs.send(
+        EMAILJS_CONFIG.serviceId,
+        EMAILJS_CONFIG.templateId,
+        parametros
+      );
+
+      return true;
+    }
+
     function carregarRevisaoReserva() {
       const data = sessionStorage.getItem('reserva_data');
       const horario = sessionStorage.getItem('reserva_horario');
@@ -121,8 +220,9 @@
       const nome = sessionStorage.getItem('reserva_nome');
       const cpf = sessionStorage.getItem('reserva_cpf');
       const telefone = sessionStorage.getItem('reserva_telefone');
+      const email = sessionStorage.getItem('reserva_email');
 
-      if (!data || !horario || !qtdPessoas || !nome || !cpf || !telefone) {
+      if (!data || !horario || !qtdPessoas || !nome || !cpf || !telefone || !email) {
         mensagemRevisaoReserva.textContent = 'Dados da reserva incompletos. Volte e preencha novamente.';
         mensagemRevisaoReserva.style.color = 'red';
         return;
@@ -132,16 +232,17 @@
       revNome.value = nome;
       revCpf.value = formatarCPF(cpf);
       revTelefone.value = formatarTelefone(telefone);
+      revEmail.value = email;
       revQtdPessoas.value = `${qtdPessoas} pessoa(s)`;
     }
 
-    async function obterOuSalvarCliente(nome, cpf, telefone) {
+    async function obterOuSalvarCliente(nome, cpf, telefone, email) {
       const clienteIdSalvo = sessionStorage.getItem('reserva_cliente_id');
 
       if (clienteIdSalvo) {
         const { error } = await supabaseClient
           .from('cliente')
-          .update({ nome, cpf, telefone })
+          .update({ nome, cpf, telefone, email })
           .eq('id', clienteIdSalvo);
 
         if (error) throw error;
@@ -159,7 +260,7 @@
       if (clienteExistente) {
         const { error: erroAtualizacao } = await supabaseClient
           .from('cliente')
-          .update({ nome, cpf, telefone })
+          .update({ nome, cpf, telefone, email })
           .eq('id', clienteExistente.id);
 
         if (erroAtualizacao) throw erroAtualizacao;
@@ -168,7 +269,7 @@
 
       const { data: clienteInserido, error: erroInsercao } = await supabaseClient
         .from('cliente')
-        .insert([{ nome, cpf, telefone }])
+        .insert([{ nome, cpf, telefone, email }])
         .select('id')
         .single();
 
@@ -202,8 +303,9 @@
       const nome = sessionStorage.getItem('reserva_nome');
       const cpf = somenteNumeros(sessionStorage.getItem('reserva_cpf'));
       const telefone = somenteNumeros(sessionStorage.getItem('reserva_telefone'));
+      const email = String(sessionStorage.getItem('reserva_email') || '').trim().toLowerCase();
 
-      if (!data || !horario || !qtdPessoas || !nome || !cpf || !telefone) {
+      if (!data || !horario || !qtdPessoas || !nome || !cpf || !telefone || !validarEmail(email)) {
         mensagemRevisaoReserva.textContent = 'Dados da reserva incompletos. Volte e preencha novamente.';
         mensagemRevisaoReserva.style.color = 'red';
         return;
@@ -214,7 +316,7 @@
       mensagemRevisaoReserva.textContent = '';
 
       try {
-        const clienteId = await obterOuSalvarCliente(nome, cpf, telefone);
+        const clienteId = await obterOuSalvarCliente(nome, cpf, telefone, email);
         const reservaDuplicada = await buscarReservaDuplicada(cpf, clienteId, data, horario);
 
         if (reservaDuplicada) {
@@ -236,6 +338,7 @@
               nome_cliente: nome,
               cpf_cliente: cpf,
               telefone_cliente: telefone,
+              email_cliente: email,
               status: 'Pendente'
             }
           ])
@@ -246,6 +349,22 @@
 
         sessionStorage.setItem('reserva_id', reservaInserida.id);
         sessionStorage.setItem('reserva_cliente_id', clienteId);
+        sessionStorage.setItem('reserva_email', email);
+
+        try {
+          await enviarEmailConfirmacaoReserva({
+            id: reservaInserida.id,
+            nome,
+            cpf,
+            telefone,
+            email,
+            data,
+            horario,
+            qtdPessoas
+          });
+        } catch (erroEmail) {
+          console.warn('Reserva criada, mas o email de confirmacao nao foi enviado:', erroEmail);
+        }
 
         window.location.href = '../pags_html/reserva_confirmada.html';
       } catch (error) {

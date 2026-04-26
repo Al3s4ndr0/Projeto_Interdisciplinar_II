@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Qmesa - Reservas</title>
+  <link rel="stylesheet" href="../pags_css/dashboard.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../config.js"></script>
+  <script src="../pags_js/config-loader.js"></script>
+  <script src="../pags_js/auth_guard.js"></script>
+</head>
+<body class="tema-fila tema-dashboard-gestor">
+  <div class="layout-gestor">
+    <aside class="sidebar-gestor" id="sidebarGestor">
+      <div class="sidebar-topo">
+        <div class="sidebar-topo-info">
+          <span class="sidebar-restaurante-label">Restaurante</span>
+          <strong class="sidebar-restaurante-nome" id="nomeRestauranteSidebar">Qmesa Demo</strong>
+        </div>
+        <button type="button" class="btn-toggle-sidebar" id="btnToggleSidebar" aria-label="Recolher menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"></path><path d="M4 12h16"></path><path d="M4 17h16"></path></svg>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-nav-bloco">
+          <span class="sidebar-nav-titulo">Visao geral</span>
+          <a href="../pags_html/dashboard.html" class="sidebar-link"><span class="sidebar-icone"><svg viewBox="0 0 24 24"><path d="M4 20V10"></path><path d="M10 20V4"></path><path d="M16 20v-8"></path><path d="M22 20v-5"></path></svg></span><span class="sidebar-link-texto"><span class="sidebar-link-titulo">Dashboard</span><span class="sidebar-link-subtitulo">Indicadores do gestor</span></span></a>
+          <a href="../pags_html/painel_operacional_fila.html" class="sidebar-link"><span class="sidebar-icone"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"></rect><path d="M8 20h8"></path><path d="M12 16v4"></path></svg></span><span class="sidebar-link-texto"><span class="sidebar-link-titulo">Painel operacional</span><span class="sidebar-link-subtitulo">Gestao em tempo real</span></span></a>
+        </div>
+
+        <div class="sidebar-nav-bloco">
+          <span class="sidebar-nav-titulo">Operacao</span>
+          <a href="../pags_html/gestao_cardapio.html" class="sidebar-link"><span class="sidebar-icone"><svg viewBox="0 0 24 24"><path d="M4 6h16"></path><path d="M7 12h10"></path><path d="M9 18h6"></path></svg></span><span class="sidebar-link-texto"><span class="sidebar-link-titulo">Gerenciar cardapio</span><span class="sidebar-link-subtitulo">Itens, precos e categorias</span></span></a>
+          <a href="../pags_html/reservas_gestao.html" class="sidebar-link ativo"><span class="sidebar-icone"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4"></path><path d="M8 2v4"></path><path d="M3 10h18"></path></svg></span><span class="sidebar-link-texto"><span class="sidebar-link-titulo">Reservas</span><span class="sidebar-link-subtitulo">Agenda e status</span></span></a>
+          <a href="../pags_html/mapa_mesas.html" class="sidebar-link"><span class="sidebar-icone"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="6" rx="2"></rect><path d="M5 11v8"></path><path d="M19 11v8"></path><path d="M8 19h8"></path></svg></span><span class="sidebar-link-texto"><span class="sidebar-link-titulo">Mesas</span><span class="sidebar-link-subtitulo">Mapa e capacidade</span></span></a>
+          <a href="../pags_html/usuarios_perfis.html" class="sidebar-link"><span class="sidebar-icone"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span><span class="sidebar-link-texto"><span class="sidebar-link-titulo">Usuarios</span><span class="sidebar-link-subtitulo">Perfis e permissoes</span></span></a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-footer-avatar" id="avatarUsuarioSidebar">QM</div>
+        <div class="sidebar-footer-texto">
+          <span class="sidebar-footer-nome" id="nomeUsuarioSidebar">Usuario interno</span>
+          <span class="sidebar-footer-perfil" id="perfilUsuarioSidebar">Acesso administrativo</span>
+          <button type="button" class="sidebar-footer-logout" id="btnLogoutSidebar" aria-label="Sair da sessao">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l5-5-5-5"></path><path d="M15 12H3"></path><path d="M21 19V5a2 2 0 0 0-2-2h-5"></path><path d="M14 21h5a2 2 0 0 0 2-2"></path></svg>
+            <span>Sair</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <section class="conteudo-gestor">
+      <div class="topbar-mobile">
+        <button type="button" class="btn-abrir-sidebar" id="btnAbrirSidebar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"></path><path d="M4 12h16"></path><path d="M4 17h16"></path></svg></button>
+      </div>
+
+      <section class="dashboard-gestor-banner">
+        <div class="dashboard-gestor-banner-textos">
+          <h1 class="dashboard-gestor-banner-titulo">Reservas</h1>
+          <p class="dashboard-gestor-banner-subtitulo">Acompanhe reservas, status e atribuicao de mesas</p>
+        </div>
+        <div class="dashboard-gestor-banner-logos">
+          <img src="../images/logo_restaurante.png" alt="Logo do restaurante" class="dashboard-gestor-banner-logo-restaurante" />
+          <img src="../images/logo_qmesa_sem_fundo.png" alt="Logo Qmesa" class="dashboard-gestor-banner-logo-qmesa" />
+        </div>
+      </section>
+
+      <section class="dashboard-gestor-bloco">
+        <div class="dashboard-gestor-bloco-header">
+          <div>
+            <h2 class="dashboard-gestor-bloco-titulo">Agenda de reservas</h2>
+            <p class="dashboard-gestor-bloco-subtitulo">Use os controles da tabela para confirmar, cancelar ou atribuir mesa</p>
+          </div>
+          <div class="dashboard-admin-acoes">
+            <button type="button" class="botao-secundario" id="btnAtualizarReservas">Atualizar</button>
+          </div>
+        </div>
+
+        <form class="dashboard-admin-form" id="formFiltrosReservas">
+          <label class="dashboard-admin-campo">
+            <span>Status</span>
+            <select id="filtroStatusReserva">
+              <option value="">Todos</option>
+              <option value="Pendente">Pendente</option>
+              <option value="Confirmada">Confirmada</option>
+              <option value="Cancelada">Cancelada</option>
+            </select>
+          </label>
+          <label class="dashboard-admin-campo">
+            <span>Inicio</span>
+            <input type="date" id="filtroDataInicioReserva">
+          </label>
+          <label class="dashboard-admin-campo">
+            <span>Fim</span>
+            <input type="date" id="filtroDataFimReserva">
+          </label>
+          <label class="dashboard-admin-campo">
+            <span>Busca</span>
+            <input type="text" id="filtroBuscaReserva" placeholder="Nome, CPF ou email">
+          </label>
+          <div class="dashboard-admin-acoes">
+            <button type="submit" class="botao-primario">Filtrar</button>
+          </div>
+        </form>
+
+        <div class="dashboard-gestor-tabela-wrap">
+          <table class="dashboard-gestor-tabela dashboard-reservas-tabela">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Cliente</th>
+                <th>Contato</th>
+                <th>Pessoas</th>
+                <th>Status atual</th>
+                <th>Mesa atual</th>
+                <th>Gerenciar</th>
+              </tr>
+            </thead>
+            <tbody id="tabelaReservas">
+              <tr><td colspan="7">Carregando reservas...</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="dashboard-gestor-mensagem" id="mensagemReservas"></p>
+      </section>
+
+      <footer class="footer-gestor">Desenvolvido por HS Solutions 2026</footer>
+    </section>
+  </div>
+
+  <script>
+    const supabaseUrl = window.SUPABASE_CONFIG?.URL || 'https://jlfbzdqhaezdtyyajqlk.supabase.co';
+    const supabaseKey = window.SUPABASE_CONFIG?.ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpsZmJ6ZHFoYWV6ZHR5eWFqcWxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjM0NjksImV4cCI6MjA4ODkzOTQ2OX0.6VX3Z1FjxgZuBYALd2oU4bQl0nzbMcBUcc0nLW_DbvA';
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+    const sessaoAtual = window.QmesaAuth.exigirAutenticacao(['gestor', 'admin']);
+    const RESTAURANTE_ID_FIXO = sessaoAtual?.restaurante_id;
+
+    if (!sessaoAtual) throw new Error('Acesso a reservas bloqueado por falta de autenticacao.');
+
+    const sidebarGestor = document.getElementById('sidebarGestor');
+    const btnToggleSidebar = document.getElementById('btnToggleSidebar');
+    const btnAbrirSidebar = document.getElementById('btnAbrirSidebar');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+    const nomeRestauranteSidebar = document.getElementById('nomeRestauranteSidebar');
+    const avatarUsuarioSidebar = document.getElementById('avatarUsuarioSidebar');
+    const nomeUsuarioSidebar = document.getElementById('nomeUsuarioSidebar');
+    const perfilUsuarioSidebar = document.getElementById('perfilUsuarioSidebar');
+    const btnLogoutSidebar = document.getElementById('btnLogoutSidebar');
+    const formFiltrosReservas = document.getElementById('formFiltrosReservas');
+    const filtroStatusReserva = document.getElementById('filtroStatusReserva');
+    const filtroDataInicioReserva = document.getElementById('filtroDataInicioReserva');
+    const filtroDataFimReserva = document.getElementById('filtroDataFimReserva');
+    const filtroBuscaReserva = document.getElementById('filtroBuscaReserva');
+    const btnAtualizarReservas = document.getElementById('btnAtualizarReservas');
+    const tabelaReservas = document.getElementById('tabelaReservas');
+    const mensagemReservas = document.getElementById('mensagemReservas');
+
+    let mesas = [];
+    let reservas = [];
+
+    function escaparHtml(valor) {
+      return String(valor ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    }
+
+    function formatarRole(role) {
+      if (role === 'admin') return 'Acesso administrador';
+      if (role === 'gestor') return 'Acesso gestor';
+      return 'Acesso operador';
+    }
+
+    function preencherContextoUsuario() {
+      const usuario = sessaoAtual?.usuario || 'Gestor';
+      avatarUsuarioSidebar.textContent = usuario.slice(0, 2).toUpperCase();
+      nomeUsuarioSidebar.textContent = usuario;
+      perfilUsuarioSidebar.textContent = formatarRole(sessaoAtual?.role);
+    }
+
+    async function carregarNomeRestaurante() {
+      const { data } = await supabaseClient.from('restaurante').select('nome').eq('id', RESTAURANTE_ID_FIXO).single();
+      if (data?.nome) nomeRestauranteSidebar.textContent = data.nome;
+    }
+
+    function setMensagem(texto, tipo = '') {
+      mensagemReservas.textContent = texto;
+      mensagemReservas.style.color = tipo === 'erro' ? '#dc2626' : tipo === 'sucesso' ? '#16a34a' : '#4b5563';
+    }
+
+    function formatarDataHora(valor) {
+      if (!valor) return '-';
+      return new Date(valor).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }
+
+    function montarOptionsMesa(mesaAtualId) {
+      const options = ['<option value="">Sem mesa</option>'];
+      mesas.forEach(mesa => {
+        const selected = mesa.id === mesaAtualId ? 'selected' : '';
+        options.push(`<option value="${mesa.id}" ${selected}>Mesa ${escaparHtml(mesa.numero)} - ${mesa.capacidade} lugares</option>`);
+      });
+      return options.join('');
+    }
+
+    function filtrarReservasLocalmente(lista) {
+      const busca = filtroBuscaReserva.value.trim().toLowerCase();
+      if (!busca) return lista;
+      return lista.filter(reserva => {
+        const texto = `${reserva.nome_cliente || reserva.cliente?.nome || ''} ${reserva.cpf_cliente || reserva.cliente?.cpf || ''} ${reserva.email_cliente || reserva.cliente?.email || ''}`.toLowerCase();
+        return texto.includes(busca);
+      });
+    }
+
+    function renderizarReservas() {
+      const lista = filtrarReservasLocalmente(reservas);
+      if (!lista.length) {
+        tabelaReservas.innerHTML = '<tr><td colspan="7">Nenhuma reserva encontrada.</td></tr>';
+        return;
+      }
+
+      tabelaReservas.innerHTML = lista.map(reserva => {
+        const nome = reserva.nome_cliente || reserva.cliente?.nome || '-';
+        const cpf = reserva.cpf_cliente || reserva.cliente?.cpf || '-';
+        const telefone = reserva.telefone_cliente || reserva.cliente?.telefone || '-';
+        const email = reserva.email_cliente || reserva.cliente?.email || '-';
+        const mesaAtual = reserva.mesa ? `Mesa ${reserva.mesa.numero}` : 'Sem mesa';
+
+        return `
+          <tr>
+            <td>${formatarDataHora(reserva.data_hora)}</td>
+            <td><strong>${escaparHtml(nome)}</strong><br><span>${escaparHtml(cpf)}</span></td>
+            <td>${escaparHtml(telefone)}<br><span>${escaparHtml(email)}</span></td>
+            <td>${reserva.num_pessoas}</td>
+            <td><span class="badge-status">${escaparHtml(reserva.status || 'Pendente')}</span></td>
+            <td>${escaparHtml(mesaAtual)}</td>
+            <td>
+              <div class="dashboard-reserva-controles">
+                <select id="status-${reserva.id}">
+                  <option value="Pendente" ${reserva.status === 'Pendente' ? 'selected' : ''}>Pendente</option>
+                  <option value="Confirmada" ${reserva.status === 'Confirmada' ? 'selected' : ''}>Confirmada</option>
+                  <option value="Cancelada" ${reserva.status === 'Cancelada' ? 'selected' : ''}>Cancelada</option>
+                </select>
+                <select id="mesa-${reserva.id}">${montarOptionsMesa(reserva.mesa_id)}</select>
+                <button type="button" class="dashboard-mini-btn" onclick="salvarReserva('${reserva.id}')">Salvar</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function carregarMesas() {
+      const { data, error } = await supabaseClient
+        .from('mesa')
+        .select('id, numero, capacidade, status')
+        .eq('restaurante_id', RESTAURANTE_ID_FIXO)
+        .order('numero', { ascending: true });
+      if (error) throw error;
+      mesas = data || [];
+    }
+
+    async function carregarReservas() {
+      setMensagem('');
+      let query = supabaseClient
+        .from('reserva')
+        .select('id, data_hora, num_pessoas, status, mesa_id, nome_cliente, cpf_cliente, telefone_cliente, email_cliente, cliente:cliente_id(nome, cpf, telefone, email), mesa:mesa_id(numero, capacidade)')
+        .eq('restaurante_id', RESTAURANTE_ID_FIXO)
+        .order('data_hora', { ascending: true });
+
+      if (filtroStatusReserva.value) query = query.eq('status', filtroStatusReserva.value);
+      if (filtroDataInicioReserva.value) query = query.gte('data_hora', `${filtroDataInicioReserva.value}T00:00:00`);
+      if (filtroDataFimReserva.value) query = query.lte('data_hora', `${filtroDataFimReserva.value}T23:59:59`);
+
+      const { data, error } = await query;
+      if (error) throw error;
+      reservas = data || [];
+      renderizarReservas();
+    }
+
+    async function iniciarReservas() {
+      try {
+        await carregarMesas();
+        await carregarReservas();
+      } catch (erro) {
+        console.error('Erro ao carregar reservas:', erro);
+        tabelaReservas.innerHTML = '<tr><td colspan="7">Nao foi possivel carregar as reservas.</td></tr>';
+        setMensagem('Verifique permissoes e estrutura das tabelas reserva/mesa no Supabase.', 'erro');
+      }
+    }
+
+    async function salvarReserva(id) {
+      const status = document.getElementById(`status-${id}`)?.value;
+      const mesaId = document.getElementById(`mesa-${id}`)?.value || null;
+
+      try {
+        const { error } = await supabaseClient
+          .from('reserva')
+          .update({ status, mesa_id: mesaId })
+          .eq('id', id)
+          .eq('restaurante_id', RESTAURANTE_ID_FIXO);
+        if (error) throw error;
+        setMensagem('Reserva atualizada com sucesso.', 'sucesso');
+        await carregarReservas();
+      } catch (erro) {
+        console.error('Erro ao salvar reserva:', erro);
+        setMensagem('Nao foi possivel atualizar a reserva.', 'erro');
+      }
+    }
+
+    function alternarSidebarDesktop() { sidebarGestor?.classList.toggle('recolhida'); }
+    function abrirSidebarMobile() { sidebarGestor?.classList.add('aberta'); sidebarBackdrop?.classList.add('ativo'); }
+    function fecharSidebarMobile() { sidebarGestor?.classList.remove('aberta'); sidebarBackdrop?.classList.remove('ativo'); }
+
+    window.salvarReserva = salvarReserva;
+
+    btnLogoutSidebar.addEventListener('click', () => window.QmesaAuth.logout());
+    btnToggleSidebar.addEventListener('click', alternarSidebarDesktop);
+    btnAbrirSidebar.addEventListener('click', abrirSidebarMobile);
+    sidebarBackdrop.addEventListener('click', fecharSidebarMobile);
+    formFiltrosReservas.addEventListener('submit', event => { event.preventDefault(); carregarReservas(); });
+    btnAtualizarReservas.addEventListener('click', iniciarReservas);
+    filtroBuscaReserva.addEventListener('input', renderizarReservas);
+
+    preencherContextoUsuario();
+    carregarNomeRestaurante();
+    iniciarReservas();
+  </script>
+</body>
+</html>

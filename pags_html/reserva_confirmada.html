@@ -108,12 +108,21 @@ Voltar à tela inicial
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
 <script>
   const supabaseClient = window.supabase.createClient(
     'https://jlfbzdqhaezdtyyajqlk.supabase.co',
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpsZmJ6ZHFoYWV6ZHR5eWFqcWxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjM0NjksImV4cCI6MjA4ODkzOTQ2OX0.6VX3Z1FjxgZuBYALd2oU4bQl0nzbMcBUcc0nLW_DbvA'
   );
+
+  const RESTAURANTE_NOME = 'Mangálhos Grill';
+  const LINK_CONSULTA_RESERVAS = `${window.location.origin}${window.location.pathname.replace('reserva_confirmada.html', 'consultar_reservas.html')}`;
+  const EMAILJS_CONFIG = {
+    publicKey: '1AI1-s7z0WFVbln51',
+    serviceId: 'service_tz8g5dg',
+    templateMovimentacaoId: 'template_7rbmg7s'
+  };
 
   const btnCancelarReserva = document.getElementById('btnCancelarReserva');
   const modalCancelamentoReserva = document.getElementById('modalCancelamentoReserva');
@@ -131,6 +140,154 @@ Voltar à tela inicial
     modalCancelamentoReserva.classList.remove('ativo');
   }
 
+  function somenteNumeros(valor) {
+    return String(valor || '').replace(/\D/g, '');
+  }
+
+  function formatarCPF(cpf) {
+    let valor = somenteNumeros(cpf).slice(0, 11);
+    valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
+    valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
+    valor = valor.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    return valor;
+  }
+
+  function formatarTelefone(valor) {
+    let numeros = somenteNumeros(valor).slice(0, 11);
+
+    if (numeros.length <= 10) {
+      numeros = numeros.replace(/(\d{2})(\d)/, '($1) $2');
+      numeros = numeros.replace(/(\d{4})(\d)/, '$1-$2');
+    } else {
+      numeros = numeros.replace(/(\d{2})(\d)/, '($1) $2');
+      numeros = numeros.replace(/(\d{5})(\d)/, '$1-$2');
+    }
+
+    return numeros;
+  }
+
+  function formatarDataBR(dataISO) {
+    if (!dataISO) return '';
+    const [ano, mes, dia] = dataISO.split('-');
+    return `${dia}/${mes}/${ano}`;
+  }
+
+  function separarDataHora(dataHora) {
+    const data = new Date(dataHora);
+    const ano = data.getFullYear();
+    const mes = String(data.getMonth() + 1).padStart(2, '0');
+    const dia = String(data.getDate()).padStart(2, '0');
+    const hora = String(data.getHours()).padStart(2, '0');
+    const minuto = String(data.getMinutes()).padStart(2, '0');
+
+    return {
+      data: `${ano}-${mes}-${dia}`,
+      horario: `${hora}:${minuto}`
+    };
+  }
+
+  function validarEmail(valor) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(valor || '').trim());
+  }
+
+  function emailJSConfigurado() {
+    return Boolean(
+      window.emailjs &&
+      EMAILJS_CONFIG.publicKey &&
+      EMAILJS_CONFIG.serviceId &&
+      EMAILJS_CONFIG.templateMovimentacaoId &&
+      !EMAILJS_CONFIG.publicKey.includes('COLE_') &&
+      !EMAILJS_CONFIG.serviceId.includes('COLE_') &&
+      !EMAILJS_CONFIG.templateMovimentacaoId.includes('COLE_')
+    );
+  }
+
+  function inicializarEmailJS() {
+    if (!emailJSConfigurado()) return false;
+
+    emailjs.init({
+      publicKey: EMAILJS_CONFIG.publicKey
+    });
+
+    return true;
+  }
+
+  async function buscarReservaParaEmail(reservaId) {
+    const { data, error } = await supabaseClient
+      .from('reserva')
+      .select(`
+        id,
+        data_hora,
+        num_pessoas,
+        nome_cliente,
+        cpf_cliente,
+        telefone_cliente,
+        email_cliente,
+        cliente:cliente_id (
+          nome,
+          cpf,
+          telefone,
+          email
+        )
+      `)
+      .eq('id', reservaId)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    return data;
+  }
+
+  async function enviarEmailCancelamentoReserva(reserva) {
+    if (!reserva || !inicializarEmailJS()) {
+      console.info('EmailJS ainda nao configurado para cancelamento. Email nao enviado.');
+      return false;
+    }
+
+    const emailDestino = String(reserva.email_cliente || reserva.cliente?.email || '').trim().toLowerCase();
+
+    if (!validarEmail(emailDestino)) {
+      throw new Error('Email de destino invalido para envio do cancelamento.');
+    }
+
+    const partes = separarDataHora(reserva.data_hora);
+
+    await emailjs.send(
+      EMAILJS_CONFIG.serviceId,
+      EMAILJS_CONFIG.templateMovimentacaoId,
+      {
+        email: emailDestino,
+        to_email: emailDestino,
+        recipient: emailDestino,
+        reply_to: emailDestino,
+        user_email: emailDestino,
+        to_name: reserva.nome_cliente || reserva.cliente?.nome || '',
+        nome_cliente: reserva.nome_cliente || reserva.cliente?.nome || '',
+        email_cliente: emailDestino,
+        cpf_cliente: formatarCPF(reserva.cpf_cliente || reserva.cliente?.cpf || ''),
+        telefone_cliente: formatarTelefone(reserva.telefone_cliente || reserva.cliente?.telefone || ''),
+        restaurante_nome: RESTAURANTE_NOME,
+        data_reserva: formatarDataBR(partes.data),
+        horario_reserva: partes.horario,
+        qtd_pessoas: `${reserva.num_pessoas} pessoa(s)`,
+        reserva_id: reserva.id,
+        link_reserva: LINK_CONSULTA_RESERVAS,
+        tipo_movimentacao: 'Reserva cancelada',
+        titulo_movimentacao: 'Reserva cancelada',
+        mensagem_movimentacao: 'Sua reserva foi cancelada.',
+        cor_movimentacao: '#6b7280',
+        cta_movimentacao: 'Consultar minhas reservas',
+        rodape_movimentacao: 'Tudo certo por aqui. Quando quiser, voce pode fazer uma nova reserva pelo Qmesa.',
+        dados_anteriores_texto: '',
+        data_reserva_anterior: '',
+        horario_reserva_anterior: '',
+        qtd_pessoas_anterior: ''
+      }
+    );
+
+    return true;
+  }
+
   async function confirmarCancelamentoReserva() {
     const reservaId = sessionStorage.getItem('reserva_id');
 
@@ -144,6 +301,8 @@ Voltar à tela inicial
     btnConfirmarCancelamentoReserva.textContent = 'Cancelando...';
 
     try {
+      const reservaParaEmail = await buscarReservaParaEmail(reservaId);
+
       const { error } = await supabaseClient
         .from('reserva')
         .update({ status: 'Cancelada' })
@@ -152,6 +311,13 @@ Voltar à tela inicial
       if (error) throw error;
 
       sessionStorage.setItem('reserva_cancelada_id', reservaId);
+
+      try {
+        await enviarEmailCancelamentoReserva(reservaParaEmail);
+      } catch (erroEmail) {
+        console.warn('Reserva cancelada, mas o email de cancelamento nao foi enviado:', erroEmail);
+      }
+
       window.location.href = '../pags_html/cancelamento_reserva_confirmado.html';
     } catch (error) {
       console.error('Erro ao cancelar reserva:', error);

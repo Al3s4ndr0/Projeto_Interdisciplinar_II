@@ -14,7 +14,198 @@ const elementos = {
 let itensCardapio = [];
 let categoriaAtual = 'all';
 
+const STATUS_EM_FILA = ['Aguardando', 'Preparando', 'Chamado', 'A caminho'];
+const TEMPO_MEDIO_POR_POSICAO = 10;
+let timeoutToast = null;
+let audioLiberado = sessionStorage.getItem('audio_liberado') === 'true';
+let toastNotificacao = null;
+let toastTitulo = null;
+let toastTexto = null;
+let audioNotificacao = null;
+
+function mostrarToast(titulo, texto) {
+    if (!toastNotificacao || !toastTitulo || !toastTexto) return;
+
+    toastTitulo.textContent = titulo;
+    toastTexto.textContent = texto;
+    toastNotificacao.classList.add('ativo');
+
+    if (timeoutToast) {
+        clearTimeout(timeoutToast);
+    }
+
+    timeoutToast = setTimeout(() => {
+        toastNotificacao.classList.remove('ativo');
+    }, 4000);
+}
+
+function tocarSomNotificacao() {
+    if (!audioNotificacao) return;
+    if (!audioLiberado) return;
+
+    try {
+        audioNotificacao.pause();
+        audioNotificacao.currentTime = 0;
+        const promessa = audioNotificacao.play();
+        if (promessa && typeof promessa.catch === 'function') {
+            promessa.catch((erro) => {
+                console.warn('Não foi possível tocar o som da notificação.', erro);
+            });
+        }
+    } catch (erro) {
+        console.warn('Erro ao tocar som da notificação.', erro);
+    }
+}
+
+function habilitarAudioNaPrimeiraInteracao() {
+    if (!audioNotificacao || audioLiberado) return;
+
+    const desbloquear = async () => {
+        try {
+            audioNotificacao.volume = 1;
+            audioNotificacao.muted = false;
+            const tentativa = audioNotificacao.play();
+            if (tentativa && typeof tentativa.then === 'function') {
+                await tentativa;
+            }
+            audioNotificacao.pause();
+            audioNotificacao.currentTime = 0;
+            audioLiberado = true;
+            sessionStorage.setItem('audio_liberado', 'true');
+        } catch (erro) {
+            console.warn('Não foi possível liberar o áudio na primeira interação.', erro);
+            audioLiberado = false;
+            sessionStorage.removeItem('audio_liberado');
+        }
+    };
+
+    document.addEventListener('click', desbloquear, { once: true });
+    document.addEventListener('touchstart', desbloquear, { once: true });
+    document.addEventListener('keydown', desbloquear, { once: true });
+}
+
+async function solicitarPermissaoNotificacao() {
+    if (!('Notification' in window)) return;
+    if (Notification.permission === 'granted' || Notification.permission === 'denied') return;
+
+    const permissaoJaSolicitada = sessionStorage.getItem('notificacao_permissao_solicitada');
+    if (permissaoJaSolicitada === 'true') return;
+
+    try {
+        await Notification.requestPermission();
+        sessionStorage.setItem('notificacao_permissao_solicitada', 'true');
+    } catch (erro) {
+        console.warn('Não foi possível solicitar permissão de notificação.', erro);
+    }
+}
+
+function notificar(titulo, corpo, tocarSom = false) {
+    mostrarToast(titulo, corpo);
+
+    if (tocarSom) {
+        tocarSomNotificacao();
+    }
+
+    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+
+    try {
+        new Notification(titulo, { body: corpo });
+    } catch (erro) {
+        console.warn('Falha ao exibir notificação.', erro);
+    }
+}
+
+async function buscarPosicaoRealDaFila(fila) {
+    const { data: itensFila, error } = await supabaseClient
+        .from('fila_item')
+        .select('id, status, hora_entrada')
+        .eq('restaurante_id', fila.restaurante_id)
+        .order('hora_entrada', { ascending: true });
+
+    if (error) {
+        throw error;
+    }
+
+    const ativos = (itensFila || [])
+        .filter(item => STATUS_EM_FILA.includes(item.status));
+
+    const indice = ativos.findIndex(item => item.id === fila.id);
+    return indice >= 0 ? indice + 1 : null;
+}
+
+function tratarMudancas(statusAtual, posicaoAtual) {
+    const statusAnterior = sessionStorage.getItem('fila_status_anterior');
+    const posicaoAnterior = sessionStorage.getItem('fila_posicao_anterior');
+
+    if (statusAnterior && statusAnterior !== statusAtual) {
+        if (statusAtual === 'Preparando') {
+            notificar('Qmesa', 'Sua mesa está sendo preparada.', true);
+        } else if (statusAtual === 'Chamado') {
+            notificar('Qmesa', 'Sua mesa está pronta. Dirija-se ao balcão.', true);
+        } else if (statusAtual === 'A caminho') {
+            notificar('Qmesa', 'Perfeito! Estamos aguardando você no balcão.', true);
+        } else if (statusAtual === 'Atendido') {
+            notificar('Qmesa', 'Seu atendimento foi concluído.', true);
+        } else if (statusAtual === 'Cancelado' || statusAtual === 'Desistente') {
+            notificar('Qmesa', 'Sua fila foi encerrada.', false);
+        }
+    }
+
+    if (
+        posicaoAnterior &&
+        String(posicaoAnterior) !== String(posicaoAtual) &&
+        STATUS_EM_FILA.includes(statusAtual)
+    ) {
+        notificar('Qmesa', `Sua posição na fila mudou para ${posicaoAtual}.`, false);
+    }
+
+    sessionStorage.setItem('fila_status_anterior', statusAtual);
+    sessionStorage.setItem('fila_posicao_anterior', posicaoAtual ?? '');
+}
+
+async function carregarNotificacoesFila() {
+    const filaItemId = sessionStorage.getItem('fila_item_id');
+    if (!filaItemId) return;
+
+    try {
+        const { data: fila, error } = await supabaseClient
+            .from('fila_item')
+            .select('id, status, posicao, hora_entrada, restaurante_id')
+            .eq('id', filaItemId)
+            .maybeSingle();
+
+        if (error || !fila) return;
+
+        if (!STATUS_EM_FILA.includes(fila.status)) return;
+
+        const posicaoAtual = await buscarPosicaoRealDaFila(fila);
+        tratarMudancas(fila.status, posicaoAtual);
+    } catch (erro) {
+        console.error('Erro ao atualizar notificações de fila:', erro);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
+    toastNotificacao = document.getElementById('toastNotificacao');
+    toastTitulo = document.getElementById('toastTitulo');
+    toastTexto = document.getElementById('toastTexto');
+    audioNotificacao = document.getElementById('audioNotificacao');
+
+    if (audioNotificacao) {
+        audioNotificacao.addEventListener('canplaythrough', () => {
+            console.log('Áudio de notificação pronto.');
+        });
+
+        audioNotificacao.addEventListener('error', (e) => {
+            console.error('Erro ao carregar áudio de notificação', e);
+        });
+    }
+
+    habilitarAudioNaPrimeiraInteracao();
+    solicitarPermissaoNotificacao();
+    carregarNotificacoesFila();
+    setInterval(carregarNotificacoesFila, 5000);
+
     try {
         const restauranteId = await descobrirRestauranteId();
 

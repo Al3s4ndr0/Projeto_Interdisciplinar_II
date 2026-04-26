@@ -37,7 +37,9 @@ CREATE TABLE mesa (
 CREATE TABLE cliente (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   nome VARCHAR(255) NOT NULL,
-  telefone VARCHAR(20) NOT NULL
+  telefone VARCHAR(20) NOT NULL,
+  cpf VARCHAR(14) UNIQUE,
+  email VARCHAR(255)
 );
 
 CREATE TABLE fila_item (
@@ -59,6 +61,10 @@ CREATE TABLE reserva (
   restaurante_id UUID NOT NULL REFERENCES restaurante(id) ON DELETE CASCADE,
   data_hora TIMESTAMPTZ NOT NULL,
   num_pessoas INT NOT NULL,
+  nome_cliente VARCHAR(255),
+  cpf_cliente VARCHAR(14),
+  telefone_cliente VARCHAR(20),
+  email_cliente VARCHAR(255),
   status VARCHAR(20) NOT NULL DEFAULT 'Pendente'
     CHECK (status IN ('Pendente', 'Confirmada', 'Cancelada'))
 );
@@ -90,12 +96,16 @@ CREATE TABLE feedback (
 -- ═══════════════════════════════════════════════════════
 
 CREATE INDEX idx_mesa_restaurante        ON mesa(restaurante_id);
+CREATE INDEX idx_cliente_cpf             ON cliente(cpf);
+CREATE INDEX idx_cliente_email           ON cliente(email);
 CREATE INDEX idx_fila_item_restaurante   ON fila_item(restaurante_id);
 CREATE INDEX idx_fila_item_cliente       ON fila_item(cliente_id);
 CREATE INDEX idx_fila_item_status        ON fila_item(status);
 CREATE INDEX idx_reserva_restaurante     ON reserva(restaurante_id);
 CREATE INDEX idx_reserva_cliente         ON reserva(cliente_id);
 CREATE INDEX idx_reserva_status          ON reserva(status);
+CREATE INDEX idx_reserva_cpf_cliente     ON reserva(cpf_cliente);
+CREATE INDEX idx_reserva_email_cliente   ON reserva(email_cliente);
 CREATE INDEX idx_item_cardapio_restaurante ON item_cardapio(restaurante_id);
 CREATE INDEX idx_feedback_cliente        ON feedback(cliente_id);
 CREATE INDEX idx_feedback_origem         ON feedback(origem_id);
@@ -291,17 +301,17 @@ INSERT INTO mesa (id, restaurante_id, numero, capacidade, status) VALUES
   ('00000000-0000-0000-0002-000000000017', '00000000-0000-0000-0000-000000000003', 4, 2, 'Livre');
 
 -- CLIENTE
-INSERT INTO cliente (id, nome, telefone) VALUES
-  ('00000000-0000-0000-0003-000000000001', 'João Silva',       '(41) 99001-0001'),
-  ('00000000-0000-0000-0003-000000000002', 'Maria Oliveira',   '(41) 99001-0002'),
-  ('00000000-0000-0000-0003-000000000003', 'Carlos Souza',     '(41) 99001-0003'),
-  ('00000000-0000-0000-0003-000000000004', 'Ana Pereira',      '(41) 99001-0004'),
-  ('00000000-0000-0000-0003-000000000005', 'Pedro Costa',      '(41) 99001-0005'),
-  ('00000000-0000-0000-0003-000000000006', 'Fernanda Lima',    '(41) 99001-0006'),
-  ('00000000-0000-0000-0003-000000000007', 'Lucas Martins',    '(41) 99001-0007'),
-  ('00000000-0000-0000-0003-000000000008', 'Juliana Ferreira', '(41) 99001-0008'),
-  ('00000000-0000-0000-0003-000000000009', 'Rafael Almeida',   '(41) 99001-0009'),
-  ('00000000-0000-0000-0003-000000000010', 'Camila Santos',    '(41) 99001-0010');
+INSERT INTO cliente (id, nome, telefone, cpf, email) VALUES
+  ('00000000-0000-0000-0003-000000000001', 'João Silva',       '41990010001', '11111111111', NULL),
+  ('00000000-0000-0000-0003-000000000002', 'Maria Oliveira',   '41990010002', '22222222222', NULL),
+  ('00000000-0000-0000-0003-000000000003', 'Carlos Souza',     '41990010003', '33333333333', NULL),
+  ('00000000-0000-0000-0003-000000000004', 'Ana Pereira',      '41990010004', '44444444444', NULL),
+  ('00000000-0000-0000-0003-000000000005', 'Pedro Costa',      '41990010005', '55555555555', NULL),
+  ('00000000-0000-0000-0003-000000000006', 'Fernanda Lima',    '41990010006', '66666666666', NULL),
+  ('00000000-0000-0000-0003-000000000007', 'Lucas Martins',    '41990010007', '77777777777', 'lucas.martins@email.com'),
+  ('00000000-0000-0000-0003-000000000008', 'Juliana Ferreira', '41990010008', '88888888888', 'juliana.ferreira@email.com'),
+  ('00000000-0000-0000-0003-000000000009', 'Rafael Almeida',   '41990010009', '99999999999', 'rafael.almeida@email.com'),
+  ('00000000-0000-0000-0003-000000000010', 'Camila Santos',    '41990010010', '10101010101', 'camila.santos@email.com');
 
 -- FILA_ITEM
 INSERT INTO fila_item (id, restaurante_id, cliente_id, mesa_id, posicao, status, hora_entrada, tempo_estimado) VALUES
@@ -313,12 +323,12 @@ INSERT INTO fila_item (id, restaurante_id, cliente_id, mesa_id, posicao, status,
   ('00000000-0000-0000-0004-000000000006', '00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0003-000000000006', NULL,                                   0, 'Desistente', NOW() - INTERVAL '40 minutes',  NULL);
 
 -- RESERVA
-INSERT INTO reserva (id, cliente_id, mesa_id, restaurante_id, data_hora, num_pessoas, status) VALUES
-  ('00000000-0000-0000-0005-000000000001', '00000000-0000-0000-0003-000000000007', '00000000-0000-0000-0002-000000000004', '00000000-0000-0000-0000-000000000001', NOW() + INTERVAL '2 hours', 4, 'Confirmada'),
-  ('00000000-0000-0000-0005-000000000002', '00000000-0000-0000-0003-000000000008', '00000000-0000-0000-0002-000000000011', '00000000-0000-0000-0000-000000000002', NOW() + INTERVAL '3 hours', 3, 'Confirmada'),
-  ('00000000-0000-0000-0005-000000000003', '00000000-0000-0000-0003-000000000009', NULL,                                   '00000000-0000-0000-0000-000000000001', NOW() + INTERVAL '1 day',  6, 'Pendente'),
-  ('00000000-0000-0000-0005-000000000004', '00000000-0000-0000-0003-000000000010', NULL,                                   '00000000-0000-0000-0000-000000000003', NOW() + INTERVAL '2 days', 2, 'Pendente'),
-  ('00000000-0000-0000-0005-000000000005', '00000000-0000-0000-0003-000000000001', NULL,                                   '00000000-0000-0000-0000-000000000001', NOW() - INTERVAL '1 day',  4, 'Cancelada');
+INSERT INTO reserva (id, cliente_id, mesa_id, restaurante_id, data_hora, num_pessoas, nome_cliente, cpf_cliente, telefone_cliente, email_cliente, status) VALUES
+  ('00000000-0000-0000-0005-000000000001', '00000000-0000-0000-0003-000000000007', '00000000-0000-0000-0002-000000000004', '00000000-0000-0000-0000-000000000001', NOW() + INTERVAL '2 hours', 4, 'Lucas Martins',    '77777777777', '41990010007', 'lucas.martins@email.com',    'Confirmada'),
+  ('00000000-0000-0000-0005-000000000002', '00000000-0000-0000-0003-000000000008', '00000000-0000-0000-0002-000000000011', '00000000-0000-0000-0000-000000000002', NOW() + INTERVAL '3 hours', 3, 'Juliana Ferreira', '88888888888', '41990010008', 'juliana.ferreira@email.com', 'Confirmada'),
+  ('00000000-0000-0000-0005-000000000003', '00000000-0000-0000-0003-000000000009', NULL,                                   '00000000-0000-0000-0000-000000000001', NOW() + INTERVAL '1 day',  6, 'Rafael Almeida',   '99999999999', '41990010009', 'rafael.almeida@email.com',   'Pendente'),
+  ('00000000-0000-0000-0005-000000000004', '00000000-0000-0000-0003-000000000010', NULL,                                   '00000000-0000-0000-0000-000000000003', NOW() + INTERVAL '2 days', 2, 'Camila Santos',    '10101010101', '41990010010', 'camila.santos@email.com',    'Pendente'),
+  ('00000000-0000-0000-0005-000000000005', '00000000-0000-0000-0003-000000000001', NULL,                                   '00000000-0000-0000-0000-000000000001', NOW() - INTERVAL '1 day',  4, 'João Silva',       '11111111111', '41990010001', NULL,                         'Cancelada');
 
 -- ITEM_CARDAPIO — Mangálhos Grill
 INSERT INTO item_cardapio (id, restaurante_id, nome, descricao, preco, categoria, disponivel) VALUES

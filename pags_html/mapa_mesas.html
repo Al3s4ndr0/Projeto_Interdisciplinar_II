@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Qmesa - Mapa de Mesas</title>
+  <link rel="stylesheet" href="../pags_css/dashboard.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../config.js"></script>
+  <script src="../pags_js/config-loader.js"></script>
+  <script src="../pags_js/auth_guard.js"></script>
+</head>
+<body class="tema-fila tema-dashboard-gestor">
+  <div class="layout-gestor">
+    <aside class="sidebar-gestor" id="sidebarGestor">
+      <div class="sidebar-topo">
+        <div class="sidebar-topo-info">
+          <span class="sidebar-restaurante-label">Restaurante</span>
+          <strong class="sidebar-restaurante-nome" id="nomeRestauranteSidebar">Qmesa Demo</strong>
+        </div>
+        <button type="button" class="btn-toggle-sidebar" id="btnToggleSidebar" aria-label="Recolher menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"></path><path d="M4 12h16"></path><path d="M4 17h16"></path></svg>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-nav-bloco">
+          <span class="sidebar-nav-titulo">Visao geral</span>
+          <a href="../pags_html/dashboard.html" class="sidebar-link"><span class="sidebar-icone"><svg viewBox="0 0 24 24"><path d="M4 20V10"></path><path d="M10 20V4"></path><path d="M16 20v-8"></path><path d="M22 20v-5"></path></svg></span><span class="sidebar-link-texto"><span class="sidebar-link-titulo">Dashboard</span><span class="sidebar-link-subtitulo">Indicadores do gestor</span></span></a>
+          <a href="../pags_html/painel_operacional_fila.html" class="sidebar-link"><span class="sidebar-icone"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"></rect><path d="M8 20h8"></path><path d="M12 16v4"></path></svg></span><span class="sidebar-link-texto"><span class="sidebar-link-titulo">Painel operacional</span><span class="sidebar-link-subtitulo">Gestao em tempo real</span></span></a>
+        </div>
+
+        <div class="sidebar-nav-bloco">
+          <span class="sidebar-nav-titulo">Operacao</span>
+          <a href="../pags_html/gestao_cardapio.html" class="sidebar-link"><span class="sidebar-icone"><svg viewBox="0 0 24 24"><path d="M4 6h16"></path><path d="M7 12h10"></path><path d="M9 18h6"></path></svg></span><span class="sidebar-link-texto"><span class="sidebar-link-titulo">Gerenciar cardapio</span><span class="sidebar-link-subtitulo">Itens, precos e categorias</span></span></a>
+          <a href="../pags_html/reservas_gestao.html" class="sidebar-link"><span class="sidebar-icone"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4"></path><path d="M8 2v4"></path><path d="M3 10h18"></path></svg></span><span class="sidebar-link-texto"><span class="sidebar-link-titulo">Reservas</span><span class="sidebar-link-subtitulo">Agenda e status</span></span></a>
+          <a href="../pags_html/mapa_mesas.html" class="sidebar-link ativo"><span class="sidebar-icone"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="6" rx="2"></rect><path d="M5 11v8"></path><path d="M19 11v8"></path><path d="M8 19h8"></path></svg></span><span class="sidebar-link-texto"><span class="sidebar-link-titulo">Mesas</span><span class="sidebar-link-subtitulo">Mapa e capacidade</span></span></a>
+          <a href="../pags_html/usuarios_perfis.html" class="sidebar-link"><span class="sidebar-icone"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span><span class="sidebar-link-texto"><span class="sidebar-link-titulo">Usuarios</span><span class="sidebar-link-subtitulo">Perfis e permissoes</span></span></a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-footer-avatar" id="avatarUsuarioSidebar">QM</div>
+        <div class="sidebar-footer-texto">
+          <span class="sidebar-footer-nome" id="nomeUsuarioSidebar">Usuario interno</span>
+          <span class="sidebar-footer-perfil" id="perfilUsuarioSidebar">Acesso administrativo</span>
+          <button type="button" class="sidebar-footer-logout" id="btnLogoutSidebar" aria-label="Sair da sessao">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l5-5-5-5"></path><path d="M15 12H3"></path><path d="M21 19V5a2 2 0 0 0-2-2h-5"></path><path d="M14 21h5a2 2 0 0 0 2-2"></path></svg>
+            <span>Sair</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <section class="conteudo-gestor">
+      <div class="topbar-mobile">
+        <button type="button" class="btn-abrir-sidebar" id="btnAbrirSidebar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"></path><path d="M4 12h16"></path><path d="M4 17h16"></path></svg></button>
+      </div>
+
+      <section class="dashboard-gestor-banner">
+        <div class="dashboard-gestor-banner-textos">
+          <h1 class="dashboard-gestor-banner-titulo">Mapa de Mesas</h1>
+          <p class="dashboard-gestor-banner-subtitulo">Cadastre mesas, capacidade e status operacional</p>
+        </div>
+        <div class="dashboard-gestor-banner-logos">
+          <img src="../images/logo_restaurante.png" alt="Logo do restaurante" class="dashboard-gestor-banner-logo-restaurante" />
+          <img src="../images/logo_qmesa_sem_fundo.png" alt="Logo Qmesa" class="dashboard-gestor-banner-logo-qmesa" />
+        </div>
+      </section>
+
+      <section class="dashboard-gestor-bloco">
+        <div class="dashboard-gestor-bloco-header">
+          <div>
+            <h2 class="dashboard-gestor-bloco-titulo">Cadastro de mesas</h2>
+            <p class="dashboard-gestor-bloco-subtitulo">Numero, capacidade e disponibilidade do salao</p>
+          </div>
+        </div>
+
+        <form class="dashboard-admin-form" id="formMesa">
+          <input type="hidden" id="mesaId">
+          <label class="dashboard-admin-campo">
+            <span>Numero/Nome</span>
+            <input type="number" id="mesaNumero" min="1" required>
+          </label>
+          <label class="dashboard-admin-campo">
+            <span>Capacidade</span>
+            <input type="number" id="mesaCapacidade" min="1" max="30" required>
+          </label>
+          <label class="dashboard-admin-campo">
+            <span>Status</span>
+            <select id="mesaStatus" required>
+              <option value="Livre">Livre</option>
+              <option value="Ocupada">Ocupada</option>
+              <option value="Reservada">Reservada</option>
+              <option value="Manutencao">Manutencao</option>
+            </select>
+          </label>
+          <div class="dashboard-admin-acoes">
+            <button type="submit" class="botao-primario">Salvar</button>
+            <button type="button" class="botao-secundario" id="btnLimparMesa">Limpar</button>
+          </div>
+        </form>
+        <p class="dashboard-gestor-mensagem" id="mensagemMesas"></p>
+      </section>
+
+      <section class="dashboard-gestor-bloco">
+        <div class="dashboard-gestor-bloco-header">
+          <div>
+            <h2 class="dashboard-gestor-bloco-titulo">Saloes e mesas</h2>
+            <p class="dashboard-gestor-bloco-subtitulo">Visao rapida para apoiar reservas e operacao</p>
+          </div>
+        </div>
+        <div class="dashboard-mesas-grid" id="mapaMesas"></div>
+      </section>
+
+      <footer class="footer-gestor">Desenvolvido por HS Solutions 2026</footer>
+    </section>
+  </div>
+
+  <script>
+    const supabaseUrl = window.SUPABASE_CONFIG?.URL || 'https://jlfbzdqhaezdtyyajqlk.supabase.co';
+    const supabaseKey = window.SUPABASE_CONFIG?.ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpsZmJ6ZHFoYWV6ZHR5eWFqcWxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjM0NjksImV4cCI6MjA4ODkzOTQ2OX0.6VX3Z1FjxgZuBYALd2oU4bQl0nzbMcBUcc0nLW_DbvA';
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+    const sessaoAtual = window.QmesaAuth.exigirAutenticacao(['gestor', 'admin']);
+    const RESTAURANTE_ID_FIXO = sessaoAtual?.restaurante_id;
+
+    if (!sessaoAtual) throw new Error('Acesso ao mapa de mesas bloqueado por falta de autenticacao.');
+
+    const sidebarGestor = document.getElementById('sidebarGestor');
+    const btnToggleSidebar = document.getElementById('btnToggleSidebar');
+    const btnAbrirSidebar = document.getElementById('btnAbrirSidebar');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+    const nomeRestauranteSidebar = document.getElementById('nomeRestauranteSidebar');
+    const avatarUsuarioSidebar = document.getElementById('avatarUsuarioSidebar');
+    const nomeUsuarioSidebar = document.getElementById('nomeUsuarioSidebar');
+    const perfilUsuarioSidebar = document.getElementById('perfilUsuarioSidebar');
+    const btnLogoutSidebar = document.getElementById('btnLogoutSidebar');
+    const formMesa = document.getElementById('formMesa');
+    const mesaId = document.getElementById('mesaId');
+    const mesaNumero = document.getElementById('mesaNumero');
+    const mesaCapacidade = document.getElementById('mesaCapacidade');
+    const mesaStatus = document.getElementById('mesaStatus');
+    const btnLimparMesa = document.getElementById('btnLimparMesa');
+    const mensagemMesas = document.getElementById('mensagemMesas');
+    const mapaMesas = document.getElementById('mapaMesas');
+
+    let mesas = [];
+
+    function escaparHtml(valor) {
+      return String(valor ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    }
+
+    function formatarRole(role) {
+      if (role === 'admin') return 'Acesso administrador';
+      if (role === 'gestor') return 'Acesso gestor';
+      return 'Acesso operador';
+    }
+
+    function preencherContextoUsuario() {
+      const usuario = sessaoAtual?.usuario || 'Gestor';
+      avatarUsuarioSidebar.textContent = usuario.slice(0, 2).toUpperCase();
+      nomeUsuarioSidebar.textContent = usuario;
+      perfilUsuarioSidebar.textContent = formatarRole(sessaoAtual?.role);
+    }
+
+    async function carregarNomeRestaurante() {
+      const { data } = await supabaseClient.from('restaurante').select('nome').eq('id', RESTAURANTE_ID_FIXO).single();
+      if (data?.nome) nomeRestauranteSidebar.textContent = data.nome;
+    }
+
+    function setMensagem(texto, tipo = '') {
+      mensagemMesas.textContent = texto;
+      mensagemMesas.style.color = tipo === 'erro' ? '#dc2626' : tipo === 'sucesso' ? '#16a34a' : '#4b5563';
+    }
+
+    function classeMesa(status) {
+      return `status-${String(status || '').trim().toLowerCase().replace('ç', 'c')}`;
+    }
+
+    function limparFormularioMesa() {
+      formMesa.reset();
+      mesaId.value = '';
+      mesaStatus.value = 'Livre';
+      setMensagem('');
+    }
+
+    function renderizarMesas() {
+      if (!mesas.length) {
+        mapaMesas.innerHTML = '<article class="dashboard-mesa-card">Nenhuma mesa cadastrada.</article>';
+        return;
+      }
+
+      mapaMesas.innerHTML = mesas.map(mesa => `
+        <article class="dashboard-mesa-card">
+          <div class="dashboard-mesa-topo">
+            <div>
+              <strong class="dashboard-mesa-numero">Mesa ${escaparHtml(mesa.numero)}</strong>
+              <p class="dashboard-mesa-capacidade">${mesa.capacidade} lugares</p>
+            </div>
+            <span class="dashboard-usuarios-status ${classeMesa(mesa.status)}">${escaparHtml(mesa.status)}</span>
+          </div>
+          <div class="dashboard-mesa-acoes">
+            <button type="button" class="dashboard-mini-btn" onclick="editarMesa('${mesa.id}')">Editar</button>
+            <button type="button" class="dashboard-mini-btn dashboard-mini-btn-secundario" onclick="alterarStatusMesa('${mesa.id}', 'Livre')">Livre</button>
+            <button type="button" class="dashboard-mini-btn dashboard-mini-btn-secundario" onclick="alterarStatusMesa('${mesa.id}', 'Ocupada')">Ocupada</button>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    async function carregarMesas() {
+      try {
+        const { data, error } = await supabaseClient
+          .from('mesa')
+          .select('id, numero, capacidade, status')
+          .eq('restaurante_id', RESTAURANTE_ID_FIXO)
+          .order('numero', { ascending: true });
+        if (error) throw error;
+        mesas = data || [];
+        renderizarMesas();
+      } catch (erro) {
+        console.error('Erro ao carregar mesas:', erro);
+        mapaMesas.innerHTML = '<article class="dashboard-mesa-card">Nao foi possivel carregar as mesas.</article>';
+        setMensagem('Verifique permissoes da tabela mesa no Supabase.', 'erro');
+      }
+    }
+
+    function editarMesa(id) {
+      const mesa = mesas.find(item => item.id === id);
+      if (!mesa) return;
+      mesaId.value = mesa.id;
+      mesaNumero.value = mesa.numero;
+      mesaCapacidade.value = mesa.capacidade;
+      mesaStatus.value = mesa.status;
+      mesaNumero.focus();
+    }
+
+    async function salvarMesa(event) {
+      event.preventDefault();
+      const payload = {
+        numero: Number(mesaNumero.value),
+        capacidade: Number(mesaCapacidade.value),
+        status: mesaStatus.value
+      };
+
+      try {
+        if (mesaId.value) {
+          const { error } = await supabaseClient
+            .from('mesa')
+            .update(payload)
+            .eq('id', mesaId.value)
+            .eq('restaurante_id', RESTAURANTE_ID_FIXO);
+          if (error) throw error;
+          setMensagem('Mesa atualizada com sucesso.', 'sucesso');
+        } else {
+          const { error } = await supabaseClient
+            .from('mesa')
+            .insert([{ ...payload, restaurante_id: RESTAURANTE_ID_FIXO }]);
+          if (error) throw error;
+          setMensagem('Mesa cadastrada com sucesso.', 'sucesso');
+        }
+
+        limparFormularioMesa();
+        await carregarMesas();
+      } catch (erro) {
+        console.error('Erro ao salvar mesa:', erro);
+        setMensagem('Nao foi possivel salvar a mesa.', 'erro');
+      }
+    }
+
+    async function alterarStatusMesa(id, status) {
+      try {
+        const { error } = await supabaseClient
+          .from('mesa')
+          .update({ status })
+          .eq('id', id)
+          .eq('restaurante_id', RESTAURANTE_ID_FIXO);
+        if (error) throw error;
+        setMensagem('Status da mesa atualizado.', 'sucesso');
+        await carregarMesas();
+      } catch (erro) {
+        console.error('Erro ao alterar status da mesa:', erro);
+        setMensagem('Nao foi possivel alterar o status da mesa.', 'erro');
+      }
+    }
+
+    function alternarSidebarDesktop() { sidebarGestor?.classList.toggle('recolhida'); }
+    function abrirSidebarMobile() { sidebarGestor?.classList.add('aberta'); sidebarBackdrop?.classList.add('ativo'); }
+    function fecharSidebarMobile() { sidebarGestor?.classList.remove('aberta'); sidebarBackdrop?.classList.remove('ativo'); }
+
+    window.editarMesa = editarMesa;
+    window.alterarStatusMesa = alterarStatusMesa;
+
+    btnLogoutSidebar.addEventListener('click', () => window.QmesaAuth.logout());
+    btnToggleSidebar.addEventListener('click', alternarSidebarDesktop);
+    btnAbrirSidebar.addEventListener('click', abrirSidebarMobile);
+    sidebarBackdrop.addEventListener('click', fecharSidebarMobile);
+    formMesa.addEventListener('submit', salvarMesa);
+    btnLimparMesa.addEventListener('click', limparFormularioMesa);
+
+    preencherContextoUsuario();
+    carregarNomeRestaurante();
+    carregarMesas();
+  </script>
+</body>
+</html>

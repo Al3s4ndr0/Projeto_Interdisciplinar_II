@@ -8,7 +8,7 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   line-height: 1.6;
-  color: #1a1a1a;
+  color: #111827;
   background: #f8fafc;
 }
 
@@ -17,7 +17,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #e8efff;
   padding: 20px;
 }
 
@@ -37,7 +37,7 @@ body {
 /* Lado Esquerdo - Branding */
 .login-branding {
   flex: 1;
-  background: linear-gradient(135deg, #171E4B 0%, #2a3f5f 100%);
+  background: #171E4B;
   color: white;
   display: flex;
   align-items: center;
@@ -65,31 +65,42 @@ body {
 }
 
 .branding-logo {
-  margin-bottom: 30px;
+  margin-bottom: 28px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 20px;
+  border-radius: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .branding-logo img {
-  width: 80px;
-  height: 80px;
+  width: 250px;
+  height: auto;
   object-fit: contain;
-}
-
-.branding-title {
-  font-size: 48px;
-  font-weight: 700;
-  margin-bottom: 16px;
-  background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .branding-subtitle {
   font-size: 18px;
-  color: #cbd5e1;
-  margin-bottom: 60px;
-  max-width: 300px;
-  line-height: 1.6;
+  color: #d8e1ff;
+  margin-bottom: 14px;
+  max-width: 320px;
+  line-height: 1.75;
+}
+
+.branding-tagline {
+  font-size: 15px;
+  color: #a8b8ff;
+  max-width: 320px;
+  line-height: 1.7;
+}
+
+.branding-tagline {
+  font-size: 15px;
+  color: #a8b8ff;
+  margin-bottom: 48px;
+  max-width: 320px;
+  line-height: 1.7;
 }
 
 .branding-features {
@@ -206,7 +217,7 @@ body {
 
 .form-input {
   width: 100%;
-  padding: 12px 16px 12px 48px;
+  padding: 12px 48px 12px 48px;
   border: 2px solid #e5e7eb;
   border-radius: 10px;
   font-size: 15px;
@@ -216,8 +227,8 @@ body {
 
 .form-input:focus {
   outline: none;
-  border-color: #171E4B;
-  box-shadow: 0 0 0 3px rgba(23, 30, 75, 0.1);
+  border-color: #3a7f12;
+  box-shadow: 0 0 0 3px rgba(59, 126, 18, 0.14);
 }
 
 .form-input::placeholder {
@@ -303,8 +314,8 @@ body {
 }
 
 .checkbox-label input[type="checkbox"]:checked + .checkbox-custom {
-  background: #171E4B;
-  border-color: #171E4B;
+  background: #3a7f12;
+  border-color: #3a7f12;
 }
 
 .checkbox-label input[type="checkbox"]:checked + .checkbox-custom::after {
@@ -321,14 +332,14 @@ body {
 
 .forgot-link {
   font-size: 14px;
-  color: #171E4B;
+  color: #2f6f11;
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s ease;
 }
 
 .forgot-link:hover {
-  color: #2a3f5f;
+  color: #1f4c0d;
   text-decoration: underline;
 }
 
@@ -336,7 +347,7 @@ body {
 .btn-primary {
   width: 100%;
   padding: 14px 24px;
-  background: #171E4B;
+  background: #3a7f12;
   color: white;
   border: none;
   border-radius: 10px;
@@ -349,9 +360,9 @@ body {
 }
 
 .btn-primary:hover {
-  background: #2a3f5f;
+  background: #25650f;
   transform: translateY(-1px);
-  box-shadow: 0 8px 20px rgba(23, 30, 75, 0.3);
+  box-shadow: 0 8px 20px rgba(58, 127, 18, 0.3);
 }
 
 .btn-primary:disabled {

@@ -115,6 +115,16 @@
                     maxlength="15"
                   />
                 </div>
+
+                <div class="grupo-campo">
+                  <label for="emailReserva" class="label-campo">Email</label>
+                  <input
+                    type="email"
+                    id="emailReserva"
+                    class="campo campo-reserva"
+                    placeholder="Qual e o seu email? *"
+                  />
+                </div>
               </div>
             </section>
 
@@ -191,6 +201,7 @@
     const cpfReserva = document.getElementById('cpfReserva');
     const nomeReserva = document.getElementById('nomeReserva');
     const telefoneReserva = document.getElementById('telefoneReserva');
+    const emailReserva = document.getElementById('emailReserva');
     const dadosClienteReserva = document.getElementById('dadosClienteReserva');
     const btnMenosReserva = document.getElementById('btnMenosReserva');
     const btnMaisReserva = document.getElementById('btnMaisReserva');
@@ -277,6 +288,10 @@
     function validarTelefone(valor) {
       const numeros = somenteNumeros(valor);
       return numeros.length === 10 || numeros.length === 11;
+    }
+
+    function validarEmail(valor) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(valor || '').trim());
     }
 
     function mostrarMensagemReserva(texto, tipo = 'erro') {
@@ -421,6 +436,7 @@
       dadosClienteReserva.classList.add('ativo');
       nomeReserva.required = true;
       telefoneReserva.required = true;
+      emailReserva.required = true;
     }
 
     async function consultarCPFReserva() {
@@ -437,7 +453,7 @@
       try {
         const { data, error } = await supabaseClient
           .from('cliente')
-          .select('id, nome, telefone, cpf')
+          .select('id, nome, telefone, cpf, email')
           .eq('cpf', cpfLimpo)
           .maybeSingle();
 
@@ -450,11 +466,13 @@
           clienteId = data.id;
           nomeReserva.value = data.nome || '';
           telefoneReserva.value = formatarTelefone(data.telefone || '');
+          emailReserva.value = data.email || '';
           mostrarMensagemReserva('Cadastro encontrado. Confira os dados antes de continuar.', 'sucesso');
         } else {
           clienteId = null;
           nomeReserva.value = '';
           telefoneReserva.value = '';
+          emailReserva.value = '';
           mostrarMensagemReserva('CPF nao localizado. Complete os dados para criar seu cadastro.', 'alerta');
         }
 
@@ -472,6 +490,7 @@
       const cpfLimpo = somenteNumeros(cpfReserva.value);
       const nome = nomeReserva.value.trim();
       const telefone = telefoneReserva.value.trim();
+      const email = emailReserva.value.trim().toLowerCase();
 
       if (!cpfConsultado) {
         consultarCPFReserva();
@@ -490,6 +509,11 @@
 
       if (!validarTelefone(telefone)) {
         mostrarMensagemReserva('Telefone invalido. Informe DDD + numero.');
+        return false;
+      }
+
+      if (!validarEmail(email)) {
+        mostrarMensagemReserva('Informe um email valido para receber a confirmacao.');
         return false;
       }
 
@@ -514,6 +538,7 @@
       sessionStorage.setItem('reserva_cpf', cpfLimpo);
       sessionStorage.setItem('reserva_nome', nome);
       sessionStorage.setItem('reserva_telefone', somenteNumeros(telefone));
+      sessionStorage.setItem('reserva_email', email);
 
       return true;
     }
@@ -527,13 +552,15 @@
       const cpfSalvo = sessionStorage.getItem('reserva_cpf');
       const nomeSalvo = sessionStorage.getItem('reserva_nome');
       const telefoneSalvo = sessionStorage.getItem('reserva_telefone');
+      const emailSalvo = sessionStorage.getItem('reserva_email');
       const clienteIdSalvo = sessionStorage.getItem('reserva_cliente_id');
 
-      if (cpfSalvo || nomeSalvo || telefoneSalvo) {
+      if (cpfSalvo || nomeSalvo || telefoneSalvo || emailSalvo) {
         cpfReserva.value = cpfSalvo || '';
         cpfReserva.dispatchEvent(new Event('input'));
         nomeReserva.value = nomeSalvo || '';
         telefoneReserva.value = formatarTelefone(telefoneSalvo || '');
+        emailReserva.value = emailSalvo || '';
         clienteId = clienteIdSalvo || null;
         cpfConsultado = Boolean(cpfSalvo);
         mostrarDadosCliente();
@@ -554,6 +581,7 @@
       dadosClienteReserva.classList.remove('ativo');
       nomeReserva.value = '';
       telefoneReserva.value = '';
+      emailReserva.value = '';
       btnReservaAcao.textContent = 'Consultar CPF';
       limparMensagemReserva();
     });
