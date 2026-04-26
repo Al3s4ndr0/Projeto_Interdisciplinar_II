@@ -1,85 +1,263 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Qmesa - Revisão da reserva</title>
-
-<link rel="stylesheet" href="../pags_css/style.css">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Qmesa - Revisao da reserva</title>
+  <link rel="stylesheet" href="../pags_css/style.css" />
 </head>
-
 <body class="tema-reserva">
 
-<main class="tela">
-<section class="cartao cartao-formulario">
+  <main class="tela">
+    <section class="cartao cartao-formulario">
 
-<section class="painel-imagem">
+      <section class="painel-imagem">
+        <div class="acoes-topo">
+          <a href="javascript:history.back()" class="botao-voltar" aria-label="Voltar">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15 6l-6 6 6 6"/>
+            </svg>
+          </a>
 
-<div class="acoes-topo">
-  <a href="javascript:history.back()" class="botao-voltar" aria-label="Voltar">
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M15 6l-6 6 6 6"/>
-    </svg>
-  </a>
+          <a href="../pags_html/index.html" class="botao-home" aria-label="Ir para inicio">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 10.5L12 3l9 7.5"/>
+              <path d="M5.5 9.5V21h13V9.5"/>
+              <path d="M9.5 21v-6h5v6"/>
+            </svg>
+          </a>
+        </div>
 
-  <a href="../pags_html/index.html" class="botao-home" aria-label="Ir para início">
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M3 10.5L12 3l9 7.5"/>
-      <path d="M5.5 9.5V21h13V9.5"/>
-      <path d="M9.5 21v-6h5v6"/>
-    </svg>
-  </a>
-</div>
+        <img src="../images/banner_restaurante.png" alt="Imagem do restaurante" class="imagem-restaurante" />
 
-<img src="../images/banner_restaurante.png" alt="Imagem do restaurante" class="imagem-restaurante">
+        <div class="selo">
+          <img src="../images/logo_restaurante.png" alt="Logo do restaurante" />
+        </div>
+      </section>
 
-<div class="selo">
-  <img src="../images/logo_restaurante.png" alt="Logo do restaurante">
-</div>
+      <section class="conteudo">
+        <div class="bloco-identificacao">
+          <h1 class="titulo titulo-centralizado">Revise seus dados antes de efetuar a reserva</h1>
 
-</section>
+          <div class="formulario formulario-identificacao">
+            <input type="text" class="campo campo-reserva" id="revDataHorario" readonly />
+            <input type="text" class="campo campo-reserva" id="revNome" readonly />
+            <input type="text" class="campo campo-reserva" id="revCpf" readonly />
+            <input type="text" class="campo campo-reserva" id="revTelefone" readonly />
+            <input type="text" class="campo campo-reserva" id="revQtdPessoas" readonly />
+          </div>
 
+          <div class="acoes acoes-reserva-fluxo">
+            <button class="botao-secundario" type="button" onclick="history.back()">
+              Revisar dados
+            </button>
 
-<section class="conteudo">
+            <button type="button" class="botao-primario" id="btnConfirmarReserva">
+              Confirmar reserva
+            </button>
+          </div>
 
-<h1 class="titulo">
-Revise seus dados antes de efetuar a reserva
-</h1>
+          <p id="mensagemRevisaoReserva" class="mensagem-formulario"></p>
+        </div>
+      </section>
 
+    </section>
+  </main>
 
-<div class="formulario">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
-<input type="text" class="campo" value="11 de Setembro de 2026 às 12:30" readonly>
+  <script>
+    const supabaseClient = window.supabase.createClient(
+      'https://jlfbzdqhaezdtyyajqlk.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpsZmJ6ZHFoYWV6ZHR5eWFqcWxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjM0NjksImV4cCI6MjA4ODkzOTQ2OX0.6VX3Z1FjxgZuBYALd2oU4bQl0nzbMcBUcc0nLW_DbvA'
+    );
 
-<input type="text" class="campo" value="Alessandro Sondey" readonly>
+    const RESTAURANTE_ID = '00000000-0000-0000-0000-000000000001';
 
-<input type="text" class="campo" value="928.284.927-27" readonly>
+    const revDataHorario = document.getElementById('revDataHorario');
+    const revNome = document.getElementById('revNome');
+    const revCpf = document.getElementById('revCpf');
+    const revTelefone = document.getElementById('revTelefone');
+    const revQtdPessoas = document.getElementById('revQtdPessoas');
+    const btnConfirmarReserva = document.getElementById('btnConfirmarReserva');
+    const mensagemRevisaoReserva = document.getElementById('mensagemRevisaoReserva');
 
-<input type="text" class="campo" value="(41) 99284-2837" readonly>
+    function somenteNumeros(valor) {
+      return String(valor || '').replace(/\D/g, '');
+    }
 
-<input type="text" class="campo" value="4 pessoas" readonly>
+    function formatarDataBR(dataISO) {
+      if (!dataISO) return '';
+      const [ano, mes, dia] = dataISO.split('-');
+      return `${dia}/${mes}/${ano}`;
+    }
 
-</div>
+    function formatarCPF(cpf) {
+      let valor = somenteNumeros(cpf).slice(0, 11);
+      valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
+      valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
+      valor = valor.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+      return valor;
+    }
 
+    function formatarTelefone(telefone) {
+      let valor = somenteNumeros(telefone).slice(0, 11);
 
-<div class="acoes">
+      if (valor.length <= 10) {
+        valor = valor.replace(/(\d{2})(\d)/, '($1) $2');
+        valor = valor.replace(/(\d{4})(\d)/, '$1-$2');
+      } else {
+        valor = valor.replace(/(\d{2})(\d)/, '($1) $2');
+        valor = valor.replace(/(\d{5})(\d)/, '$1-$2');
+      }
 
-<button class="botao-secundario" onclick="history.back()">
-Revisar dados
-</button>
+      return valor;
+    }
 
-<a href="../pags_html/reserva_confirmada.html" class="botao-primario">
-Confirmar reserva
-</a>
+    function carregarRevisaoReserva() {
+      const data = sessionStorage.getItem('reserva_data');
+      const horario = sessionStorage.getItem('reserva_horario');
+      const qtdPessoas = sessionStorage.getItem('reserva_qtd_pessoas');
+      const nome = sessionStorage.getItem('reserva_nome');
+      const cpf = sessionStorage.getItem('reserva_cpf');
+      const telefone = sessionStorage.getItem('reserva_telefone');
 
-</div>
+      if (!data || !horario || !qtdPessoas || !nome || !cpf || !telefone) {
+        mensagemRevisaoReserva.textContent = 'Dados da reserva incompletos. Volte e preencha novamente.';
+        mensagemRevisaoReserva.style.color = 'red';
+        return;
+      }
 
-</section>
+      revDataHorario.value = `${formatarDataBR(data)} as ${horario}`;
+      revNome.value = nome;
+      revCpf.value = formatarCPF(cpf);
+      revTelefone.value = formatarTelefone(telefone);
+      revQtdPessoas.value = `${qtdPessoas} pessoa(s)`;
+    }
 
-</section>
-</main>
+    async function obterOuSalvarCliente(nome, cpf, telefone) {
+      const clienteIdSalvo = sessionStorage.getItem('reserva_cliente_id');
 
+      if (clienteIdSalvo) {
+        const { error } = await supabaseClient
+          .from('cliente')
+          .update({ nome, cpf, telefone })
+          .eq('id', clienteIdSalvo);
+
+        if (error) throw error;
+        return clienteIdSalvo;
+      }
+
+      const { data: clienteExistente, error: erroBusca } = await supabaseClient
+        .from('cliente')
+        .select('id')
+        .eq('cpf', cpf)
+        .maybeSingle();
+
+      if (erroBusca) throw erroBusca;
+
+      if (clienteExistente) {
+        const { error: erroAtualizacao } = await supabaseClient
+          .from('cliente')
+          .update({ nome, cpf, telefone })
+          .eq('id', clienteExistente.id);
+
+        if (erroAtualizacao) throw erroAtualizacao;
+        return clienteExistente.id;
+      }
+
+      const { data: clienteInserido, error: erroInsercao } = await supabaseClient
+        .from('cliente')
+        .insert([{ nome, cpf, telefone }])
+        .select('id')
+        .single();
+
+      if (erroInsercao) throw erroInsercao;
+      return clienteInserido.id;
+    }
+
+    function montarDataHoraReserva(data, horario) {
+      return new Date(`${data}T${horario}:00`).toISOString();
+    }
+
+    async function buscarReservaDuplicada(cpf, clienteId, data, horario) {
+      const { data: reservas, error } = await supabaseClient
+        .from('reserva')
+        .select('id')
+        .eq('restaurante_id', RESTAURANTE_ID)
+        .eq('data_hora', montarDataHoraReserva(data, horario))
+        .neq('status', 'Cancelada')
+        .or(`cpf_cliente.eq.${cpf},cliente_id.eq.${clienteId}`)
+        .limit(1);
+
+      if (error) throw error;
+
+      return Boolean(reservas && reservas.length);
+    }
+
+    btnConfirmarReserva.addEventListener('click', async function () {
+      const data = sessionStorage.getItem('reserva_data');
+      const horario = sessionStorage.getItem('reserva_horario');
+      const qtdPessoas = Number(sessionStorage.getItem('reserva_qtd_pessoas'));
+      const nome = sessionStorage.getItem('reserva_nome');
+      const cpf = somenteNumeros(sessionStorage.getItem('reserva_cpf'));
+      const telefone = somenteNumeros(sessionStorage.getItem('reserva_telefone'));
+
+      if (!data || !horario || !qtdPessoas || !nome || !cpf || !telefone) {
+        mensagemRevisaoReserva.textContent = 'Dados da reserva incompletos. Volte e preencha novamente.';
+        mensagemRevisaoReserva.style.color = 'red';
+        return;
+      }
+
+      btnConfirmarReserva.disabled = true;
+      btnConfirmarReserva.textContent = 'Confirmando...';
+      mensagemRevisaoReserva.textContent = '';
+
+      try {
+        const clienteId = await obterOuSalvarCliente(nome, cpf, telefone);
+        const reservaDuplicada = await buscarReservaDuplicada(cpf, clienteId, data, horario);
+
+        if (reservaDuplicada) {
+          mensagemRevisaoReserva.textContent = 'Ja existe uma reserva ativa para este CPF nesta data e horario.';
+          mensagemRevisaoReserva.style.color = 'red';
+          btnConfirmarReserva.disabled = false;
+          btnConfirmarReserva.textContent = 'Confirmar reserva';
+          return;
+        }
+
+        const { data: reservaInserida, error: erroReserva } = await supabaseClient
+          .from('reserva')
+          .insert([
+            {
+              cliente_id: clienteId,
+              restaurante_id: RESTAURANTE_ID,
+              data_hora: montarDataHoraReserva(data, horario),
+              num_pessoas: qtdPessoas,
+              nome_cliente: nome,
+              cpf_cliente: cpf,
+              telefone_cliente: telefone,
+              status: 'Pendente'
+            }
+          ])
+          .select('id')
+          .single();
+
+        if (erroReserva) throw erroReserva;
+
+        sessionStorage.setItem('reserva_id', reservaInserida.id);
+        sessionStorage.setItem('reserva_cliente_id', clienteId);
+
+        window.location.href = '../pags_html/reserva_confirmada.html';
+      } catch (error) {
+        console.error('Erro ao confirmar reserva:', error);
+        mensagemRevisaoReserva.textContent = 'Nao foi possivel confirmar sua reserva no momento. Tente novamente.';
+        mensagemRevisaoReserva.style.color = 'red';
+        btnConfirmarReserva.disabled = false;
+        btnConfirmarReserva.textContent = 'Confirmar reserva';
+      }
+    });
+
+    carregarRevisaoReserva();
+  </script>
 </body>
 </html>

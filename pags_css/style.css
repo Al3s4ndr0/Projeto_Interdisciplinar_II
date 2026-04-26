@@ -2501,6 +2501,10 @@ a{
   border-collapse: collapse;
 }
 
+.dashboard-operacional-cards-mobile{
+  display: none;
+}
+
 .dashboard-operacional-tabela th,
 .dashboard-operacional-tabela td{
   padding: 12px;
@@ -2620,6 +2624,140 @@ a{
   margin-top: 14px;
   font-size: 14px;
   font-weight: 600;
+}
+
+/* RESERVAS FUTURAS */
+
+.dashboard-reservas-futuras{
+  margin-top: 22px;
+  padding: 18px;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: var(--sombra-cartao);
+}
+
+.dashboard-reservas-futuras-cabecalho{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.dashboard-reservas-futuras-cabecalho h2{
+  font-size: 18px;
+  line-height: 1.25;
+  color: var(--cor-inicio);
+  margin-bottom: 4px;
+}
+
+.dashboard-reservas-futuras-cabecalho p{
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--cor-texto-suave);
+}
+
+.dashboard-reservas-futuras-contador{
+  flex-shrink: 0;
+  min-width: 96px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #eef8df;
+  color: #557d13;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.dashboard-reservas-futuras-lista{
+  display: grid;
+  gap: 10px;
+}
+
+.dashboard-reservas-futuras-vazio{
+  min-height: 78px;
+  padding: 16px;
+  border: 1px dashed #d8d8d8;
+  border-radius: 14px;
+  background: #fafafa;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.dashboard-reservas-futuras-vazio strong{
+  font-size: 14px;
+  color: var(--cor-texto);
+}
+
+.dashboard-reservas-futuras-vazio span{
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--cor-texto-suave);
+}
+
+.dashboard-reserva-item{
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1.4fr) minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 14px;
+  border: 1px solid #eeeeee;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.dashboard-reserva-horario,
+.dashboard-reserva-cliente,
+.dashboard-reserva-detalhes{
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.dashboard-reserva-horario{
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border-radius: 12px;
+  background: rgba(64, 124, 90, 0.1);
+  color: var(--cor-reserva);
+  text-align: center;
+}
+
+.dashboard-reserva-horario strong{
+  font-size: 16px;
+  line-height: 1;
+}
+
+.dashboard-reserva-horario span,
+.dashboard-reserva-cliente span,
+.dashboard-reserva-detalhes span{
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--cor-texto-suave);
+}
+
+.dashboard-reserva-cliente strong{
+  font-size: 14px;
+  line-height: 1.3;
+  color: var(--cor-texto);
+}
+
+.dashboard-reserva-status{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 92px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: #eef8df;
+  color: #557d13;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 /* ========================================
@@ -2860,6 +2998,55 @@ a{
 }
 
 /* NOVO BOTÃO DE STATUS */
+
+.modal-reserva-duplicada .modal-status-header,
+.modal-reserva-duplicada .modal-status-body{
+  text-align: center;
+}
+
+.modal-reserva-duplicada .modal-status-header{
+  justify-content: center;
+  position: relative;
+}
+
+.modal-reserva-duplicada .modal-status-fechar{
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.modal-reserva-duplicada .modal-status-texto{
+  max-width: 390px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.modal-reserva-validacao{
+  width: 100%;
+  max-width: 280px;
+  margin: 0 auto 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.modal-reserva-validacao label{
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--cor-texto-suave);
+  font-weight: 600;
+}
+
+.modal-reserva-validacao .campo{
+  text-align: center;
+  letter-spacing: 4px;
+  font-weight: 700;
+}
+
+.modal-reserva-duplicada .modal-status-acoes{
+  justify-content: center;
+}
 
 .btn-aguardando{
   background: #7bb51f;
@@ -3343,6 +3530,327 @@ body.tema-fila.tema-dashboard-gestor{
       font-weight: 600;
       min-height: 22px;
     }
+
+    /* IDENTIFICAÇÃO DA FILA */
+
+.bloco-identificacao{
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.titulo-centralizado{
+  width: 100%;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.descricao-fila{
+  max-width: 430px;
+  margin: 0 auto 24px;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--cor-texto-suave);
+  text-align: center;
+}
+
+.formulario-identificacao{
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+}
+
+.campos-complementares{
+  display: none;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.campos-complementares.ativo{
+  display: flex;
+}
+
+.mensagem-formulario{
+  min-height: 18px;
+  margin-top: 10px;
+  font-size: 12px;
+  line-height: 1.45;
+  text-align: center;
+  color: var(--cor-texto-suave);
+}
+
+.cartao-formulario .formulario-identificacao .botao-primario{
+  width: 150px;
+  height: 44px;
+  margin: 16px auto 0;
+}
+
+.grupo-qtd-pessoas{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.grupo-qtd-pessoas .campo{
+  flex: 1;
+  text-align: center;
+}
+
+.botao-qtd:hover{
+  opacity: 0.95;
+  transform: translateY(-1px);
+}
+
+.grupo-campo{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+
+.label-campo{
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--cor-texto-suave);
+  margin-left: 4px;
+}
+
+.linha-qtd-pessoas{
+  width: 100%;
+  max-width: 430px;
+  height: 48px;
+  margin: 0 auto;
+  margin-top: -15px ;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.campo-qtd-pessoas{
+  flex: 1;
+  height: 48px;
+  max-width: none;
+  text-align: center;
+}
+
+.acoes-qtd{
+  height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.campo-destaque-fila{
+  border-color: var(--cor-botao-fila);
+  background: #ffffff;
+  font-weight: 500;
+}
+
+.campo-reserva{
+  border-color: rgba(64, 124, 90, 0.28);
+}
+
+.campo-reserva:focus{
+  border-color: var(--cor-reserva);
+  box-shadow: 0 0 0 3px rgba(64, 124, 90, 0.12);
+}
+
+.botao-qtd-reserva{
+  background: var(--cor-reserva);
+  box-shadow: var(--sombra-botao-reserva);
+}
+
+.etapa-reserva{
+  display: none;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.etapa-reserva-ativa{
+  display: flex;
+}
+
+.resumo-reserva-escolhida{
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(64, 124, 90, 0.1);
+  color: var(--cor-reserva);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.acoes-reserva-fluxo{
+  width: 100%;
+  max-width: 430px;
+  display: grid;
+  grid-template-columns: minmax(0, 150px);
+  justify-content: center;
+  align-items: stretch;
+  gap: 14px;
+  margin: 10px auto 0;
+}
+
+.acoes-reserva-fluxo.tem-voltar{
+  grid-template-columns: repeat(2, 150px);
+}
+
+.acoes-reserva-fluxo .botao-primario,
+.acoes-reserva-fluxo .botao-secundario{
+  width: 100%;
+  min-width: 0;
+  height: 46px;
+  margin: 0;
+  padding: 0 18px;
+}
+
+.botao-reserva-voltar[hidden]{
+  display: none;
+}
+
+/* CORREÇÃO FINAL - LOGIN ENTRAR FILA */
+
+.formulario-identificacao,
+.bloco-identificacao,
+.grupo-campo{
+  width: 100%;
+  max-width: 430px;
+}
+
+.formulario-identificacao{
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.grupo-campo{
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.label-campo{
+  display: block;
+  width: 100%;
+  margin-left: 0;
+  margin-bottom: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--cor-texto-suave);
+  text-align: left;
+}
+
+.linha-qtd-pessoas{
+  width: 100%;
+  max-width: 430px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 104px;
+  align-items: center;
+  gap: 12px;
+  margin: 0 auto;
+}
+
+.campo-qtd-pessoas{
+  width: 100%;
+  max-width: none;
+  height: 48px;
+  margin: 0 !important;
+  text-align: center;
+}
+
+.acoes-qtd{
+  width: 104px;
+  height: 48px;
+  display: grid;
+  grid-template-columns: 48px 48px;
+  gap: 8px;
+  align-items: center;
+  justify-content: end;
+}
+
+.botao-qtd{
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: 12px;
+  background: var(--cor-botao-fila);
+  box-shadow: var(--sombra-botao-fila);
+  position: relative;
+  cursor: pointer;
+}
+
+.botao-qtd::before{
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 2px;
+  background: #ffffff;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.botao-qtd.mais::after{
+  content: "";
+  position: absolute;
+  width: 2px;
+  height: 18px;
+  background: #ffffff;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Ajustes estruturais do painel operacional */
+    .dashboard-operacional-resumo {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 12px;
+      align-items: stretch;
+      margin: 18px 0 14px;
+    }
+
+    .dashboard-operacional-card {
+      min-width: 0;
+      min-height: 68px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .dashboard-operacional-card-titulo {
+      font-size: 13px;
+      line-height: 1;
+    }
+
+    .dashboard-operacional-card-numero {
+      font-size: 28px;
+      line-height: 1;
+    }
+
+    .dashboard-operacional-resumo-legenda {
+      grid-column: 1 / -1;
+      margin: -4px 0 0;
+      font-size: 12px;
+      color: #6b7280;
+      font-weight: 600;
+    }
+
+@media (max-width: 480px){
+  html body .dashboard-operacional-resumo.dashboard-operacional-resumo{
+    grid-template-columns: 1fr !important;
+  }
+}
 
 /* TABLET */
 
@@ -4034,7 +4542,7 @@ body.tema-fila.tema-dashboard-gestor{
   .tema-fila .painel-imagem{
   background: transparent;
 }
-}
+
 .dashboard-operacional-resumo{
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -4050,14 +4558,152 @@ body.tema-fila.tema-dashboard-gestor{
       .dashboard-gestor-grid-blocos{
         grid-template-columns: 1.3fr 0.7fr;
       }
+    }
 
   @media (max-width: 768px){
   .dashboard-operacional{
     padding: 18px 12px 28px;
   }
 
-  .dashboard-operacional-resumo{
+  html body .dashboard-operacional-resumo{
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .dashboard-operacional-card{
+    height: 62px !important;
+    justify-content: space-between !important;
+  }
+
+  .dashboard-operacional-tabela-card{
+    overflow-x: visible;
+  }
+
+  .dashboard-operacional-tabela{
+    display: none;
+  }
+
+  .dashboard-operacional-cards-mobile{
+    display: grid;
+    gap: 12px;
+  }
+
+  .dashboard-operacional .fila-mobile-card{
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #eeeeee;
+    border-radius: 14px;
+    background: #ffffff;
+  }
+
+  .dashboard-operacional .fila-mobile-topo{
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr) auto;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .dashboard-operacional .fila-mobile-posicao{
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--cor-inicio);
+  }
+
+  .dashboard-operacional .fila-mobile-identificacao{
+    min-width: 0;
+  }
+
+  .dashboard-operacional .fila-mobile-nome,
+  .dashboard-operacional .fila-mobile-contato{
+    display: block;
+  }
+
+  .dashboard-operacional .fila-mobile-nome{
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  .dashboard-operacional .fila-mobile-contato{
+    margin-top: 3px;
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--cor-texto-suave);
+  }
+
+  .dashboard-operacional .fila-mobile-status{
+    justify-self: end;
+  }
+
+  .dashboard-operacional .fila-mobile-status .dashboard-operacional-status{
+    min-width: auto;
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+
+  .dashboard-operacional .fila-mobile-info-grid{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin: 14px 0;
+  }
+
+  .dashboard-operacional .fila-mobile-info span,
+  .dashboard-operacional .fila-mobile-info strong{
+    display: block;
+  }
+
+  .dashboard-operacional .fila-mobile-info span{
+    font-size: 11px;
+    color: var(--cor-texto-suave);
+  }
+
+  .dashboard-operacional .fila-mobile-info strong{
+    margin-top: 2px;
+    font-size: 13px;
+  }
+
+  .dashboard-operacional .fila-mobile-acoes-rapidas,
+  .dashboard-operacional .fila-mobile-acoes-secundarias{
+    display: grid;
+    grid-template-columns: repeat(4, minmax(62px, 1fr));
+    gap: 6px;
+    justify-content: center;
+  }
+
+  .dashboard-operacional .fila-mobile-acoes-secundarias{
+    margin-top: 6px;
+  }
+
+  .dashboard-operacional .fila-mobile-card .dashboard-operacional-btn{
+    min-height: 32px;
+    padding: 6px 4px;
+    border-radius: 8px;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .dashboard-reservas-futuras{
+    padding: 16px;
+  }
+
+  .dashboard-reservas-futuras-cabecalho{
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .dashboard-reserva-item{
     grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .dashboard-reserva-horario{
+    width: 100%;
+  }
+
+  .dashboard-reserva-status{
+    justify-self: center;
   }
 
   .dashboard-operacional-filtros-linha{
@@ -4163,102 +4809,99 @@ body.tema-fila.tema-dashboard-gestor{
         width: 100%;
       }
 
-}
-
- @media (max-width: 900px) {
-      .cartao-confirmada-novo {
-        grid-template-columns: 1fr;
+       .linha-qtd-pessoas{
+        grid-template-columns: minmax(0, 1fr) 92px;
+        gap: 10px;
       }
 
-      .painel-esquerdo-confirmacao {
-        min-height: 180px;
+      .acoes-qtd{
+        width: 92px;
+        grid-template-columns: 42px 42px;
+        gap: 8px;
       }
 
-      .conteudo-confirmada-novo {
-        padding: 36px 24px;
+      .botao-qtd{
+        width: 42px;
+        height: 42px;
+        min-width: 42px;
+        min-height: 42px;
       }
 
-      .titulo-confirmado {
-        font-size: 1.85rem;
+      .campo-qtd-pessoas{
+        height: 42px;
       }
 
-      .dashboard-operacional-banner{
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 20px;
-  }
-
-  .dashboard-operacional-banner-logos{
-    width: 100%;
-    justify-content: flex-start;
-  }
-
-  .dashboard-operacional-banner-titulo{
-    font-size: 28px;
-  }
-
-  .dashboard-operacional-banner-logo-qmesa{
-    width: 150px;
-  }
-
-  .dashboard-operacional-banner-logo-restaurante{
-    width: 68px;
-    height: 68px;
-  }
-
-   .dashboard-operacional-banner{
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 20px;
-  }
-
-  .dashboard-operacional-banner-logos{
-    width: 100%;
-    justify-content: flex-start;
-  }
-
-  .dashboard-operacional-banner-titulo{
-    font-size: 28px;
-  }
-
-  .dashboard-operacional-banner-logo-qmesa{
-    width: 150px;
-  }
-
-  .dashboard-operacional-banner-logo-restaurante{
-    width: 68px;
-    height: 68px;
-  }
-
-        .dashboard-gestor-banner{
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 20px;
-      }
-
-      .dashboard-gestor-banner-logos{
-        width: 100%;
-        justify-content: flex-start;
-      }
-
-      .dashboard-gestor-banner-titulo{
-        font-size: 28px;
-      }
-
-      .dashboard-gestor-banner-logo-qmesa{
-        width: 150px;
-      }
-
-      .dashboard-gestor-banner-logo-restaurante{
-        width: 68px;
-        height: 68px;
-      }
-}
-      @media (min-width: 1200px){
-      .dashboard-gestor-grid-resumo{
-        grid-template-columns: repeat(6, minmax(0, 1fr));
+      .label-campo{
+        margin-bottom: 6px;
       }
     }
+
+@media (max-width: 900px){
+  .cartao-confirmada-novo{
+    grid-template-columns: 1fr;
+  }
+
+  .painel-esquerdo-confirmacao{
+    min-height: 180px;
+  }
+
+  .conteudo-confirmada-novo{
+    padding: 36px 24px;
+  }
+
+  .titulo-confirmado{
+    font-size: 1.85rem;
+  }
+
+  .dashboard-operacional-banner{
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+  }
+
+  .dashboard-operacional-banner-logos{
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .dashboard-operacional-banner-titulo{
+    font-size: 28px;
+  }
+
+  .dashboard-operacional-banner-logo-qmesa{
+    width: 150px;
+  }
+
+  .dashboard-operacional-banner-logo-restaurante{
+    width: 68px;
+    height: 68px;
+  }
+
+  .dashboard-gestor-banner{
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+  }
+
+  .dashboard-gestor-banner-logos{
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .dashboard-gestor-banner-titulo{
+    font-size: 28px;
+  }
+
+  .dashboard-gestor-banner-logo-qmesa{
+    width: 150px;
+  }
+
+  .dashboard-gestor-banner-logo-restaurante{
+    width: 68px;
+    height: 68px;
+  }
+
+}
 
 /* DESKTOP */
 
@@ -5082,10 +5725,142 @@ body.tema-fila.tema-dashboard-gestor{
     gap: 18px;
     margin-bottom: 24px;
   }
-  .dashboard-operacional-resumo{
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 18px;
-    margin-bottom: 24px;
+}
+
+@media (max-width: 1199px){
+  body .dashboard-operacional-resumo{
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  .dashboard-operacional-banner{
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .dashboard-operacional-banner-logos{
+    justify-content: center;
+  }
+
+  .dashboard-operacional-tabela-card{
+    overflow-x: visible;
+  }
+
+  .dashboard-operacional-tabela{
+    display: none;
+  }
+
+  .dashboard-operacional-cards-mobile{
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .fila-mobile-card{
+    width: 100%;
+    padding: 18px;
+    border: 1px solid #eeeeee;
+    border-radius: 16px;
+    background: #ffffff;
+  }
+
+  .fila-mobile-topo{
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .fila-mobile-posicao{
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #eef8df;
+    color: var(--cor-inicio);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 800;
+  }
+
+  .fila-mobile-identificacao{
+    min-width: 0;
+  }
+
+  .fila-mobile-nome,
+  .fila-mobile-contato{
+    display: block;
+  }
+
+  .fila-mobile-nome{
+    font-size: 15px;
+    line-height: 1.35;
+  }
+
+  .fila-mobile-contato{
+    margin-top: 3px;
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--cor-texto-suave);
+  }
+
+  .fila-mobile-status{
+    justify-self: end;
+  }
+
+  .fila-mobile-info-grid{
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin: 16px 0;
+  }
+
+  .fila-mobile-info{
+    padding: 10px;
+    border-radius: 10px;
+    background: #f8f8f8;
+    text-align: center;
+  }
+
+  .fila-mobile-info span,
+  .fila-mobile-info strong{
+    display: block;
+  }
+
+  .fila-mobile-info span{
+    font-size: 11px;
+    color: var(--cor-texto-suave);
+  }
+
+  .fila-mobile-info strong{
+    margin-top: 2px;
+    font-size: 13px;
+  }
+
+  .fila-mobile-acoes-rapidas,
+  .fila-mobile-acoes-secundarias{
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .fila-mobile-acoes-secundarias{
+    margin-top: 8px;
+  }
+
+  .fila-mobile-card .dashboard-operacional-btn{
+    width: 100%;
+    min-height: 36px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    text-align: center;
+  }
+}
+
+@media (min-width: 1200px){
+  .dashboard-gestor-grid-resumo{
+    grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 }
 
@@ -5322,5 +6097,100 @@ body.tema-fila.tema-dashboard-gestor{
 
   .item-cardapio img{
     height: 190px;
+  }
+}
+
+   /* Correção específica do Painel Operacional
+       Mantém o resumo em uma única linha no desktop e centraliza a referência da data. */
+
+    .dashboard-operacional{
+      max-width: 1440px;
+      padding: 24px 16px 36px;
+    }
+
+    .dashboard-operacional-banner{
+      margin-bottom: 20px;
+    }
+
+    .dashboard-operacional-resumo{
+      width: 100%;
+      display: grid !important;
+      grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+      gap: 12px !important;
+      align-items: stretch;
+      margin: 0 0 8px !important;
+      overflow: visible !important;
+    }
+
+    .dashboard-operacional-card{
+      width: 100%;
+      min-width: 0 !important;
+      min-height: 64px !important;
+      height: 64px;
+      padding: 12px 14px !important;
+      background: #ffffff;
+      border-radius: 16px !important;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06) !important;
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 8px !important;
+      white-space: nowrap;
+    }
+
+    .dashboard-operacional-card-titulo{
+      font-size: 12px !important;
+      line-height: 1 !important;
+      color: #6b7280 !important;
+      font-weight: 500;
+    }
+
+    .dashboard-operacional-card-numero{
+      font-size: 25px !important;
+      line-height: 1 !important;
+      color: #171E4B !important;
+      font-weight: 800 !important;
+    }
+
+    .dashboard-operacional-resumo-legenda{
+      width: 100%;
+      display: block;
+      margin: 10px 0 24px !important;
+      text-align: center !important;
+      font-size: 13px;
+      line-height: 1.4;
+      font-weight: 600;
+      color: #6b7280;
+    }
+
+    .dashboard-operacional-filtros{
+      margin-bottom: 20px;
+    }
+
+/* Ajuste final do fluxo de reserva */
+.cartao-formulario .formulario-reserva .acoes-reserva-fluxo{
+  justify-content: center;
+}
+
+.cartao-formulario .formulario-reserva .acoes-reserva-fluxo .botao-primario,
+.cartao-formulario .formulario-reserva .acoes-reserva-fluxo .botao-secundario{
+  width: 150px;
+  min-width: 150px;
+  max-width: 150px;
+  height: 46px;
+  margin: 0 !important;
+  padding: 0 18px;
+}
+
+.cartao-formulario .formulario-reserva .acoes-reserva-fluxo.tem-cancelamento{
+  max-width: 520px;
+  grid-template-columns: repeat(3, 150px);
+}
+
+@media (max-width: 640px){
+  .cartao-formulario .formulario-reserva .acoes-reserva-fluxo.tem-cancelamento{
+    max-width: 320px;
+    grid-template-columns: 150px;
   }
 }

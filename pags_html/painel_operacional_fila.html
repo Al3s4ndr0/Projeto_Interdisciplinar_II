@@ -23,7 +23,7 @@
           class="dashboard-operacional-banner-logo-restaurante"
         />
         <img
-          src="../images/logo_qmesa_sem_fundo.png"
+          src="../images/logo_qmesa_sem_fundo_azul.png"
           alt="Logo Qmesa"
           class="dashboard-operacional-banner-logo-qmesa"
         />
@@ -60,7 +60,10 @@
         <span class="dashboard-operacional-card-titulo">Fila ativa</span>
         <strong class="dashboard-operacional-card-numero" id="totalAtiva">0</strong>
       </article>
+
     </section>
+
+    <p class="dashboard-operacional-resumo-legenda" id="resumoDiaReferencia">Resumo do dia</p>
 
     <section class="dashboard-operacional-filtros dashboard-operacional-filtros-linha">
       <div class="dashboard-operacional-filtro">
@@ -108,13 +111,12 @@
           + Nova fila
         </button>
 
-        <a class="botao-secundario" href="../pags_html/gestao_cardapio.html">
-          Gerenciar cardapio
-        </a>
       </div>
     </section>
 
     <section class="dashboard-operacional-tabela-card">
+      <div class="dashboard-operacional-cards-mobile" id="filaCardsMobile"></div>
+
       <table class="dashboard-operacional-tabela">
         <thead>
           <tr>
@@ -139,6 +141,24 @@
       </table>
 
       <p id="mensagemPainel"></p>
+    </section>
+
+    <section class="dashboard-reservas-futuras" aria-labelledby="reservasFuturasTitulo">
+      <div class="dashboard-reservas-futuras-cabecalho">
+        <div>
+          <h2 id="reservasFuturasTitulo">Reservas futuras</h2>
+          <p>Visualize as proximas reservas quando o modulo de mesas estiver ativo.</p>
+        </div>
+
+        <span class="dashboard-reservas-futuras-contador" id="totalReservasFuturas">0 reservas</span>
+      </div>
+
+      <div class="dashboard-reservas-futuras-lista" id="reservasFuturasLista">
+        <article class="dashboard-reservas-futuras-vazio">
+          <strong>Nenhuma reserva futura cadastrada.</strong>
+          <span>Assim que as reservas forem implantadas, elas aparecerao aqui por horario, cliente, mesa e quantidade de pessoas.</span>
+        </article>
+      </div>
     </section>
   </main>
 
@@ -271,10 +291,13 @@
     let alteracaoStatusPendente = null;
 
     const tabelaFila = document.getElementById('tabelaFila');
+    const filaCardsMobile = document.getElementById('filaCardsMobile');
     const filtroStatus = document.getElementById('filtroStatus');
     const filtroBusca = document.getElementById('filtroBusca');
     const filtroPessoas = document.getElementById('filtroPessoas');
     const mensagemPainel = document.getElementById('mensagemPainel');
+    const reservasFuturasLista = document.getElementById('reservasFuturasLista');
+    const totalReservasFuturas = document.getElementById('totalReservasFuturas');
 
     const totalAguardando = document.getElementById('totalAguardando');
     const totalPreparando = document.getElementById('totalPreparando');
@@ -282,6 +305,7 @@
     const totalACaminho = document.getElementById('totalACaminho');
     const totalAtendido = document.getElementById('totalAtendido');
     const totalAtiva = document.getElementById('totalAtiva');
+    const resumoDiaReferencia = document.getElementById('resumoDiaReferencia');
 
     const btnAplicarFiltros = document.getElementById('btnAplicarFiltros');
     const btnNovaFila = document.getElementById('btnNovaFila');
@@ -303,6 +327,69 @@
     const modalStatus = document.getElementById('modalStatus');
 
     const RESTAURANTE_ID_FIXO = '00000000-0000-0000-0000-000000000001';
+
+    function obterIntervaloHoje() {
+      const inicio = new Date();
+      inicio.setHours(0, 0, 0, 0);
+
+      const fim = new Date(inicio);
+      fim.setDate(fim.getDate() + 1);
+
+      return {
+        inicio: inicio.toISOString(),
+        fim: fim.toISOString(),
+        dataFormatada: inicio.toLocaleDateString('pt-BR')
+      };
+    }
+
+    function aplicarFiltroHoje(query) {
+      const intervalo = obterIntervaloHoje();
+
+      return query
+        .gte('hora_entrada', intervalo.inicio)
+        .lt('hora_entrada', intervalo.fim);
+    }
+
+    function obterIntervaloReservasFuturas() {
+      const inicio = new Date();
+      inicio.setHours(0, 0, 0, 0);
+
+      const fim = new Date(inicio);
+      fim.setDate(fim.getDate() + 30);
+
+      return {
+        inicio: inicio.toISOString(),
+        fim: fim.toISOString()
+      };
+    }
+
+    function atualizarLegendaResumoDia() {
+      const intervalo = obterIntervaloHoje();
+      resumoDiaReferencia.textContent = `Resumo operacional de hoje (${intervalo.dataFormatada})`;
+    }
+
+    function formatarCPF(cpf) {
+      const valor = String(cpf || '').replace(/\D/g, '').slice(0, 11);
+      return valor
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    }
+
+    function formatarTelefone(telefone) {
+      let valor = String(telefone || '').replace(/\D/g, '').slice(0, 11);
+
+      if (valor.length <= 10) {
+        valor = valor.replace(/(\d{2})(\d)/, '($1) $2');
+        valor = valor.replace(/(\d{4})(\d)/, '$1-$2');
+      } else {
+        valor = valor.replace(/(\d{2})(\d)/, '($1) $2');
+        valor = valor.replace(/(\d{5})(\d)/, '$1-$2');
+      }
+
+      return valor;
+    }
+
 
     function setMensagem(texto, tipo = '') {
       mensagemPainel.textContent = texto;
@@ -628,8 +715,109 @@
       });
     }
 
+
+    function escaparHtml(valor) {
+      return String(valor ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function montarBotoesMobile(item) {
+      const botoesRapidos = `
+        <button class="dashboard-operacional-btn btn-preparando" onclick="alterar('${item.id}','Preparando')">Prep</button>
+        <button class="dashboard-operacional-btn btn-chamar" onclick="alterar('${item.id}','Chamado')">Chamar</button>
+        <button class="dashboard-operacional-btn btn-caminho" onclick="alterar('${item.id}','A caminho')">A caminho</button>
+        <button class="dashboard-operacional-btn btn-atendido" onclick="alterar('${item.id}','Atendido')">OK</button>
+      `;
+
+      let botoesSecundarios = `
+        <button class="dashboard-operacional-btn btn-aguardando" onclick="alterar('${item.id}','Aguardando')">Aguardar</button>
+        <button class="dashboard-operacional-btn btn-desistente" onclick="alterar('${item.id}','Desistente')">Desistiu</button>
+        <button class="dashboard-operacional-btn btn-cancelado" onclick="alterar('${item.id}','Cancelado')">Cancelar</button>
+        <button class="dashboard-operacional-btn btn-editar" onclick="abrirModalEdicao('${item.id}')">Editar</button>
+      `;
+
+      if (['Cancelado', 'Desistente'].includes(item.status)) {
+        botoesSecundarios += `
+          <button class="dashboard-operacional-btn btn-reativar" onclick="abrirModalReativacao('${item.id}')">Reativar</button>
+        `;
+      }
+
+      return `
+        <div class="fila-mobile-acoes-rapidas">${botoesRapidos}</div>
+        <div class="fila-mobile-acoes-secundarias">${botoesSecundarios}</div>
+      `;
+    }
+
+    function renderizarCardsMobile(itens, mapaPosicoes) {
+      if (!filaCardsMobile) return;
+
+      filaCardsMobile.innerHTML = '';
+
+      if (!itens.length) {
+        filaCardsMobile.innerHTML = '<div class="fila-mobile-vazio">Nenhum item encontrado.</div>';
+        return;
+      }
+
+      itens.forEach(item => {
+        const estaNaFila = STATUS_EM_FILA.includes(item.status);
+        const posicaoDinamica = estaNaFila ? (mapaPosicoes[item.id] ?? '-') : '-';
+        const tempoEstimado = estaNaFila && posicaoDinamica !== '-' ? (posicaoDinamica * 10) + ' min' : '-';
+        const tempoFila = calcularTempoNaFila(item.hora_entrada);
+        const classeTempo = classeTempoFila(item.hora_entrada);
+        const classeLinha = item.status === 'A caminho' ? 'linha-a-caminho' : '';
+        const entrada = item.hora_entrada
+          ? new Date(item.hora_entrada).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+          : '-';
+
+        const nome = escaparHtml(item.cliente?.nome || '-');
+        const telefone = escaparHtml(item.cliente?.telefone || '-');
+        const cpf = escaparHtml(item.cliente?.cpf || '-');
+
+        filaCardsMobile.innerHTML += `
+          <article class="fila-mobile-card ${classeLinha}">
+            <div class="fila-mobile-topo">
+              <div class="fila-mobile-posicao">${posicaoDinamica}</div>
+              <div class="fila-mobile-identificacao">
+                <strong class="fila-mobile-nome">${nome}</strong>
+                <span class="fila-mobile-contato">${telefone} • CPF ${cpf}</span>
+              </div>
+              <div class="fila-mobile-status">
+                <span class="${classeStatus(item.status)}">${escaparHtml(item.status || '-')}</span>
+              </div>
+            </div>
+
+            <div class="fila-mobile-info-grid">
+              <div class="fila-mobile-info">
+                <span>Pessoas</span>
+                <strong>${item.numero_pessoas ?? '-'}</strong>
+              </div>
+              <div class="fila-mobile-info">
+                <span>Estimado</span>
+                <strong>${tempoEstimado}</strong>
+              </div>
+              <div class="fila-mobile-info">
+                <span>Na fila</span>
+                <strong class="${classeTempo}">${tempoFila}</strong>
+              </div>
+              <div class="fila-mobile-info">
+                <span>Entrada</span>
+                <strong>${entrada}</strong>
+              </div>
+            </div>
+
+            ${montarBotoesMobile(item)}
+          </article>
+        `;
+      });
+    }
+
     function renderizarTabela(itens, mapaPosicoes) {
       tabelaFila.innerHTML = '';
+      renderizarCardsMobile(itens, mapaPosicoes);
 
       if (!itens.length) {
         tabelaFila.innerHTML = `
@@ -695,6 +883,102 @@
           </tr>
         `;
       });
+    }
+
+    function renderizarReservasFuturas(reservas) {
+      if (!reservasFuturasLista || !totalReservasFuturas) return;
+
+      totalReservasFuturas.textContent = `${reservas.length} ${reservas.length === 1 ? 'reserva' : 'reservas'}`;
+      reservasFuturasLista.innerHTML = '';
+
+      if (!reservas.length) {
+        reservasFuturasLista.innerHTML = `
+          <article class="dashboard-reservas-futuras-vazio">
+            <strong>Nenhuma reserva futura cadastrada.</strong>
+            <span>Assim que as reservas forem confirmadas, elas aparecerao aqui por horario, cliente, mesa e quantidade de pessoas.</span>
+          </article>
+        `;
+        return;
+      }
+
+      reservas.forEach(reserva => {
+        const dataHora = reserva.data_hora ? new Date(reserva.data_hora) : null;
+        const data = dataHora
+          ? dataHora.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })
+          : '-';
+        const hora = dataHora
+          ? dataHora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+          : '-';
+        const nome = reserva.nome_cliente || reserva.cliente?.nome || '-';
+        const cpf = reserva.cpf_cliente || reserva.cliente?.cpf || '';
+        const telefone = reserva.telefone_cliente || reserva.cliente?.telefone || '';
+        const mesa = reserva.mesa_id || 'A definir';
+
+        reservasFuturasLista.innerHTML += `
+          <article class="dashboard-reserva-item">
+            <div class="dashboard-reserva-horario">
+              <strong>${escaparHtml(hora)}</strong>
+              <span>${escaparHtml(data)}</span>
+            </div>
+
+            <div class="dashboard-reserva-cliente">
+              <strong>${escaparHtml(nome)}</strong>
+              <span>${escaparHtml(formatarTelefone(telefone))} ${cpf ? ' - CPF ' + escaparHtml(formatarCPF(cpf)) : ''}</span>
+            </div>
+
+            <div class="dashboard-reserva-detalhes">
+              <span>${escaparHtml(String(reserva.num_pessoas ?? '-'))} pessoa(s)</span>
+              <span>Mesa: ${escaparHtml(mesa)}</span>
+            </div>
+
+            <span class="dashboard-reserva-status">${escaparHtml(reserva.status || 'Pendente')}</span>
+          </article>
+        `;
+      });
+    }
+
+    async function carregarReservasFuturas() {
+      if (!reservasFuturasLista) return;
+
+      const intervalo = obterIntervaloReservasFuturas();
+
+      const { data, error } = await supabaseClient
+        .from('reserva')
+        .select(`
+          id,
+          cliente_id,
+          mesa_id,
+          data_hora,
+          num_pessoas,
+          status,
+          nome_cliente,
+          cpf_cliente,
+          telefone_cliente,
+          cliente:cliente_id (
+            nome,
+            cpf,
+            telefone
+          )
+        `)
+        .eq('restaurante_id', RESTAURANTE_ID_FIXO)
+        .neq('status', 'Cancelada')
+        .gte('data_hora', intervalo.inicio)
+        .lt('data_hora', intervalo.fim)
+        .order('data_hora', { ascending: true })
+        .limit(12);
+
+      if (error) {
+        console.error('Erro ao carregar reservas futuras:', error);
+        reservasFuturasLista.innerHTML = `
+          <article class="dashboard-reservas-futuras-vazio">
+            <strong>Nao foi possivel carregar as reservas.</strong>
+            <span>Verifique as permissoes da tabela reserva e tente novamente.</span>
+          </article>
+        `;
+        return;
+      }
+
+      renderizarReservasFuturas(data || []);
     }
 
     function limparFormularioModal() {
@@ -781,7 +1065,9 @@
             telefone
           )
         `)
-        .eq('restaurante_id', RESTAURANTE_ID_FIXO)
+        .eq('restaurante_id', RESTAURANTE_ID_FIXO);
+
+      query = aplicarFiltroHoje(query)
         .order('hora_entrada', { ascending: true });
 
       if (filtroStatus.value === 'em_fila') {
@@ -811,7 +1097,7 @@
 
       itens = aplicarFiltroPessoas(itens);
 
-      const { data: todosDoRestaurante, error: erroResumo } = await supabaseClient
+      let queryResumo = supabaseClient
         .from('fila_item')
         .select(`
           id,
@@ -820,6 +1106,10 @@
         `)
         .eq('restaurante_id', RESTAURANTE_ID_FIXO);
 
+      queryResumo = aplicarFiltroHoje(queryResumo);
+
+      const { data: todosDoRestaurante, error: erroResumo } = await queryResumo;
+
       if (erroResumo) {
         setMensagem('Erro ao carregar resumo: ' + erroResumo.message, 'erro');
         return;
@@ -827,16 +1117,21 @@
 
       const mapaPosicoes = montarMapaPosicoesDinamicas(todosDoRestaurante || []);
       atualizarResumo(todosDoRestaurante || []);
+      atualizarLegendaResumoDia();
       renderizarTabela(itens, mapaPosicoes);
     }
 
     async function recalcularPosicoes() {
-      const { data, error } = await supabaseClient
+      let query = supabaseClient
         .from('fila_item')
         .select('id, hora_entrada')
         .eq('restaurante_id', RESTAURANTE_ID_FIXO)
-        .in('status', STATUS_EM_FILA)
+        .in('status', STATUS_EM_FILA);
+
+      query = aplicarFiltroHoje(query)
         .order('hora_entrada', { ascending: true });
+
+      const { data, error } = await query;
 
       if (error) {
         setMensagem('Erro ao recalcular posições: ' + error.message, 'erro');
@@ -1023,11 +1318,15 @@
     });
 
     async function iniciarPainel() {
-      await carregarFila();
+      await Promise.all([
+        carregarFila(),
+        carregarReservasFuturas()
+      ]);
 
       setInterval(() => {
         if (!modalFilaOverlay.classList.contains('ativo') && !modalStatusOverlay.classList.contains('ativo')) {
           carregarFila();
+          carregarReservasFuturas();
         }
       }, 5000);
     }
@@ -1035,7 +1334,6 @@
     iniciarPainel();
 
     window.alterar = alterar;
-    window.reativarFila = reativarFila;
     window.abrirModalEdicao = abrirModalEdicao;
     window.fecharModalStatus = fecharModalStatus;
   </script>

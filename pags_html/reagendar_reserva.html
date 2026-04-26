@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Qmesa - Reagendar reserva</title>
-  <link rel="stylesheet" href="../pags_css/style.css">
+  <link rel="stylesheet" href="../pags_css/style.css" />
 </head>
 <body class="tema-reserva">
 
@@ -19,7 +19,7 @@
             </svg>
           </a>
 
-          <a href="../pags_html/index.html" class="botao-home" aria-label="Ir para início">
+          <a href="../pags_html/index.html" class="botao-home" aria-label="Ir para inicio">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M3 10.5L12 3l9 7.5"/>
               <path d="M5.5 9.5V21h13V9.5"/>
@@ -29,38 +29,431 @@
         </div>
 
         <div class="selo">
-          <img src="../images/logo_restaurante.png" alt="Logo do restaurante">
+          <img src="../images/logo_restaurante.png" alt="Logo do restaurante" />
         </div>
       </header>
 
       <section class="conteudo">
-        <h1 class="titulo">Para quando gostaria de<br>reagendar?</h1>
+        <div class="bloco-identificacao bloco-reserva">
+          <h1 class="titulo titulo-centralizado">Reagendar reserva</h1>
 
-        <form class="formulario" action="../pags_html/reagendamento_confirmado.html">
-          <input class="campo" type="text" placeholder="Qual a data? *">
-          <input class="campo" type="text" placeholder="Qual o horário? *">
+          <p class="descricao-fila">
+            Atualize data, horario, quantidade de pessoas ou dados de contato da reserva selecionada.
+          </p>
 
-          <p class="subtitulo-formulario">Alguma mudança nos dados abaixo?</p>
+          <form class="formulario formulario-identificacao formulario-reserva" id="formReagendarReserva">
+            <div class="grupo-campo">
+              <label for="dataReagendamento" class="label-campo">Data da reserva</label>
+              <input type="date" id="dataReagendamento" class="campo campo-reserva" required />
+            </div>
 
-          <input class="campo" type="text" value="Alessandro Sondey">
-          <input class="campo" type="text" value="928.284.927-27">
-          <input class="campo" type="text" value="(41) 99284-2837">
-          <input class="campo" type="text" value="4 pessoas">
+            <div class="grupo-campo">
+              <label for="horarioReagendamento" class="label-campo">Horario da reserva</label>
+              <input
+                type="time"
+                id="horarioReagendamento"
+                class="campo campo-reserva"
+                min="11:00"
+                max="23:00"
+                step="900"
+                required
+              />
+            </div>
 
-          <div class="acoes acoes-reagendamento">
-            <button type="submit" class="botao-primario botao-atualizar-reserva">
-              Atualizar reserva
-            </button>
+            <div class="grupo-campo">
+              <label for="qtdPessoasReagendamento" class="label-campo">Mesa para quantas pessoas?</label>
 
-            <button type="button" class="botao-secundario botao-cancelar-reagendamento" onclick="history.back()">
-              Cancelar
-            </button>
-          </div>
-        </form>
+              <div class="linha-qtd-pessoas">
+                <input
+                  type="number"
+                  id="qtdPessoasReagendamento"
+                  class="campo campo-reserva campo-qtd-pessoas"
+                  min="1"
+                  max="20"
+                  required
+                />
+
+                <div class="acoes-qtd">
+                  <button id="btnMenosReagendamento" class="botao-qtd menos botao-qtd-reserva" type="button" aria-label="Diminuir quantidade"></button>
+                  <button id="btnMaisReagendamento" class="botao-qtd mais botao-qtd-reserva" type="button" aria-label="Aumentar quantidade"></button>
+                </div>
+              </div>
+            </div>
+
+            <p class="subtitulo-formulario">Dados da reserva</p>
+
+            <div class="grupo-campo">
+              <label for="nomeReagendamento" class="label-campo">Nome</label>
+              <input type="text" id="nomeReagendamento" class="campo campo-reserva" required />
+            </div>
+
+            <div class="grupo-campo">
+              <label for="cpfReagendamento" class="label-campo">CPF</label>
+              <input type="text" id="cpfReagendamento" class="campo campo-reserva" readonly />
+            </div>
+
+            <div class="grupo-campo">
+              <label for="telefoneReagendamento" class="label-campo">Telefone</label>
+              <input type="text" id="telefoneReagendamento" class="campo campo-reserva" maxlength="15" required />
+            </div>
+
+            <div class="acoes-reserva-fluxo tem-voltar tem-cancelamento">
+              <button type="button" class="botao-secundario" onclick="history.back()">
+                Voltar
+              </button>
+
+              <button type="button" class="botao-secundario botao-cancelar-reagendamento" id="btnCancelarReserva">
+                Cancelar reserva
+              </button>
+
+              <button type="submit" class="botao-primario" id="btnAtualizarReserva">
+                Atualizar
+              </button>
+            </div>
+
+            <p id="mensagemReagendamento" class="mensagem-formulario"></p>
+          </form>
+        </div>
       </section>
 
     </section>
   </main>
 
+  <div class="modal-status-overlay" id="modalCancelamentoReserva">
+    <div class="modal-status modal-reserva-duplicada" role="dialog" aria-modal="true" aria-labelledby="modalCancelamentoReservaTitulo">
+      <div class="modal-status-header">
+        <h2 class="modal-status-titulo" id="modalCancelamentoReservaTitulo">Cancelar reserva</h2>
+        <button class="modal-status-fechar" id="btnFecharModalCancelamentoReserva" type="button" aria-label="Fechar modal">&times;</button>
+      </div>
+
+      <div class="modal-status-body">
+        <p class="modal-status-texto">
+          Voce quer mesmo cancelar esta reserva?
+        </p>
+
+        <div class="modal-status-acoes">
+          <button type="button" class="botao-secundario" id="btnManterReserva">
+            Nao, manter reserva
+          </button>
+
+          <button type="button" class="botao-primario" id="btnConfirmarCancelamentoReserva">
+            Sim, cancelar
+          </button>
+        </div>
+
+        <p id="mensagemCancelamentoReserva" class="modal-fila-mensagem"></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+  <script>
+    const supabaseClient = window.supabase.createClient(
+      'https://jlfbzdqhaezdtyyajqlk.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpsZmJ6ZHFoYWV6ZHR5eWFqcWxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjM0NjksImV4cCI6MjA4ODkzOTQ2OX0.6VX3Z1FjxgZuBYALd2oU4bQl0nzbMcBUcc0nLW_DbvA'
+    );
+
+    const RESTAURANTE_ID = '00000000-0000-0000-0000-000000000001';
+
+    const formReagendarReserva = document.getElementById('formReagendarReserva');
+    const dataReagendamento = document.getElementById('dataReagendamento');
+    const horarioReagendamento = document.getElementById('horarioReagendamento');
+    const qtdPessoasReagendamento = document.getElementById('qtdPessoasReagendamento');
+    const nomeReagendamento = document.getElementById('nomeReagendamento');
+    const cpfReagendamento = document.getElementById('cpfReagendamento');
+    const telefoneReagendamento = document.getElementById('telefoneReagendamento');
+    const btnMenosReagendamento = document.getElementById('btnMenosReagendamento');
+    const btnMaisReagendamento = document.getElementById('btnMaisReagendamento');
+    const btnAtualizarReserva = document.getElementById('btnAtualizarReserva');
+    const btnCancelarReserva = document.getElementById('btnCancelarReserva');
+    const modalCancelamentoReserva = document.getElementById('modalCancelamentoReserva');
+    const btnFecharModalCancelamentoReserva = document.getElementById('btnFecharModalCancelamentoReserva');
+    const btnManterReserva = document.getElementById('btnManterReserva');
+    const btnConfirmarCancelamentoReserva = document.getElementById('btnConfirmarCancelamentoReserva');
+    const mensagemCancelamentoReserva = document.getElementById('mensagemCancelamentoReserva');
+    const mensagemReagendamento = document.getElementById('mensagemReagendamento');
+
+    let reservaAtual = null;
+
+    function somenteNumeros(valor) {
+      return String(valor || '').replace(/\D/g, '');
+    }
+
+    function hojeISO() {
+      const hoje = new Date();
+      const ano = hoje.getFullYear();
+      const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+      const dia = String(hoje.getDate()).padStart(2, '0');
+      return `${ano}-${mes}-${dia}`;
+    }
+
+    function formatarCPF(cpf) {
+      let valor = somenteNumeros(cpf).slice(0, 11);
+      valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
+      valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
+      valor = valor.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+      return valor;
+    }
+
+    function formatarTelefone(valor) {
+      let numeros = somenteNumeros(valor).slice(0, 11);
+
+      if (numeros.length <= 10) {
+        numeros = numeros.replace(/(\d{2})(\d)/, '($1) $2');
+        numeros = numeros.replace(/(\d{4})(\d)/, '$1-$2');
+      } else {
+        numeros = numeros.replace(/(\d{2})(\d)/, '($1) $2');
+        numeros = numeros.replace(/(\d{5})(\d)/, '$1-$2');
+      }
+
+      return numeros;
+    }
+
+    function montarDataHoraReserva(data, horario) {
+      return new Date(`${data}T${horario}:00`).toISOString();
+    }
+
+    function separarDataHora(dataHora) {
+      const data = new Date(dataHora);
+      const ano = data.getFullYear();
+      const mes = String(data.getMonth() + 1).padStart(2, '0');
+      const dia = String(data.getDate()).padStart(2, '0');
+      const hora = String(data.getHours()).padStart(2, '0');
+      const minuto = String(data.getMinutes()).padStart(2, '0');
+
+      return {
+        data: `${ano}-${mes}-${dia}`,
+        horario: `${hora}:${minuto}`
+      };
+    }
+
+    function mostrarMensagem(texto, tipo = 'erro') {
+      mensagemReagendamento.textContent = texto;
+      mensagemReagendamento.style.color = tipo === 'sucesso' ? 'green' : 'red';
+    }
+
+    function alterarQuantidade(delta) {
+      const valorAtual = Number(qtdPessoasReagendamento.value) || 1;
+      qtdPessoasReagendamento.value = Math.min(20, Math.max(1, valorAtual + delta));
+    }
+
+    function abrirModalCancelamentoReserva() {
+      mensagemCancelamentoReserva.textContent = '';
+      modalCancelamentoReserva.classList.add('ativo');
+    }
+
+    function fecharModalCancelamentoReserva() {
+      modalCancelamentoReserva.classList.remove('ativo');
+    }
+
+    async function confirmarCancelamentoReserva() {
+      const reservaId = reservaAtual?.id || sessionStorage.getItem('reserva_id');
+
+      if (!reservaId) {
+        mensagemCancelamentoReserva.textContent = 'Nao foi possivel identificar a reserva.';
+        mensagemCancelamentoReserva.style.color = 'red';
+        return;
+      }
+
+      btnConfirmarCancelamentoReserva.disabled = true;
+      btnConfirmarCancelamentoReserva.textContent = 'Cancelando...';
+
+      try {
+        const { error } = await supabaseClient
+          .from('reserva')
+          .update({ status: 'Cancelada' })
+          .eq('id', reservaId);
+
+        if (error) throw error;
+
+        sessionStorage.setItem('reserva_cancelada_id', reservaId);
+        if (reservaAtual?.cliente_id) {
+          sessionStorage.setItem('reserva_cancelada_cliente_id', reservaAtual.cliente_id);
+        }
+
+        window.location.href = '../pags_html/cancelamento_reserva_confirmado.html';
+      } catch (error) {
+        console.error('Erro ao cancelar reserva:', error);
+        mensagemCancelamentoReserva.textContent = 'Nao foi possivel cancelar a reserva no momento.';
+        mensagemCancelamentoReserva.style.color = 'red';
+        btnConfirmarCancelamentoReserva.disabled = false;
+        btnConfirmarCancelamentoReserva.textContent = 'Sim, cancelar';
+      }
+    }
+
+    async function carregarReserva() {
+      const reservaId = sessionStorage.getItem('reserva_id');
+      dataReagendamento.min = hojeISO();
+
+      if (!reservaId) {
+        mostrarMensagem('Nao foi possivel identificar a reserva para reagendamento.');
+        btnAtualizarReserva.disabled = true;
+        return;
+      }
+
+      const { data, error } = await supabaseClient
+        .from('reserva')
+        .select(`
+          id,
+          cliente_id,
+          restaurante_id,
+          data_hora,
+          num_pessoas,
+          status,
+          nome_cliente,
+          cpf_cliente,
+          telefone_cliente,
+          cliente:cliente_id (
+            nome,
+            cpf,
+            telefone
+          )
+        `)
+        .eq('id', reservaId)
+        .maybeSingle();
+
+      if (error || !data) {
+        console.error('Erro ao carregar reserva:', error);
+        mostrarMensagem('Nao foi possivel carregar a reserva.');
+        btnAtualizarReserva.disabled = true;
+        return;
+      }
+
+      reservaAtual = data;
+      const partes = separarDataHora(data.data_hora);
+
+      dataReagendamento.value = partes.data;
+      horarioReagendamento.value = partes.horario;
+      qtdPessoasReagendamento.value = data.num_pessoas || 2;
+      nomeReagendamento.value = data.nome_cliente || data.cliente?.nome || '';
+      cpfReagendamento.value = formatarCPF(data.cpf_cliente || data.cliente?.cpf || '');
+      telefoneReagendamento.value = formatarTelefone(data.telefone_cliente || data.cliente?.telefone || '');
+    }
+
+    async function existeReservaNoNovoHorario(cpf, clienteId, data, horario) {
+      const { data: reservas, error } = await supabaseClient
+        .from('reserva')
+        .select('id')
+        .eq('restaurante_id', RESTAURANTE_ID)
+        .eq('data_hora', montarDataHoraReserva(data, horario))
+        .neq('status', 'Cancelada')
+        .neq('id', reservaAtual.id)
+        .or(`cpf_cliente.eq.${cpf},cliente_id.eq.${clienteId}`)
+        .limit(1);
+
+      if (error) throw error;
+
+      return Boolean(reservas && reservas.length);
+    }
+
+    telefoneReagendamento.addEventListener('input', function () {
+      telefoneReagendamento.value = formatarTelefone(telefoneReagendamento.value);
+    });
+
+    btnMenosReagendamento.addEventListener('click', function () {
+      alterarQuantidade(-1);
+    });
+
+    btnMaisReagendamento.addEventListener('click', function () {
+      alterarQuantidade(1);
+    });
+
+    btnCancelarReserva.addEventListener('click', abrirModalCancelamentoReserva);
+    btnFecharModalCancelamentoReserva.addEventListener('click', fecharModalCancelamentoReserva);
+    btnManterReserva.addEventListener('click', fecharModalCancelamentoReserva);
+    btnConfirmarCancelamentoReserva.addEventListener('click', confirmarCancelamentoReserva);
+
+    modalCancelamentoReserva.addEventListener('click', function (event) {
+      if (event.target === modalCancelamentoReserva) {
+        fecharModalCancelamentoReserva();
+      }
+    });
+
+    formReagendarReserva.addEventListener('submit', async function (event) {
+      event.preventDefault();
+
+      if (!reservaAtual) return;
+
+      const data = dataReagendamento.value;
+      const horario = horarioReagendamento.value;
+      const qtdPessoas = Number(qtdPessoasReagendamento.value);
+      const nome = nomeReagendamento.value.trim();
+      const cpf = somenteNumeros(cpfReagendamento.value || reservaAtual.cpf_cliente || reservaAtual.cliente?.cpf);
+      const telefone = somenteNumeros(telefoneReagendamento.value);
+
+      if (!data || data < hojeISO()) {
+        mostrarMensagem('Escolha uma data atual ou futura.');
+        return;
+      }
+
+      if (!horario || horario < '11:00' || horario > '23:00') {
+        mostrarMensagem('Escolha um horario entre 11:00 e 23:00.');
+        return;
+      }
+
+      if (!qtdPessoas || qtdPessoas < 1 || qtdPessoas > 20) {
+        mostrarMensagem('Informe uma quantidade entre 1 e 20 pessoas.');
+        return;
+      }
+
+      if (!nome || telefone.length < 10) {
+        mostrarMensagem('Confira nome e telefone.');
+        return;
+      }
+
+      btnAtualizarReserva.disabled = true;
+      btnAtualizarReserva.textContent = 'Atualizando...';
+      mensagemReagendamento.textContent = '';
+
+      try {
+        const duplicada = await existeReservaNoNovoHorario(cpf, reservaAtual.cliente_id, data, horario);
+
+        if (duplicada) {
+          mostrarMensagem('Ja existe outra reserva ativa para este CPF nesta data e horario.');
+          btnAtualizarReserva.disabled = false;
+          btnAtualizarReserva.textContent = 'Atualizar';
+          return;
+        }
+
+        const { error: erroReserva } = await supabaseClient
+          .from('reserva')
+          .update({
+            data_hora: montarDataHoraReserva(data, horario),
+            num_pessoas: qtdPessoas,
+            nome_cliente: nome,
+            cpf_cliente: cpf,
+            telefone_cliente: telefone
+          })
+          .eq('id', reservaAtual.id);
+
+        if (erroReserva) throw erroReserva;
+
+        const { error: erroCliente } = await supabaseClient
+          .from('cliente')
+          .update({ nome, telefone, cpf })
+          .eq('id', reservaAtual.cliente_id);
+
+        if (erroCliente) throw erroCliente;
+
+        sessionStorage.setItem('reserva_data', data);
+        sessionStorage.setItem('reserva_horario', horario);
+        sessionStorage.setItem('reserva_qtd_pessoas', qtdPessoas);
+        sessionStorage.setItem('reserva_nome', nome);
+        sessionStorage.setItem('reserva_cpf', cpf);
+        sessionStorage.setItem('reserva_telefone', telefone);
+        sessionStorage.setItem('reserva_cliente_id', reservaAtual.cliente_id);
+
+        window.location.href = '../pags_html/reagendamento_confirmado.html';
+      } catch (error) {
+        console.error('Erro ao reagendar reserva:', error);
+        mostrarMensagem('Nao foi possivel atualizar a reserva no momento.');
+        btnAtualizarReserva.disabled = false;
+        btnAtualizarReserva.textContent = 'Atualizar';
+      }
+    });
+
+    carregarReserva();
+  </script>
 </body>
 </html>

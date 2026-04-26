@@ -51,9 +51,9 @@
             Reagendar
           </a>
 
-          <a href="../pags_html/cancelar_reserva_futura.html" class="botao-secundario botao-cancelar-confirmado">
+          <button type="button" class="botao-secundario botao-cancelar-confirmado" id="btnCancelarReserva">
             Cancelar reserva
-          </a>
+          </button>
 
           <a href="../pags_html/index.html" class="botao-primario botao-inicio-confirmado">
             Voltar à tela inicial
@@ -63,6 +63,100 @@
 
     </section>
   </main>
+
+  <div class="modal-status-overlay" id="modalCancelamentoReserva">
+    <div class="modal-status modal-reserva-duplicada" role="dialog" aria-modal="true" aria-labelledby="modalCancelamentoReservaTitulo">
+      <div class="modal-status-header">
+        <h2 class="modal-status-titulo" id="modalCancelamentoReservaTitulo">Cancelar reserva</h2>
+        <button class="modal-status-fechar" id="btnFecharModalCancelamentoReserva" type="button" aria-label="Fechar modal">&times;</button>
+      </div>
+
+      <div class="modal-status-body">
+        <p class="modal-status-texto">
+          Voce quer mesmo cancelar sua reserva?
+        </p>
+
+        <div class="modal-status-acoes">
+          <button type="button" class="botao-secundario" id="btnManterReserva">
+            Nao, manter reserva
+          </button>
+
+          <button type="button" class="botao-primario" id="btnConfirmarCancelamentoReserva">
+            Sim, cancelar
+          </button>
+        </div>
+
+        <p id="mensagemCancelamentoReserva" class="modal-fila-mensagem"></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+  <script>
+    const supabaseClient = window.supabase.createClient(
+      'https://jlfbzdqhaezdtyyajqlk.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpsZmJ6ZHFoYWV6ZHR5eWFqcWxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjM0NjksImV4cCI6MjA4ODkzOTQ2OX0.6VX3Z1FjxgZuBYALd2oU4bQl0nzbMcBUcc0nLW_DbvA'
+    );
+
+    const btnCancelarReserva = document.getElementById('btnCancelarReserva');
+    const modalCancelamentoReserva = document.getElementById('modalCancelamentoReserva');
+    const btnFecharModalCancelamentoReserva = document.getElementById('btnFecharModalCancelamentoReserva');
+    const btnManterReserva = document.getElementById('btnManterReserva');
+    const btnConfirmarCancelamentoReserva = document.getElementById('btnConfirmarCancelamentoReserva');
+    const mensagemCancelamentoReserva = document.getElementById('mensagemCancelamentoReserva');
+
+    function abrirModalCancelamentoReserva() {
+      mensagemCancelamentoReserva.textContent = '';
+      modalCancelamentoReserva.classList.add('ativo');
+    }
+
+    function fecharModalCancelamentoReserva() {
+      modalCancelamentoReserva.classList.remove('ativo');
+    }
+
+    async function confirmarCancelamentoReserva() {
+      const reservaId = sessionStorage.getItem('reserva_id');
+
+      if (!reservaId) {
+        mensagemCancelamentoReserva.textContent = 'Nao foi possivel identificar a reserva.';
+        mensagemCancelamentoReserva.style.color = 'red';
+        return;
+      }
+
+      btnConfirmarCancelamentoReserva.disabled = true;
+      btnConfirmarCancelamentoReserva.textContent = 'Cancelando...';
+
+      try {
+        const { error } = await supabaseClient
+          .from('reserva')
+          .update({ status: 'Cancelada' })
+          .eq('id', reservaId);
+
+        if (error) throw error;
+
+        sessionStorage.setItem('reserva_cancelada_id', reservaId);
+        window.location.href = '../pags_html/cancelamento_reserva_confirmado.html';
+      } catch (error) {
+        console.error('Erro ao cancelar reserva:', error);
+        mensagemCancelamentoReserva.textContent = 'Nao foi possivel cancelar a reserva no momento.';
+        mensagemCancelamentoReserva.style.color = 'red';
+        btnConfirmarCancelamentoReserva.disabled = false;
+        btnConfirmarCancelamentoReserva.textContent = 'Sim, cancelar';
+      }
+    }
+
+    btnCancelarReserva.addEventListener('click', abrirModalCancelamentoReserva);
+    btnFecharModalCancelamentoReserva.addEventListener('click', fecharModalCancelamentoReserva);
+    btnManterReserva.addEventListener('click', fecharModalCancelamentoReserva);
+    btnConfirmarCancelamentoReserva.addEventListener('click', confirmarCancelamentoReserva);
+
+    modalCancelamentoReserva.addEventListener('click', function (event) {
+      if (event.target === modalCancelamentoReserva) {
+        fecharModalCancelamentoReserva();
+      }
+    });
+  </script>
 
 </body>
 </html>

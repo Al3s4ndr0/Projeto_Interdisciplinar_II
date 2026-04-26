@@ -78,7 +78,7 @@ CREATE TABLE feedback (
   cliente_id UUID NOT NULL REFERENCES cliente(id) ON DELETE CASCADE,
   origem_id UUID NOT NULL,
   origem_tipo VARCHAR(20) NOT NULL
-    CHECK (origem_tipo IN ('fila_item', 'reserva')),
+    CHECK (origem_tipo IN ('fila_item', 'cancelamento_fila', 'reserva', 'cancelamento_reserva')),
   nota INT NOT NULL CHECK (nota BETWEEN 1 AND 5),
   comentario TEXT,
   data_criacao TIMESTAMPTZ NOT NULL DEFAULT NOW()

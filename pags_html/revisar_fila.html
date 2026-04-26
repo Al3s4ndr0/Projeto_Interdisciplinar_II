@@ -6,6 +6,7 @@
   <title>Qmesa - Revisão dos dados da fila</title>
   <link rel="stylesheet" href="../pags_css/style.css" />
 </head>
+
 <body class="tema-fila">
   <main class="tela">
     <section class="cartao cartao-formulario cartao-revisao">
@@ -46,15 +47,19 @@
 
         <div class="acoes-revisao">
           <a href="login_entrar_fila.html" class="botao-revisar">Revisar dados</a>
-          <button type="button" class="botao-primario" id="btnConfirmar">Confirmar reserva</button>
+          <button type="button" class="botao-primario" id="btnConfirmar">
+            Confirmar entrada
+          </button>
         </div>
 
-        <p id="mensagem" style="margin-top: 14px;"></p>
+        <p id="mensagem" class="mensagem-formulario"></p>
       </section>
+
     </section>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
   <script>
     const supabaseUrl = 'https://jlfbzdqhaezdtyyajqlk.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpsZmJ6ZHFoYWV6ZHR5eWFqcWxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjM0NjksImV4cCI6MjA4ODkzOTQ2OX0.6VX3Z1FjxgZuBYALd2oU4bQl0nzbMcBUcc0nLW_DbvA';
@@ -64,6 +69,39 @@
 
     const mensagem = document.getElementById('mensagem');
     const btnConfirmar = document.getElementById('btnConfirmar');
+
+    const revNome = document.getElementById('revNome');
+    const revCpf = document.getElementById('revCpf');
+    const revTelefone = document.getElementById('revTelefone');
+    const revQtdPessoas = document.getElementById('revQtdPessoas');
+
+    function somenteNumeros(valor) {
+      return String(valor || '').replace(/\D/g, '');
+    }
+
+    function formatarCPF(cpf) {
+      let valor = somenteNumeros(cpf).slice(0, 11);
+
+      valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
+      valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
+      valor = valor.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+
+      return valor;
+    }
+
+    function formatarTelefone(telefone) {
+      let valor = somenteNumeros(telefone).slice(0, 11);
+
+      if (valor.length <= 10) {
+        valor = valor.replace(/(\d{2})(\d)/, '($1) $2');
+        valor = valor.replace(/(\d{4})(\d)/, '$1-$2');
+      } else {
+        valor = valor.replace(/(\d{2})(\d)/, '($1) $2');
+        valor = valor.replace(/(\d{5})(\d)/, '$1-$2');
+      }
+
+      return valor;
+    }
 
     function limparEstadoFila() {
       sessionStorage.removeItem('fila_ativa');
@@ -120,16 +158,16 @@
         return;
       }
 
-      document.getElementById('revNome').textContent = nome;
-      document.getElementById('revCpf').textContent = cpf;
-      document.getElementById('revTelefone').textContent = telefone;
-      document.getElementById('revQtdPessoas').textContent = `${qtdPessoas} pessoa(s)`;
+      revNome.textContent = nome;
+      revCpf.textContent = formatarCPF(cpf);
+      revTelefone.textContent = formatarTelefone(telefone);
+      revQtdPessoas.textContent = `${qtdPessoas} pessoa(s)`;
     }
 
     btnConfirmar.addEventListener('click', async function () {
       const nome = sessionStorage.getItem('fila_nome');
-      const cpf = sessionStorage.getItem('fila_cpf');
-      const telefone = sessionStorage.getItem('fila_telefone');
+      const cpf = somenteNumeros(sessionStorage.getItem('fila_cpf'));
+      const telefone = somenteNumeros(sessionStorage.getItem('fila_telefone'));
       const qtdPessoas = sessionStorage.getItem('fila_qtd_pessoas');
 
       if (!nome || !cpf || !telefone || !qtdPessoas) {
@@ -173,7 +211,7 @@
             mensagem.textContent = 'Já existe uma fila ativa para este CPF.';
             mensagem.style.color = 'red';
             btnConfirmar.disabled = false;
-            btnConfirmar.textContent = 'Confirmar reserva';
+            btnConfirmar.textContent = 'Confirmar entrada';
             return;
           }
 
@@ -189,6 +227,7 @@
           if (erroAtualizacaoCliente) {
             throw erroAtualizacaoCliente;
           }
+
         } else {
           const { data: clienteInserido, error: erroCliente } = await supabaseClient
             .from('cliente')
@@ -269,7 +308,7 @@
 
         mensagem.style.color = 'red';
         btnConfirmar.disabled = false;
-        btnConfirmar.textContent = 'Confirmar reserva';
+        btnConfirmar.textContent = 'Confirmar entrada';
       }
     });
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Qmesa - Comentário do cancelamento</title>
+  <title>Qmesa - Comentario do cancelamento</title>
   <link rel="stylesheet" href="../pags_css/style.css">
 </head>
 <body class="tema-cancelamento">
@@ -19,7 +19,7 @@
             </svg>
           </a>
 
-          <a href="../pags_html/index.html" class="botao-home" aria-label="Ir para início">
+          <a href="../pags_html/index.html" class="botao-home" aria-label="Ir para inicio">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M3 10.5L12 3l9 7.5"/>
               <path d="M5.5 9.5V21h13V9.5"/>
@@ -38,43 +38,45 @@
           Antes de ir, poderia nos<br>contar o que aconteceu?
         </h1>
 
-        <form class="formulario-comentario-cancelamento" action="../pags_html/comentario_cancelamento_reserva_enviado.html">
+        <form class="formulario-comentario-cancelamento" id="formComentarioCancelamentoReserva">
           <div class="bloco-pesquisa-experiencia bloco-motivo-cancelamento">
-            <p class="pergunta-experiencia">Qual é o motivo do cancelamento?</p>
+            <p class="pergunta-experiencia">Qual e o motivo do cancelamento?</p>
 
             <label class="opcao-experiencia opcao-cancelamento">
-              <input type="radio" name="motivo_cancelamento_reserva">
-              <span>Não poderei mais comparecer por motivos pessoais</span>
+              <input type="radio" name="motivo_cancelamento_reserva" value="Nao poderei comparecer">
+              <span>Nao poderei mais comparecer por motivos pessoais</span>
             </label>
 
             <label class="opcao-experiencia opcao-cancelamento">
-              <input type="radio" name="motivo_cancelamento_reserva">
+              <input type="radio" name="motivo_cancelamento_reserva" value="Reservei outro local">
               <span>Mudamos de ideia e reservamos outro local</span>
             </label>
 
             <label class="opcao-experiencia opcao-cancelamento">
-              <input type="radio" name="motivo_cancelamento_reserva">
+              <input type="radio" name="motivo_cancelamento_reserva" value="Reservei por engano">
               <span>Reservei por engano</span>
             </label>
 
             <label class="opcao-experiencia opcao-cancelamento">
-              <input type="radio" name="motivo_cancelamento_reserva">
+              <input type="radio" name="motivo_cancelamento_reserva" value="Outro motivo">
               <span>Outro motivo? Qual?</span>
             </label>
           </div>
 
           <div class="bloco-comentario-experiencia bloco-comentario-cancelamento">
-            <p class="pergunta-experiencia">Gostaria de deixar algum comentário?</p>
-            <textarea class="campo-comentario" placeholder="Digite sua mensagem aqui"></textarea>
+            <p class="pergunta-experiencia">Gostaria de deixar algum comentario?</p>
+            <textarea id="campoComentarioReserva" class="campo-comentario" placeholder="Digite sua mensagem aqui"></textarea>
           </div>
 
+          <p id="mensagemComentarioCancelamentoReserva" style="margin-top: 12px; font-weight: 600; min-height: 20px;"></p>
+
           <div class="acoes-comentario-cancelamento">
-            <button type="submit" class="botao-primario botao-enviar-avaliacao">
-              Enviar avaliação
+            <button type="submit" class="botao-primario botao-enviar-avaliacao" id="btnEnviarComentarioCancelamentoReserva">
+              Enviar avaliacao
             </button>
 
             <a href="../pags_html/cancelamento_reserva_sem_comentario.html" class="botao-secundario botao-cancelar-envio-comentario">
-              Cancelar envio do comentário
+              Cancelar envio do comentario
             </a>
           </div>
         </form>
@@ -82,6 +84,223 @@
 
     </section>
   </main>
+
+  <div id="modalFeedbackReservaExistente" class="modal">
+    <div class="modal-conteudo">
+      <h2>Comentario ja enviado</h2>
+      <p id="textoModalFeedbackReservaExistente">
+        Voce ja enviou um comentario para este cancelamento. Deseja manter ou editar?
+      </p>
+
+      <div class="modal-acoes">
+        <button type="button" class="botao-secundario" onclick="manterComentarioReservaExistente()">
+          Manter
+        </button>
+
+        <button type="button" class="botao-primario" onclick="editarComentarioReservaExistente()">
+          Editar comentario
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+  <script>
+    const supabaseUrl = 'https://jlfbzdqhaezdtyyajqlk.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpsZmJ6ZHFoYWV6ZHR5eWFqcWxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjM0NjksImV4cCI6MjA4ODkzOTQ2OX0.6VX3Z1FjxgZuBYALd2oU4bQl0nzbMcBUcc0nLW_DbvA';
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+    const formComentarioCancelamentoReserva = document.getElementById('formComentarioCancelamentoReserva');
+    const campoComentarioReserva = document.getElementById('campoComentarioReserva');
+    const mensagemComentarioCancelamentoReserva = document.getElementById('mensagemComentarioCancelamentoReserva');
+    const btnEnviarComentarioCancelamentoReserva = document.getElementById('btnEnviarComentarioCancelamentoReserva');
+    const modalFeedbackReservaExistente = document.getElementById('modalFeedbackReservaExistente');
+    const textoModalFeedbackReservaExistente = document.getElementById('textoModalFeedbackReservaExistente');
+
+    let feedbackReservaExistenteId = null;
+    let clienteReservaIdAtual = null;
+    let reservaCanceladaIdAtual = null;
+
+    function setMensagemReserva(texto, tipo = '') {
+      mensagemComentarioCancelamentoReserva.textContent = texto;
+
+      if (tipo === 'erro') {
+        mensagemComentarioCancelamentoReserva.style.color = '#dc2626';
+      } else if (tipo === 'sucesso') {
+        mensagemComentarioCancelamentoReserva.style.color = '#16a34a';
+      } else {
+        mensagemComentarioCancelamentoReserva.style.color = '#4b5563';
+      }
+    }
+
+    function marcarMotivoReserva(valor) {
+      const radio = document.querySelector(`input[name="motivo_cancelamento_reserva"][value="${valor}"]`);
+      if (radio) {
+        radio.checked = true;
+      }
+    }
+
+    function abrirModalFeedbackReservaExistente() {
+      modalFeedbackReservaExistente.style.display = 'flex';
+    }
+
+    function fecharModalFeedbackReservaExistente() {
+      modalFeedbackReservaExistente.style.display = 'none';
+    }
+
+    function manterComentarioReservaExistente() {
+      fecharModalFeedbackReservaExistente();
+      setMensagemReserva('');
+      btnEnviarComentarioCancelamentoReserva.disabled = true;
+      btnEnviarComentarioCancelamentoReserva.textContent = 'Comentario ja enviado';
+    }
+
+    function editarComentarioReservaExistente() {
+      textoModalFeedbackReservaExistente.textContent = 'Edite seu comentario e clique em atualizar para salvar as mudancas.';
+      setTimeout(() => {
+        fecharModalFeedbackReservaExistente();
+        btnEnviarComentarioCancelamentoReserva.disabled = false;
+        btnEnviarComentarioCancelamentoReserva.textContent = 'Atualizar avaliacao';
+        campoComentarioReserva.focus();
+      }, 250);
+    }
+
+    async function obterClienteDaReserva(reservaId) {
+      const { data, error } = await supabaseClient
+        .from('reserva')
+        .select('cliente_id')
+        .eq('id', reservaId)
+        .maybeSingle();
+
+      if (error) {
+        throw error;
+      }
+
+      return data?.cliente_id || null;
+    }
+
+    async function carregarFeedbackCancelamentoReservaExistente() {
+      reservaCanceladaIdAtual = sessionStorage.getItem('reserva_cancelada_id') || sessionStorage.getItem('reserva_id');
+      clienteReservaIdAtual = sessionStorage.getItem('reserva_cancelada_cliente_id') || sessionStorage.getItem('reserva_cliente_id');
+
+      if (!reservaCanceladaIdAtual) {
+        setMensagemReserva('Nao foi possivel identificar a reserva cancelada.', 'erro');
+        return;
+      }
+
+      if (!clienteReservaIdAtual) {
+        clienteReservaIdAtual = await obterClienteDaReserva(reservaCanceladaIdAtual);
+      }
+
+      if (!clienteReservaIdAtual) {
+        setMensagemReserva('Nao foi possivel identificar o cliente desta reserva.', 'erro');
+        return;
+      }
+
+      const { data, error } = await supabaseClient
+        .from('feedback')
+        .select('id, motivo_cancelamento_resposta, comentario')
+        .eq('cliente_id', clienteReservaIdAtual)
+        .eq('origem_id', reservaCanceladaIdAtual)
+        .eq('origem_tipo', 'cancelamento_reserva')
+        .maybeSingle();
+
+      if (error) {
+        throw error;
+      }
+
+      if (!data) {
+        feedbackReservaExistenteId = null;
+        btnEnviarComentarioCancelamentoReserva.disabled = false;
+        btnEnviarComentarioCancelamentoReserva.textContent = 'Enviar avaliacao';
+        return;
+      }
+
+      feedbackReservaExistenteId = data.id;
+
+      if (data.motivo_cancelamento_resposta) {
+        marcarMotivoReserva(data.motivo_cancelamento_resposta);
+      }
+
+      campoComentarioReserva.value = data.comentario || '';
+      btnEnviarComentarioCancelamentoReserva.textContent = 'Atualizar avaliacao';
+      btnEnviarComentarioCancelamentoReserva.disabled = true;
+
+      abrirModalFeedbackReservaExistente();
+    }
+
+    formComentarioCancelamentoReserva.addEventListener('submit', async function (event) {
+      event.preventDefault();
+
+      if (btnEnviarComentarioCancelamentoReserva.disabled) return;
+
+      const motivoSelecionado = document.querySelector('input[name="motivo_cancelamento_reserva"]:checked');
+      const comentario = campoComentarioReserva.value.trim();
+
+      if (!motivoSelecionado) {
+        setMensagemReserva('Selecione o motivo do cancelamento.', 'erro');
+        return;
+      }
+
+      if (!reservaCanceladaIdAtual) {
+        setMensagemReserva('Nao foi possivel identificar a reserva cancelada.', 'erro');
+        return;
+      }
+
+      if (!clienteReservaIdAtual) {
+        setMensagemReserva('Nao foi possivel identificar o cliente desta reserva.', 'erro');
+        return;
+      }
+
+      btnEnviarComentarioCancelamentoReserva.disabled = true;
+      btnEnviarComentarioCancelamentoReserva.textContent = 'Salvando...';
+      setMensagemReserva('');
+
+      try {
+        const payload = {
+          cliente_id: clienteReservaIdAtual,
+          origem_id: reservaCanceladaIdAtual,
+          origem_tipo: 'cancelamento_reserva',
+          motivo_cancelamento_resposta: motivoSelecionado.value,
+          comentario: comentario || null
+        };
+
+        const { error } = await supabaseClient
+          .from('feedback')
+          .upsert(payload, {
+            onConflict: 'cliente_id,origem_id,origem_tipo'
+          });
+
+        if (error) {
+          throw error;
+        }
+
+        setMensagemReserva('Comentario salvo com sucesso!', 'sucesso');
+
+        setTimeout(() => {
+          window.location.href = '../pags_html/comentario_cancelamento_reserva_enviado.html';
+        }, 700);
+      } catch (erro) {
+        console.error('Erro ao salvar comentario de cancelamento de reserva:', erro);
+        setMensagemReserva('Nao foi possivel salvar seu comentario agora. Tente novamente.', 'erro');
+        btnEnviarComentarioCancelamentoReserva.disabled = false;
+        btnEnviarComentarioCancelamentoReserva.textContent =
+          feedbackReservaExistenteId ? 'Atualizar avaliacao' : 'Enviar avaliacao';
+      }
+    });
+
+    window.addEventListener('click', (event) => {
+      if (event.target === modalFeedbackReservaExistente) {
+        fecharModalFeedbackReservaExistente();
+      }
+    });
+
+    carregarFeedbackCancelamentoReservaExistente().catch((erro) => {
+      console.error('Erro ao carregar comentario de cancelamento de reserva existente:', erro);
+      setMensagemReserva('Nao foi possivel carregar o comentario anterior.', 'erro');
+    });
+  </script>
 
 </body>
 </html>
