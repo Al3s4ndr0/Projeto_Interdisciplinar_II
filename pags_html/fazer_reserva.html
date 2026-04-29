@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Qmesa - Fazer reserva</title>
-  <link rel="stylesheet" href="../pags_css/style.css" />
+  <link rel="stylesheet" href="/pags_css/style.css" />
 </head>
 <body class="tema-reserva">
 
@@ -19,7 +19,7 @@
             </svg>
           </a>
 
-          <a href="../pags_html/index.html" class="botao-home" aria-label="Ir para inicio">
+          <a href="/pags_html/index.html" class="botao-home" aria-label="Ir para inicio">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M3 10.5L12 3l9 7.5"/>
               <path d="M5.5 9.5V21h13V9.5"/>
@@ -28,10 +28,10 @@
           </a>
         </div>
 
-        <img src="../images/banner_restaurante.png" alt="Imagem do restaurante" class="imagem-restaurante" />
+        <img src="/images/banner_restaurante.png" alt="Imagem do restaurante" class="imagem-restaurante" />
 
         <div class="selo">
-          <img src="../images/logo_restaurante.png" alt="Logo do restaurante" />
+          <img src="/images/logo_restaurante.png" alt="Logo do restaurante" />
         </div>
       </section>
 
@@ -429,7 +429,7 @@
       }
 
       sessionStorage.setItem('reserva_id', reservaDuplicadaAtual.id);
-      window.location.href = '../pags_html/reagendar_reserva.html';
+      window.location.href = '/pags_html/reagendar_reserva.html';
     }
 
     function mostrarDadosCliente() {
@@ -634,7 +634,7 @@
 
       if (!(await salvarClienteReserva())) return;
 
-      window.location.href = '../pags_html/revisar_reserva.html';
+      window.location.href = '/pags_html/revisar_reserva.html';
     });
 
     carregarReservaSalva();

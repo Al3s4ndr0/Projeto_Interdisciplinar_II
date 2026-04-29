@@ -1,6 +1,6 @@
 (function () {
   const STORAGE_KEY = 'qmesa_auth';
-  const LOGIN_URL = '../pags_html/login_usuario.html';
+  const LOGIN_URL = '/pags_html/login_usuario.html';
 
   function lerSessao() {
     const sessaoLocal = window.localStorage.getItem(STORAGE_KEY);

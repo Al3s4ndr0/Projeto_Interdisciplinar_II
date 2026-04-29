@@ -3,7 +3,7 @@ const supabaseKey = window.SUPABASE_CONFIG?.ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
 const STORAGE_KEY = 'qmesa_auth';
-const PLACEHOLDER_IMAGEM = '../images/prato_1.jpg';
+const PLACEHOLDER_IMAGEM = '/images/prato_1.jpg';
 
 const elementos = {
     abasCardapio: document.getElementById('abasCardapio'),
@@ -49,11 +49,11 @@ function tocarSomNotificacao() {
         const promessa = audioNotificacao.play();
         if (promessa && typeof promessa.catch === 'function') {
             promessa.catch((erro) => {
-                console.warn('Não foi possível tocar o som da notificação.', erro);
+                console.warn('NÃ£o foi possÃ­vel tocar o som da notificaÃ§Ã£o.', erro);
             });
         }
     } catch (erro) {
-        console.warn('Erro ao tocar som da notificação.', erro);
+        console.warn('Erro ao tocar som da notificaÃ§Ã£o.', erro);
     }
 }
 
@@ -73,7 +73,7 @@ function habilitarAudioNaPrimeiraInteracao() {
             audioLiberado = true;
             sessionStorage.setItem('audio_liberado', 'true');
         } catch (erro) {
-            console.warn('Não foi possível liberar o áudio na primeira interação.', erro);
+            console.warn('NÃ£o foi possÃ­vel liberar o Ã¡udio na primeira interaÃ§Ã£o.', erro);
             audioLiberado = false;
             sessionStorage.removeItem('audio_liberado');
         }
@@ -95,7 +95,7 @@ async function solicitarPermissaoNotificacao() {
         await Notification.requestPermission();
         sessionStorage.setItem('notificacao_permissao_solicitada', 'true');
     } catch (erro) {
-        console.warn('Não foi possível solicitar permissão de notificação.', erro);
+        console.warn('NÃ£o foi possÃ­vel solicitar permissÃ£o de notificaÃ§Ã£o.', erro);
     }
 }
 
@@ -111,7 +111,7 @@ function notificar(titulo, corpo, tocarSom = false) {
     try {
         new Notification(titulo, { body: corpo });
     } catch (erro) {
-        console.warn('Falha ao exibir notificação.', erro);
+        console.warn('Falha ao exibir notificaÃ§Ã£o.', erro);
     }
 }
 
@@ -139,13 +139,13 @@ function tratarMudancas(statusAtual, posicaoAtual) {
 
     if (statusAnterior && statusAnterior !== statusAtual) {
         if (statusAtual === 'Preparando') {
-            notificar('Qmesa', 'Sua mesa está sendo preparada.', true);
+            notificar('Qmesa', 'Sua mesa estÃ¡ sendo preparada.', true);
         } else if (statusAtual === 'Chamado') {
-            notificar('Qmesa', 'Sua mesa está pronta. Dirija-se ao balcão.', true);
+            notificar('Qmesa', 'Sua mesa estÃ¡ pronta. Dirija-se ao balcÃ£o.', true);
         } else if (statusAtual === 'A caminho') {
-            notificar('Qmesa', 'Perfeito! Estamos aguardando você no balcão.', true);
+            notificar('Qmesa', 'Perfeito! Estamos aguardando vocÃª no balcÃ£o.', true);
         } else if (statusAtual === 'Atendido') {
-            notificar('Qmesa', 'Seu atendimento foi concluído.', true);
+            notificar('Qmesa', 'Seu atendimento foi concluÃ­do.', true);
         } else if (statusAtual === 'Cancelado' || statusAtual === 'Desistente') {
             notificar('Qmesa', 'Sua fila foi encerrada.', false);
         }
@@ -156,7 +156,7 @@ function tratarMudancas(statusAtual, posicaoAtual) {
         String(posicaoAnterior) !== String(posicaoAtual) &&
         STATUS_EM_FILA.includes(statusAtual)
     ) {
-        notificar('Qmesa', `Sua posição na fila mudou para ${posicaoAtual}.`, false);
+        notificar('Qmesa', `Sua posiÃ§Ã£o na fila mudou para ${posicaoAtual}.`, false);
     }
 
     sessionStorage.setItem('fila_status_anterior', statusAtual);
@@ -181,7 +181,7 @@ async function carregarNotificacoesFila() {
         const posicaoAtual = await buscarPosicaoRealDaFila(fila);
         tratarMudancas(fila.status, posicaoAtual);
     } catch (erro) {
-        console.error('Erro ao atualizar notificações de fila:', erro);
+        console.error('Erro ao atualizar notificaÃ§Ãµes de fila:', erro);
     }
 }
 
@@ -193,11 +193,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (audioNotificacao) {
         audioNotificacao.addEventListener('canplaythrough', () => {
-            console.log('Áudio de notificação pronto.');
+            console.log('Ãudio de notificaÃ§Ã£o pronto.');
         });
 
         audioNotificacao.addEventListener('error', (e) => {
-            console.error('Erro ao carregar áudio de notificação', e);
+            console.error('Erro ao carregar Ã¡udio de notificaÃ§Ã£o', e);
         });
     }
 

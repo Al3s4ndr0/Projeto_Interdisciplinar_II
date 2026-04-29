@@ -29,16 +29,22 @@
   display: flex;
   gap: 12px;
   align-items: center;
+  flex: 1 1 560px;
+  min-width: 0;
 }
 
 .cardapio-busca {
   position: relative;
   display: flex;
   align-items: center;
+  flex: 1 1 320px;
+  min-width: 280px;
 }
 
 .cardapio-busca input {
   padding-right: 40px;
+  width: 100%;
+  min-width: 0;
 }
 
 .cardapio-busca svg {
@@ -68,6 +74,21 @@
   stroke: currentColor;
   fill: none;
   stroke-width: 2;
+}
+
+body.dashboard-master .cardapio-acoes .botao-primario,
+body.dashboard-master .acoes-form-modal-gestao .botao-primario{
+  background: #050505;
+  border-color: #050505;
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+}
+
+body.dashboard-master .cardapio-acoes .botao-secundario,
+body.dashboard-master .acoes-form-modal-gestao .botao-secundario{
+  background: #ffffff;
+  border-color: #050505;
+  color: #050505;
 }
 
 /* Estatísticas do cardápio */

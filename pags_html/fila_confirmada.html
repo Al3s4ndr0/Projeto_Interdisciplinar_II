@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Qmesa - Entrou na fila</title>
-  <link rel="stylesheet" href="../pags_css/style.css" />
+  <link rel="stylesheet" href="/pags_css/style.css" />
 </head>
 <body class="tema-fila">
   <main class="tela">
@@ -18,7 +18,7 @@
             </svg>
           </a>
 
-          <a href="../pags_html/index.html" class="botao-circular-topo" aria-label="Ir para a tela inicial">
+          <a href="/pags_html/index.html" class="botao-circular-topo" aria-label="Ir para a tela inicial">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M3 10.5L12 3l9 7.5"></path>
               <path d="M5.5 9.5V21h13V9.5"></path>
@@ -37,11 +37,11 @@
         <div class="circulo-posicao" id="numeroFila">-</div>
 
         <p class="texto-posicao" id="textoPosicao">
-          Você está na fila.
+          VocÃª estÃ¡ na fila.
         </p>
 
         <p class="texto-tempo" id="textoTempo">
-          Seu tempo médio de espera é de:
+          Seu tempo mÃ©dio de espera Ã© de:
         </p>
 
         <p class="texto-apoio">
@@ -126,13 +126,13 @@
         4: 'QUARTO',
         5: 'QUINTO',
         6: 'SEXTO',
-        7: 'SÉTIMO',
+        7: 'SÃ‰TIMO',
         8: 'OITAVO',
         9: 'NONO',
-        10: 'DÉCIMO'
+        10: 'DÃ‰CIMO'
       };
 
-      return mapa[numero] || `${numero}º`;
+      return mapa[numero] || `${numero}Âº`;
     }
 
     function exibirMensagemSucesso() {
@@ -213,15 +213,15 @@
           : (fila.tempo_estimado ?? '-');
 
         numeroFila.textContent = posicaoAtual;
-        textoPosicao.innerHTML = `Você é o <strong>${ordinalPorExtenso(Number(posicaoAtual))}</strong> na fila`;
-        textoTempo.innerHTML = `Seu tempo médio de espera é:<br>${tempoEstimadoAtual} minuto(s)`;
+        textoPosicao.innerHTML = `VocÃª Ã© o <strong>${ordinalPorExtenso(Number(posicaoAtual))}</strong> na fila`;
+        textoTempo.innerHTML = `Seu tempo mÃ©dio de espera Ã©:<br>${tempoEstimadoAtual} minuto(s)`;
 
         sessionStorage.setItem('fila_ativa', 'true');
         sessionStorage.setItem('fila_posicao', posicaoAtual);
         sessionStorage.setItem('fila_tempo_estimado', tempoEstimadoAtual);
       } catch (erro) {
         console.error('Erro ao carregar fila confirmada:', erro);
-        mensagemErro.textContent = 'Não foi possível consultar sua fila agora. Tente novamente.';
+        mensagemErro.textContent = 'NÃ£o foi possÃ­vel consultar sua fila agora. Tente novamente.';
       }
     }
 
@@ -253,7 +253,7 @@
           throw error;
         }
 
-        // salva referência do cancelamento para o fluxo de comentário
+        // salva referÃªncia do cancelamento para o fluxo de comentÃ¡rio
         sessionStorage.setItem('fila_cancelada_item_id', filaItemId);
         sessionStorage.setItem('fila_cancelada_cliente_id', clienteId || '');
 
@@ -262,7 +262,7 @@
         window.location.href = 'cancelamento_confirmado.html';
       } catch (erro) {
         console.error('Erro ao cancelar fila:', erro);
-        mensagemErro.textContent = 'Não foi possível cancelar sua fila no momento. Tente novamente.';
+        mensagemErro.textContent = 'NÃ£o foi possÃ­vel cancelar sua fila no momento. Tente novamente.';
         btnCancelar.disabled = false;
         btnCancelar.textContent = 'Cancelar reserva';
       }

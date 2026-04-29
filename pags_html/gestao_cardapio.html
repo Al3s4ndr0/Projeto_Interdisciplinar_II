@@ -4,12 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Qmesa - Gestao de Cardapio</title>
-  <link rel="stylesheet" href="../pags_css/dashboard.css" />
-  <link rel="stylesheet" href="../pags_css/gestao_cardapio.css" />
+  <link rel="stylesheet" href="/pags_css/dashboard.css" />
+  <link rel="stylesheet" href="/pags_css/gestao_cardapio.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config.js"></script>
-  <script src="../pags_js/config-loader.js"></script>
-  <script src="../pags_js/auth_guard.js"></script>
+  <script src="/config.js"></script>
+  <script src="/pags_js/config-loader.js"></script>
+  <script src="/pags_js/auth_guard.js"></script>
 </head>
 <body class="tema-fila tema-dashboard-gestor">
   <div class="layout-gestor">
@@ -17,7 +17,7 @@
       <div class="sidebar-topo">
         <div class="sidebar-topo-info">
           <span class="sidebar-restaurante-label">Restaurante</span>
-          <strong class="sidebar-restaurante-nome" id="nomeRestauranteSidebar">Qmesa Demo</strong>
+          <strong class="sidebar-restaurante-nome" id="nomeRestauranteSidebar">Carregando...</strong>
         </div>
 
         <button type="button" class="btn-toggle-sidebar" id="btnToggleSidebar" aria-label="Recolher menu">
@@ -33,17 +33,17 @@
         <div class="sidebar-nav-bloco">
           <span class="sidebar-nav-titulo">Visao geral</span>
 
-          <a href="../pags_html/dashboard.html" class="sidebar-link">
+          <a href="/pags_html/dashboard.html" class="sidebar-link">
             <span class="sidebar-icone">
               <svg viewBox="0 0 24 24"><path d="M4 20V10"></path><path d="M10 20V4"></path><path d="M16 20v-8"></path><path d="M22 20v-5"></path></svg>
             </span>
             <span class="sidebar-link-texto">
-              <span class="sidebar-link-titulo">Dashboard</span>
-              <span class="sidebar-link-subtitulo">Indicadores do gestor</span>
+              <span class="sidebar-link-titulo">Home</span>
+              <span class="sidebar-link-subtitulo">Visao geral</span>
             </span>
           </a>
 
-          <a href="../pags_html/painel_operacional_fila.html" class="sidebar-link">
+          <a href="/pags_html/painel_operacional_fila.html" class="sidebar-link">
             <span class="sidebar-icone">
               <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"></rect><path d="M8 20h8"></path><path d="M12 16v4"></path></svg>
             </span>
@@ -57,7 +57,7 @@
         <div class="sidebar-nav-bloco">
           <span class="sidebar-nav-titulo">Operacao</span>
 
-          <a href="../pags_html/gestao_cardapio.html" class="sidebar-link ativo">
+          <a href="/pags_html/gestao_cardapio.html" class="sidebar-link ativo">
             <span class="sidebar-icone">
               <svg viewBox="0 0 24 24"><path d="M4 6h16"></path><path d="M7 12h10"></path><path d="M9 18h6"></path></svg>
             </span>
@@ -67,7 +67,7 @@
             </span>
           </a>
 
-          <a href="../pags_html/reservas_gestao.html" class="sidebar-link">
+          <a href="/pags_html/reservas_gestao.html" class="sidebar-link">
             <span class="sidebar-icone">
               <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4"></path><path d="M8 2v4"></path><path d="M3 10h18"></path></svg>
             </span>
@@ -77,7 +77,7 @@
             </span>
           </a>
 
-          <a href="../pags_html/mapa_mesas.html" class="sidebar-link">
+          <a href="/pags_html/mapa_mesas.html" class="sidebar-link">
             <span class="sidebar-icone">
               <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="6" rx="2"></rect><path d="M5 11v8"></path><path d="M19 11v8"></path><path d="M8 19h8"></path></svg>
             </span>
@@ -87,7 +87,7 @@
             </span>
           </a>
 
-          <a href="../pags_html/usuarios_perfis.html" class="sidebar-link">
+          <a href="/pags_html/usuarios_perfis.html" class="sidebar-link">
             <span class="sidebar-icone">
               <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
             </span>
@@ -126,7 +126,7 @@
       <div class="sidebar-footer">
         <div class="sidebar-footer-avatar" id="avatarUsuarioSidebar">QM</div>
         <div class="sidebar-footer-texto">
-          <span class="sidebar-footer-nome" id="nomeUsuarioSidebar">Usuario interno</span>
+          <span class="sidebar-footer-nome" id="nomeUsuarioSidebar">Carregando...</span>
           <span class="sidebar-footer-perfil" id="perfilUsuarioSidebar">Acesso operacional</span>
           <button type="button" class="sidebar-footer-logout" id="btnLogoutSidebar" aria-label="Sair da sessao">
             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -161,8 +161,8 @@
         </div>
 
         <div class="dashboard-gestor-banner-logos">
-          <img src="../images/logo_restaurante.png" alt="Logo do restaurante" class="dashboard-gestor-banner-logo-restaurante" />
-          <img src="../images/logo_qmesa_sem_fundo.png" alt="Logo Qmesa" class="dashboard-gestor-banner-logo-qmesa" />
+          <img src="/images/logo_restaurante.png" alt="Logo do restaurante" class="dashboard-gestor-banner-logo-restaurante" />
+          <img src="/images/logo_qmesa_sem_fundo.png" alt="Logo Qmesa" class="dashboard-gestor-banner-logo-qmesa" />
         </div>
       </section>
 
@@ -177,12 +177,16 @@
               Adicionar item
             </button>
 
-            <a href="../pags_html/painel_operacional_fila.html" class="botao-secundario">
+            <a href="/pags_html/painel_operacional_fila.html" class="botao-secundario">
               Voltar ao painel operacional
             </a>
           </div>
 
           <div class="cardapio-acoes-direita">
+            <select id="filtroRestauranteCardapio" class="dashboard-gestor-campo" style="display:none;">
+              <option value="">Todos os restaurantes</option>
+            </select>
+
             <div class="cardapio-busca">
               <input type="text" id="buscaCardapio" placeholder="Buscar item..." class="dashboard-gestor-campo" />
               <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -291,6 +295,8 @@
           </div>
         </div>
       </section>
+
+      <footer class="footer-gestor">Qmesa 2026. Todos os direitos reservados &copy;</footer>
     </section>
   </div>
 
@@ -356,6 +362,6 @@
     </div>
   </div>
 
-  <script src="../pags_js/gestao_cardapio.js"></script>
+  <script src="/pags_js/gestao_cardapio.js"></script>
 </body>
 </html>

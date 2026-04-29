@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Qmesa - Comentário do cancelamento</title>
-  <link rel="stylesheet" href="../pags_css/style.css">
+  <title>Qmesa - ComentÃ¡rio do cancelamento</title>
+  <link rel="stylesheet" href="/pags_css/style.css">
 </head>
 <body class="tema-fila">
 
@@ -19,7 +19,7 @@
             </svg>
           </a>
 
-          <a href="../pags_html/index.html" class="botao-home" aria-label="Ir para início">
+          <a href="/pags_html/index.html" class="botao-home" aria-label="Ir para inÃ­cio">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M3 10.5L12 3l9 7.5"/>
               <path d="M5.5 9.5V21h13V9.5"/>
@@ -29,7 +29,7 @@
         </div>
 
         <div class="selo-experiencia">
-          <img src="../images/logo_restaurante.png" alt="Logo do restaurante">
+          <img src="/images/logo_restaurante.png" alt="Logo do restaurante">
         </div>
       </header>
 
@@ -38,7 +38,7 @@
 
         <form id="formComentarioCancelamento">
           <div class="bloco-pesquisa-experiencia">
-            <p class="pergunta-experiencia">Qual é o motivo do cancelamento?</p>
+            <p class="pergunta-experiencia">Qual Ã© o motivo do cancelamento?</p>
 
             <label class="opcao-experiencia">
               <input type="radio" name="motivo_cancelamento" value="Tive um imprevisto">
@@ -62,7 +62,7 @@
           </div>
 
           <div class="bloco-comentario-experiencia">
-            <p class="pergunta-experiencia">Gostaria de deixar algum comentário?</p>
+            <p class="pergunta-experiencia">Gostaria de deixar algum comentÃ¡rio?</p>
             <textarea
               id="campoComentario"
               class="campo-comentario"
@@ -74,11 +74,11 @@
 
           <div class="acoes-confirmacao">
             <button type="submit" class="botao-primario" id="btnEnviarComentarioCancelamento">
-              Enviar avaliação
+              Enviar avaliaÃ§Ã£o
             </button>
 
-            <a href="../pags_html/index.html" class="botao-secundario">
-              Cancelar envio do comentário
+            <a href="/pags_html/index.html" class="botao-secundario">
+              Cancelar envio do comentÃ¡rio
             </a>
           </div>
         </form>
@@ -90,9 +90,9 @@
   <!-- MODAL FEEDBACK EXISTENTE -->
   <div id="modalFeedbackExistente" class="modal">
     <div class="modal-conteudo">
-      <h2>Comentário já enviado</h2>
+      <h2>ComentÃ¡rio jÃ¡ enviado</h2>
       <p id="textoModalFeedbackExistente">
-        Você já enviou um comentário para este cancelamento. Deseja manter ou editar?
+        VocÃª jÃ¡ enviou um comentÃ¡rio para este cancelamento. Deseja manter ou editar?
       </p>
 
       <div class="modal-acoes">
@@ -101,7 +101,7 @@
         </button>
 
         <button type="button" class="botao-primario" onclick="editarComentarioExistente()">
-          Editar comentário
+          Editar comentÃ¡rio
         </button>
       </div>
     </div>
@@ -155,15 +155,15 @@
       fecharModalFeedbackExistente();
       setMensagem('');
       btnEnviarComentarioCancelamento.disabled = true;
-      btnEnviarComentarioCancelamento.textContent = 'Comentário já enviado';
+      btnEnviarComentarioCancelamento.textContent = 'ComentÃ¡rio jÃ¡ enviado';
     }
 
     function editarComentarioExistente() {
-      textoModalFeedbackExistente.textContent = 'Edite seu comentário e clique em atualizar para salvar as mudanças.';
+      textoModalFeedbackExistente.textContent = 'Edite seu comentÃ¡rio e clique em atualizar para salvar as mudanÃ§as.';
       setTimeout(() => {
         fecharModalFeedbackExistente();
         btnEnviarComentarioCancelamento.disabled = false;
-        btnEnviarComentarioCancelamento.textContent = 'Atualizar avaliação';
+        btnEnviarComentarioCancelamento.textContent = 'Atualizar avaliaÃ§Ã£o';
         campoComentario.focus();
       }, 250);
     }
@@ -187,7 +187,7 @@
       clienteIdAtual = sessionStorage.getItem('fila_cancelada_cliente_id');
 
       if (!filaCanceladaItemIdAtual) {
-        setMensagem('Não foi possível identificar a fila cancelada.', 'erro');
+        setMensagem('NÃ£o foi possÃ­vel identificar a fila cancelada.', 'erro');
         return;
       }
 
@@ -196,7 +196,7 @@
       }
 
       if (!clienteIdAtual) {
-        setMensagem('Não foi possível identificar o cliente deste cancelamento.', 'erro');
+        setMensagem('NÃ£o foi possÃ­vel identificar o cliente deste cancelamento.', 'erro');
         return;
       }
 
@@ -215,7 +215,7 @@
       if (!data) {
         feedbackExistenteId = null;
         btnEnviarComentarioCancelamento.disabled = false;
-        btnEnviarComentarioCancelamento.textContent = 'Enviar avaliação';
+        btnEnviarComentarioCancelamento.textContent = 'Enviar avaliaÃ§Ã£o';
         return;
       }
 
@@ -226,7 +226,7 @@
       }
 
       campoComentario.value = data.comentario || '';
-      btnEnviarComentarioCancelamento.textContent = 'Atualizar avaliação';
+      btnEnviarComentarioCancelamento.textContent = 'Atualizar avaliaÃ§Ã£o';
       btnEnviarComentarioCancelamento.disabled = true;
 
       abrirModalFeedbackExistente();
@@ -246,12 +246,12 @@
       }
 
       if (!filaCanceladaItemIdAtual) {
-        setMensagem('Não foi possível identificar a fila cancelada.', 'erro');
+        setMensagem('NÃ£o foi possÃ­vel identificar a fila cancelada.', 'erro');
         return;
       }
 
       if (!clienteIdAtual) {
-        setMensagem('Não foi possível identificar o cliente deste cancelamento.', 'erro');
+        setMensagem('NÃ£o foi possÃ­vel identificar o cliente deste cancelamento.', 'erro');
         return;
       }
 
@@ -278,17 +278,17 @@
           throw error;
         }
 
-        setMensagem('Comentário salvo com sucesso!', 'sucesso');
+        setMensagem('ComentÃ¡rio salvo com sucesso!', 'sucesso');
 
         setTimeout(() => {
-          window.location.href = '../pags_html/comentario_cancelamento_enviado.html';
+          window.location.href = '/pags_html/comentario_cancelamento_enviado.html';
         }, 700);
       } catch (erro) {
-        console.error('Erro ao salvar comentário de cancelamento:', erro);
-        setMensagem('Não foi possível salvar seu comentário agora. Tente novamente.', 'erro');
+        console.error('Erro ao salvar comentÃ¡rio de cancelamento:', erro);
+        setMensagem('NÃ£o foi possÃ­vel salvar seu comentÃ¡rio agora. Tente novamente.', 'erro');
         btnEnviarComentarioCancelamento.disabled = false;
         btnEnviarComentarioCancelamento.textContent =
-          feedbackExistenteId ? 'Atualizar avaliação' : 'Enviar avaliação';
+          feedbackExistenteId ? 'Atualizar avaliaÃ§Ã£o' : 'Enviar avaliaÃ§Ã£o';
       }
     });
 
@@ -299,8 +299,8 @@
     });
 
     carregarFeedbackCancelamentoExistente().catch((erro) => {
-      console.error('Erro ao carregar comentário de cancelamento existente:', erro);
-      setMensagem('Não foi possível carregar o comentário anterior.', 'erro');
+      console.error('Erro ao carregar comentÃ¡rio de cancelamento existente:', erro);
+      setMensagem('NÃ£o foi possÃ­vel carregar o comentÃ¡rio anterior.', 'erro');
     });
   </script>
 </body>

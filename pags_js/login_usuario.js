@@ -160,12 +160,12 @@ function limparSessao() {
 
 function redirecionarPorPerfil(role) {
     if (role === 'operador') {
-        window.location.href = '../pags_html/painel_operacional_fila.html';
+        window.location.href = '/pags_html/painel_operacional_fila.html';
         return;
     }
 
     if (role === 'gestor' || role === 'admin' || role === 'master') {
-        window.location.href = '../pags_html/dashboard.html';
+        window.location.href = '/pags_html/dashboard.html';
         return;
     }
 

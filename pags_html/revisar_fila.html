@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Qmesa - Revisão dos dados da fila</title>
-  <link rel="stylesheet" href="../pags_css/style.css" />
+  <title>Qmesa - RevisÃ£o dos dados da fila</title>
+  <link rel="stylesheet" href="/pags_css/style.css" />
 </head>
 
 <body class="tema-fila">
@@ -19,7 +19,7 @@
             </svg>
           </a>
 
-          <a href="../pags_html/index.html" class="botao-home" aria-label="Ir para a tela inicial">
+          <a href="/pags_html/index.html" class="botao-home" aria-label="Ir para a tela inicial">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M3 10.5L12 3l9 7.5"/>
               <path d="M5.5 9.5V21h13V9.5"/>
@@ -28,10 +28,10 @@
           </a>
         </div>
 
-        <img src="../images/banner_restaurante.png" alt="Imagem do restaurante" class="imagem-restaurante" />
+        <img src="/images/banner_restaurante.png" alt="Imagem do restaurante" class="imagem-restaurante" />
 
         <div class="selo">
-          <img src="../images/logo_restaurante.png" alt="Logo do restaurante" />
+          <img src="/images/logo_restaurante.png" alt="Logo do restaurante" />
         </div>
       </section>
 
@@ -152,7 +152,7 @@
       const qtdPessoas = sessionStorage.getItem('fila_qtd_pessoas');
 
       if (!nome || !cpf || !telefone || !qtdPessoas) {
-        mensagem.textContent = 'Nenhum dado foi encontrado para revisão. Preencha o formulário novamente.';
+        mensagem.textContent = 'Nenhum dado foi encontrado para revisÃ£o. Preencha o formulÃ¡rio novamente.';
         mensagem.style.color = 'red';
         btnConfirmar.disabled = true;
         return;
@@ -171,7 +171,7 @@
       const qtdPessoas = sessionStorage.getItem('fila_qtd_pessoas');
 
       if (!nome || !cpf || !telefone || !qtdPessoas) {
-        mensagem.textContent = 'Os dados da fila estão incompletos.';
+        mensagem.textContent = 'Os dados da fila estÃ£o incompletos.';
         mensagem.style.color = 'red';
         return;
       }
@@ -208,7 +208,7 @@
           }
 
           if (filaExistente) {
-            mensagem.textContent = 'Já existe uma fila ativa para este CPF.';
+            mensagem.textContent = 'JÃ¡ existe uma fila ativa para este CPF.';
             mensagem.style.color = 'red';
             btnConfirmar.disabled = false;
             btnConfirmar.textContent = 'Confirmar entrada';
@@ -289,19 +289,19 @@
         sessionStorage.setItem('fila_tempo_estimado', tempoEstimado);
         sessionStorage.setItem('fila_item_id', filaInserida.id);
         sessionStorage.setItem('cliente_id', clienteId);
-        sessionStorage.setItem('fila_mensagem_sucesso', 'Você entrou na fila com sucesso!');
+        sessionStorage.setItem('fila_mensagem_sucesso', 'VocÃª entrou na fila com sucesso!');
 
         window.location.href = 'fila_confirmada.html';
 
       } catch (error) {
-        console.error('Erro técnico ao confirmar fila:', error);
+        console.error('Erro tÃ©cnico ao confirmar fila:', error);
 
         if (error.message && error.message.includes('row-level security')) {
-          mensagem.textContent = 'Não foi possível concluir sua entrada na fila no momento. Tente novamente em instantes.';
+          mensagem.textContent = 'NÃ£o foi possÃ­vel concluir sua entrada na fila no momento. Tente novamente em instantes.';
         } else if (error.message && error.message.includes('Failed to fetch')) {
-          mensagem.textContent = 'Não foi possível conectar ao sistema. Verifique sua internet e tente novamente.';
+          mensagem.textContent = 'NÃ£o foi possÃ­vel conectar ao sistema. Verifique sua internet e tente novamente.';
         } else if (error.message && error.message.toLowerCase().includes('duplicate')) {
-          mensagem.textContent = 'Já existe um cadastro com este CPF.';
+          mensagem.textContent = 'JÃ¡ existe um cadastro com este CPF.';
         } else {
           mensagem.textContent = 'Ocorreu um erro ao confirmar sua entrada na fila. Tente novamente.';
         }

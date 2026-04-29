@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Qmesa - Dashboard do Gestor</title>
-  <link rel="stylesheet" href="../pags_css/dashboard.css" />
+  <title>Qmesa - Home</title>
+  <link rel="stylesheet" href="/pags_css/dashboard.css" />
   <style>
-    /* Ajustes exclusivos desta página: filtros master e alinhamento das ações */
+    /* Ajustes exclusivos desta pÃ¡gina: filtros master e alinhamento das aÃ§Ãµes */
     .dashboard-gestor-filtros-linha { align-items: flex-end; }
     .dashboard-gestor-filtro-acoes.dashboard-acoes-dashboard {
       display: flex !important; flex-direction: row !important; align-items: flex-end !important;
@@ -23,11 +23,31 @@
       .dashboard-gestor-filtro-acoes.dashboard-acoes-dashboard { flex-direction: column !important; align-items: stretch !important; }
       .dashboard-gestor-filtro-acoes.dashboard-acoes-dashboard button { width: 100%; }
     }
+
+    body.dashboard-master .sidebar-gestor {
+      background: #050505;
+      border-right-color: #1f2937;
+    }
+
+    body.dashboard-master .dashboard-gestor-banner {
+      background: linear-gradient(135deg, #050505 0%, #111827 100%);
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
+    }
+
+    body.dashboard-master .sidebar-link.ativo {
+      background: #1f2937;
+    }
+
+    body.dashboard-master .btn-toggle-sidebar,
+    body.dashboard-master .sidebar-footer-logout {
+      background: #1f2937;
+      border-color: #374151;
+    }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="../config.js"></script>
-  <script src="../pags_js/config-loader.js"></script>
-  <script src="../pags_js/auth_guard.js"></script>
+  <script src="/config.js"></script>
+  <script src="/pags_js/config-loader.js"></script>
+  <script src="/pags_js/auth_guard.js"></script>
 </head>
 <body class="tema-fila tema-dashboard-gestor">
   <div class="layout-gestor">
@@ -36,7 +56,7 @@
       <div class="sidebar-topo">
         <div class="sidebar-topo-info">
           <span class="sidebar-restaurante-label">Restaurante</span>
-          <strong class="sidebar-restaurante-nome" id="nomeRestauranteSidebar">Qmesa Master</strong>
+          <strong class="sidebar-restaurante-nome" id="nomeRestauranteSidebar">Carregando...</strong>
         </div>
 
         <button type="button" class="btn-toggle-sidebar" id="btnToggleSidebar" aria-label="Recolher menu">
@@ -50,43 +70,43 @@
 
       <nav class="sidebar-nav">
         <div class="sidebar-nav-bloco">
-          <span class="sidebar-nav-titulo">Visão geral</span>
+          <span class="sidebar-nav-titulo">VisÃ£o geral</span>
 
           <a href="#" class="sidebar-link ativo">
             <span class="sidebar-icone">
               <svg viewBox="0 0 24 24"><path d="M4 20V10"></path><path d="M10 20V4"></path><path d="M16 20v-8"></path><path d="M22 20v-5"></path></svg>
             </span>
             <span class="sidebar-link-texto">
-              <span class="sidebar-link-titulo">Dashboard</span>
-              <span class="sidebar-link-subtitulo">Indicadores do gestor</span>
+              <span class="sidebar-link-titulo">Home</span>
+              <span class="sidebar-link-subtitulo">Visao geral</span>
             </span>
           </a>
 
-          <a href="../pags_html/painel_operacional_fila.html" class="sidebar-link">
+          <a href="/pags_html/painel_operacional_fila.html" class="sidebar-link">
             <span class="sidebar-icone">
               <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"></rect><path d="M8 20h8"></path><path d="M12 16v4"></path></svg>
             </span>
             <span class="sidebar-link-texto">
               <span class="sidebar-link-titulo">Painel operacional</span>
-              <span class="sidebar-link-subtitulo">Gestão em tempo real</span>
+              <span class="sidebar-link-subtitulo">GestÃ£o em tempo real</span>
             </span>
           </a>
         </div>
 
         <div class="sidebar-nav-bloco">
-          <span class="sidebar-nav-titulo">Operação</span>
+          <span class="sidebar-nav-titulo">OperaÃ§Ã£o</span>
 
-          <a href="../pags_html/gestao_cardapio.html" class="sidebar-link">
+          <a href="/pags_html/gestao_cardapio.html" class="sidebar-link">
             <span class="sidebar-icone">
               <svg viewBox="0 0 24 24"><path d="M4 6h16"></path><path d="M7 12h10"></path><path d="M9 18h6"></path></svg>
             </span>
             <span class="sidebar-link-texto">
-              <span class="sidebar-link-titulo">Gerenciar cardápio</span>
-              <span class="sidebar-link-subtitulo">Itens, preços e categorias</span>
+              <span class="sidebar-link-titulo">Gerenciar cardÃ¡pio</span>
+              <span class="sidebar-link-subtitulo">Itens, preÃ§os e categorias</span>
             </span>
           </a>
 
-          <a href="../pags_html/reservas_gestao.html" class="sidebar-link">
+          <a href="/pags_html/reservas_gestao.html" class="sidebar-link">
             <span class="sidebar-icone">
               <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4"></path><path d="M8 2v4"></path><path d="M3 10h18"></path></svg>
             </span>
@@ -96,7 +116,7 @@
             </span>
           </a>
 
-          <a href="../pags_html/mapa_mesas.html" class="sidebar-link">
+          <a href="/pags_html/mapa_mesas.html" class="sidebar-link">
             <span class="sidebar-icone">
               <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="6" rx="2"></rect><path d="M5 11v8"></path><path d="M19 11v8"></path><path d="M8 19h8"></path></svg>
             </span>
@@ -106,19 +126,19 @@
             </span>
           </a>
 
-          <a href="../pags_html/usuarios_perfis.html" class="sidebar-link">
+          <a href="/pags_html/usuarios_perfis.html" class="sidebar-link">
             <span class="sidebar-icone">
               <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
             </span>
             <span class="sidebar-link-texto">
-              <span class="sidebar-link-titulo">Usuários</span>
-              <span class="sidebar-link-subtitulo">Perfis e permissões</span>
+              <span class="sidebar-link-titulo">UsuÃ¡rios</span>
+              <span class="sidebar-link-subtitulo">Perfis e permissÃµes</span>
             </span>
           </a>
         </div>
 
         <div class="sidebar-nav-bloco">
-          <span class="sidebar-nav-titulo">Expansão</span>
+          <span class="sidebar-nav-titulo">ExpansÃ£o</span>
 
           <a href="#" class="sidebar-link">
             <span class="sidebar-icone">
@@ -145,7 +165,7 @@
               <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82"></path><path d="M4.6 9a1.65 1.65 0 0 0-.33-1.82"></path><path d="M9 4.6A1.65 1.65 0 0 0 7.18 4.27"></path><path d="M15 19.4a1.65 1.65 0 0 0 1.82.33"></path><path d="M4.6 15a1.65 1.65 0 0 1-.33 1.82"></path><path d="M19.4 9a1.65 1.65 0 0 1 .33-1.82"></path><path d="M15 4.6a1.65 1.65 0 0 1 1.82-.33"></path><path d="M9 19.4a1.65 1.65 0 0 1-1.82.33"></path></svg>
             </span>
             <span class="sidebar-link-texto">
-              <span class="sidebar-link-titulo">Configurações</span>
+              <span class="sidebar-link-titulo">ConfiguraÃ§Ãµes</span>
               <span class="sidebar-link-subtitulo">Identidade e restaurante</span>
             </span>
           </a>
@@ -155,7 +175,7 @@
       <div class="sidebar-footer">
         <div class="sidebar-footer-avatar" id="avatarUsuarioSidebar">GS</div>
         <div class="sidebar-footer-texto">
-          <span class="sidebar-footer-nome" id="nomeUsuarioSidebar">Gestor</span>
+          <span class="sidebar-footer-nome" id="nomeUsuarioSidebar">Carregando...</span>
           <span class="sidebar-footer-perfil" id="perfilUsuarioSidebar">Acesso administrativo</span>
           <button type="button" class="sidebar-footer-logout" id="btnLogoutSidebar" aria-label="Sair da sessao">
             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -185,18 +205,18 @@
 
       <section class="dashboard-gestor-banner">
         <div class="dashboard-gestor-banner-textos">
-          <h1 class="dashboard-gestor-banner-titulo">Dashboard do Gestor</h1>
-          <p class="dashboard-gestor-banner-subtitulo">Filas, feedbacks e visão executiva da operação</p>
+          <h1 class="dashboard-gestor-banner-titulo">Home</h1>
+          <p class="dashboard-gestor-banner-subtitulo">Filas, feedbacks e visÃ£o executiva da operaÃ§Ã£o</p>
         </div>
 
         <div class="dashboard-gestor-banner-logos">
           <img
-            src="../images/logo_restaurante.png"
+            src="/images/logo_restaurante.png"
             alt="Logo do restaurante"
             class="dashboard-gestor-banner-logo-restaurante"
           />
           <img
-            src="../images/logo_qmesa_sem_fundo.png"
+            src="/images/logo_qmesa_sem_fundo.png"
             alt="Logo Qmesa"
             class="dashboard-gestor-banner-logo-qmesa"
           />
@@ -262,7 +282,7 @@
         <div class="dashboard-gestor-bloco-header">
           <div>
             <h2 class="dashboard-gestor-bloco-titulo">Cadastro de restaurantes</h2>
-            <p class="dashboard-gestor-bloco-subtitulo">Área exclusiva do usuário master para criar restaurantes e o primeiro usuário administrador.</p>
+            <p class="dashboard-gestor-bloco-subtitulo">Ãrea exclusiva do usuÃ¡rio master para criar restaurantes e o primeiro usuÃ¡rio administrador.</p>
           </div>
           <button type="button" class="botao-secundario" id="btnVoltarDashboard">
             Voltar ao dashboard
@@ -275,7 +295,7 @@
             <input type="text" id="nomeNovoRestaurante" class="dashboard-gestor-campo" placeholder="Ex: Bella Massa" required />
           </div>
           <div class="dashboard-gestor-filtro">
-            <label for="capacidadeNovoRestaurante">Capacidade máxima</label>
+            <label for="capacidadeNovoRestaurante">Capacidade mÃ¡xima</label>
             <input type="number" id="capacidadeNovoRestaurante" class="dashboard-gestor-campo" placeholder="80" min="1" required />
           </div>
 
@@ -290,7 +310,7 @@
           </div>
 
           <div class="dashboard-gestor-filtro">
-            <label for="usuarioAdminNovoRestaurante">Usuário administrador</label>
+            <label for="usuarioAdminNovoRestaurante">UsuÃ¡rio administrador</label>
             <input type="text" id="usuarioAdminNovoRestaurante" class="dashboard-gestor-campo" placeholder="admin_bella" required />
           </div>
 
@@ -317,7 +337,7 @@
               <tr>
                 <th>Restaurante</th>
                 <th>Capacidade</th>
-                <th>Horário</th>
+                <th>HorÃ¡rio</th>
                 <th>ID</th>
               </tr>
             </thead>
@@ -340,7 +360,7 @@
         <article class="dashboard-gestor-card">
           <span class="dashboard-gestor-card-titulo">Atendidos</span>
           <strong class="dashboard-gestor-card-numero" id="cardTotalAtendidos">0</strong>
-          <span class="dashboard-gestor-card-apoio">Concluídos no período</span>
+          <span class="dashboard-gestor-card-apoio">ConcluÃ­dos no perÃ­odo</span>
         </article>
 
         <article class="dashboard-gestor-card">
@@ -350,21 +370,21 @@
         </article>
 
         <article class="dashboard-gestor-card">
-          <span class="dashboard-gestor-card-titulo">Tempo médio de espera</span>
+          <span class="dashboard-gestor-card-titulo">Tempo mÃ©dio de espera</span>
           <strong class="dashboard-gestor-card-numero" id="cardTempoMedio">0 min</strong>
-          <span class="dashboard-gestor-card-apoio">Média calculada pela fila</span>
+          <span class="dashboard-gestor-card-apoio">MÃ©dia calculada pela fila</span>
         </article>
 
         <article class="dashboard-gestor-card">
-          <span class="dashboard-gestor-card-titulo">Nota média</span>
+          <span class="dashboard-gestor-card-titulo">Nota mÃ©dia</span>
           <strong class="dashboard-gestor-card-numero" id="cardNotaMedia">-</strong>
-          <span class="dashboard-gestor-card-apoio">Feedback pós-atendimento</span>
+          <span class="dashboard-gestor-card-apoio">Feedback pÃ³s-atendimento</span>
         </article>
 
         <article class="dashboard-gestor-card">
           <span class="dashboard-gestor-card-titulo">Reservas</span>
           <strong class="dashboard-gestor-card-numero" id="cardReservas">0</strong>
-          <span class="dashboard-gestor-card-apoio">Preparado para expansão</span>
+          <span class="dashboard-gestor-card-apoio">Preparado para expansÃ£o</span>
         </article>
       </section>
 
@@ -373,7 +393,7 @@
           <div class="dashboard-gestor-bloco-header">
             <div>
               <h2 class="dashboard-gestor-bloco-titulo">Fila por status</h2>
-              <p class="dashboard-gestor-bloco-subtitulo">Gráfico de barras da operação</p>
+              <p class="dashboard-gestor-bloco-subtitulo">GrÃ¡fico de barras da operaÃ§Ã£o</p>
             </div>
           </div>
           <div class="grafico-chart">
@@ -385,7 +405,7 @@
           <div class="dashboard-gestor-bloco-header">
             <div>
               <h2 class="dashboard-gestor-bloco-titulo">Entradas por dia</h2>
-              <p class="dashboard-gestor-bloco-subtitulo">Volume diário de entradas</p>
+              <p class="dashboard-gestor-bloco-subtitulo">Volume diÃ¡rio de entradas</p>
             </div>
           </div>
           <div class="grafico-chart">
@@ -397,7 +417,7 @@
           <div class="dashboard-gestor-bloco-header">
             <div>
               <h2 class="dashboard-gestor-bloco-titulo">Feedback por origem</h2>
-              <p class="dashboard-gestor-bloco-subtitulo">Gráfico de pizza / rosca</p>
+              <p class="dashboard-gestor-bloco-subtitulo">GrÃ¡fico de pizza / rosca</p>
             </div>
           </div>
           <div class="grafico-chart">
@@ -411,7 +431,7 @@
           <div class="dashboard-gestor-bloco-header">
             <div>
               <h2 class="dashboard-gestor-bloco-titulo">Feedbacks</h2>
-              <p class="dashboard-gestor-bloco-subtitulo">Visão detalhada dos comentários e avaliações</p>
+              <p class="dashboard-gestor-bloco-subtitulo">VisÃ£o detalhada dos comentÃ¡rios e avaliaÃ§Ãµes</p>
             </div>
           </div>
 
@@ -424,7 +444,7 @@
                   <th>Cliente</th>
                   <th>Nota</th>
                   <th>Motivo / Tempo</th>
-                  <th>Comentário</th>
+                  <th>ComentÃ¡rio</th>
                 </tr>
               </thead>
               <tbody id="tabelaFeedbacks">
@@ -442,8 +462,8 @@
           <div class="dashboard-gestor-bloco">
             <div class="dashboard-gestor-bloco-header">
               <div>
-                <h2 class="dashboard-gestor-bloco-titulo">QR Code rápido</h2>
-                <p class="dashboard-gestor-bloco-subtitulo">Atalho para gerar material do salão</p>
+                <h2 class="dashboard-gestor-bloco-titulo">QR Code rÃ¡pido</h2>
+                <p class="dashboard-gestor-bloco-subtitulo">Atalho para gerar material do salÃ£o</p>
               </div>
             </div>
 
@@ -470,7 +490,7 @@
             <div class="dashboard-gestor-bloco-header">
               <div>
                 <h2 class="dashboard-gestor-bloco-titulo">Motivos mais frequentes</h2>
-                <p class="dashboard-gestor-bloco-subtitulo">Cancelamentos e desistências</p>
+                <p class="dashboard-gestor-bloco-subtitulo">Cancelamentos e desistÃªncias</p>
               </div>
             </div>
 
@@ -483,6 +503,8 @@
           </div>
         </div>
       </section>
+
+      <footer class="footer-gestor">Qmesa 2026. Todos os direitos reservados &copy;</footer>
     </section>
   </div>
 
@@ -500,6 +522,10 @@
 
     const RESTAURANTE_ID_FIXO = sessaoAtual?.restaurante_id;
     const IS_MASTER = sessaoAtual?.role === 'master';
+
+    if (IS_MASTER) {
+      document.body.classList.add('dashboard-master');
+    }
 
     const sidebarGestor = document.getElementById('sidebarGestor');
     const btnToggleSidebar = document.getElementById('btnToggleSidebar');
@@ -559,6 +585,21 @@
       return 'Acesso operador';
     }
 
+    function obterCapacidadeRestaurante(restaurante) {
+      return restaurante?.capacidade_maxima ?? restaurante?.capacidade ?? '-';
+    }
+
+    function obterHorarioRestaurante(restaurante) {
+      if (restaurante?.horario_funcionamento) {
+        return restaurante.horario_funcionamento;
+      }
+
+      const abertura = restaurante?.horario_abertura ? String(restaurante.horario_abertura).slice(0, 5) : '--:--';
+      const fechamento = restaurante?.horario_fechamento ? String(restaurante.horario_fechamento).slice(0, 5) : '--:--';
+
+      return `${abertura} Ã s ${fechamento}`;
+    }
+
     function preencherContextoUsuario() {
       const usuario = sessaoAtual?.usuario || 'Gestor';
       const role = sessaoAtual?.role || 'gestor';
@@ -577,6 +618,42 @@
       return RESTAURANTE_ID_FIXO || '';
     }
 
+    function obterIdsRestaurantesEscopoDashboard() {
+      const restauranteSelecionadoId = obterRestauranteSelecionadoId();
+
+      if (restauranteSelecionadoId) {
+        return [restauranteSelecionadoId];
+      }
+
+      if (IS_MASTER) {
+        return restaurantesDisponiveis
+          .map(restaurante => restaurante.id)
+          .filter(Boolean);
+      }
+
+      return RESTAURANTE_ID_FIXO ? [RESTAURANTE_ID_FIXO] : [];
+    }
+
+    function aplicarFiltroRestauranteDashboard(query) {
+      const restauranteSelecionadoId = obterRestauranteSelecionadoId();
+
+      if (restauranteSelecionadoId) {
+        return query.eq('restaurante_id', restauranteSelecionadoId);
+      }
+
+      if (IS_MASTER) {
+        const idsRestaurantes = obterIdsRestaurantesEscopoDashboard();
+
+        if (!idsRestaurantes.length) {
+          return query.eq('restaurante_id', '00000000-0000-0000-0000-000000000000');
+        }
+
+        return query.in('restaurante_id', idsRestaurantes);
+      }
+
+      return query;
+    }
+
     function obterRestauranteSelecionado() {
       const restauranteId = obterRestauranteSelecionadoId();
 
@@ -589,8 +666,8 @@
       const restauranteSelecionado = obterRestauranteSelecionado();
 
       if (IS_MASTER && !restauranteSelecionado) {
-        if (nomeRestauranteSidebar) nomeRestauranteSidebar.textContent = 'Qmesa Master';
-        if (linkFilaRestaurante) linkFilaRestaurante.textContent = 'Selecione um restaurante para visualizar o link da fila';
+        if (nomeRestauranteSidebar) nomeRestauranteSidebar.textContent = 'Todos os restaurantes';
+        if (linkFilaRestaurante) linkFilaRestaurante.textContent = 'Selecione um restaurante especÃ­fico para visualizar o link da fila';
         return;
       }
 
@@ -605,7 +682,7 @@
       if (!nomeRestauranteSidebar) return;
 
       if (IS_MASTER) {
-        nomeRestauranteSidebar.textContent = 'Qmesa Master';
+        nomeRestauranteSidebar.textContent = 'Todos os restaurantes';
         return;
       }
 
@@ -613,7 +690,7 @@
 
       const { data, error } = await supabaseClient
         .from('restaurante')
-        .select('id, nome, capacidade_maxima, horario_abertura, horario_fechamento')
+        .select('*')
         .eq('id', RESTAURANTE_ID_FIXO)
         .single();
 
@@ -633,7 +710,7 @@
 
       const { data, error } = await supabaseClient
         .from('restaurante')
-        .select('id, nome, capacidade_maxima, horario_abertura, horario_fechamento')
+        .select('*')
         .order('nome', { ascending: true });
 
       if (error) {
@@ -641,7 +718,7 @@
         if (filtroRestaurante) {
           filtroRestaurante.innerHTML = '<option value="">Erro ao carregar restaurantes</option>';
         }
-        setMensagemDashboard('Não foi possível carregar a lista de restaurantes. Verifique as policies/RLS da tabela restaurante para o perfil master.', 'erro');
+        setMensagemDashboard(`Nao foi possivel carregar restaurantes: ${obterMensagemErroSupabase(error)}`, 'erro');
         return;
       }
 
@@ -698,6 +775,10 @@
       }
     }
 
+    function obterMensagemErroSupabase(erro) {
+      return erro?.message || erro?.details || erro?.hint || 'verifique o console.';
+    }
+
     function formatarDataHora(valor) {
       if (!valor) return '-';
       return new Date(valor).toLocaleString('pt-BR', {
@@ -729,7 +810,67 @@
       return soma / numeros.length;
     }
 
-    function atualizarCards(filas, feedbacks) {
+    function precisaFiltrarFeedbackPorOrigem() {
+      return !IS_MASTER || Boolean(obterRestauranteSelecionadoId());
+    }
+
+    async function obterIdsOrigensFeedbacksEscopo(inicio, fim) {
+      if (!precisaFiltrarFeedbackPorOrigem()) {
+        return null;
+      }
+
+      const idsFila = new Set();
+      const idsReserva = new Set();
+
+      let queryFilas = supabaseClient
+        .from('fila_item')
+        .select('id');
+
+      queryFilas = aplicarFiltroRestauranteDashboard(queryFilas);
+
+      if (inicio) queryFilas = queryFilas.gte('hora_entrada', inicio);
+      if (fim) queryFilas = queryFilas.lte('hora_entrada', fim);
+
+      let queryReservas = supabaseClient
+        .from('reserva')
+        .select('id');
+
+      queryReservas = aplicarFiltroRestauranteDashboard(queryReservas);
+
+      if (inicio) queryReservas = queryReservas.gte('data_hora', inicio);
+      if (fim) queryReservas = queryReservas.lte('data_hora', fim);
+
+      const [{ data: filas, error: erroFilas }, { data: reservas, error: erroReservas }] = await Promise.all([
+        queryFilas,
+        queryReservas
+      ]);
+
+      if (erroFilas) throw erroFilas;
+      if (erroReservas) throw erroReservas;
+
+      (filas || []).forEach(item => idsFila.add(String(item.id)));
+      (reservas || []).forEach(item => idsReserva.add(String(item.id)));
+
+      return { idsFila, idsReserva };
+    }
+
+    function feedbackPertenceAoEscopo(item, idsOrigens) {
+      if (!idsOrigens) return true;
+
+      const origemId = String(item.origem_id || '');
+
+      if (item.origem_tipo === 'fila_item' || item.origem_tipo === 'cancelamento_fila') {
+        return idsOrigens.idsFila.has(origemId);
+      }
+
+      if (item.origem_tipo === 'reserva' || item.origem_tipo === 'cancelamento_reserva') {
+        return idsOrigens.idsReserva.has(origemId);
+      }
+
+      return false;
+    }
+
+    function atualizarCards(filas, feedbacks, totalReservas = 0) {
       const totalFila = filas.length;
       const totalAtendidos = filas.filter(item => item.status === 'Atendido').length;
       const totalPerdas = filas.filter(item => item.status === 'Cancelado' || item.status === 'Desistente').length;
@@ -741,8 +882,6 @@
       const notas = feedbacks
         .map(item => Number(item.nota))
         .filter(valor => !Number.isNaN(valor) && valor > 0);
-
-      const totalReservas = feedbacks.filter(item => item.origem_tipo === 'reserva').length;
 
       const tempoMedio = calcularMedia(tempos);
       const notaMedia = calcularMedia(notas);
@@ -761,7 +900,7 @@
       if (!feedbacks.length) {
         tabelaFeedbacks.innerHTML = `
           <tr>
-            <td colspan="6">Nenhum feedback encontrado no período.</td>
+            <td colspan="6">Nenhum feedback encontrado no perÃ­odo.</td>
           </tr>
         `;
         return;
@@ -1009,7 +1148,6 @@
 
       try {
         const { inicio, fim } = obterIntervaloDatas();
-        const restauranteSelecionadoId = obterRestauranteSelecionadoId();
 
         let queryFilas = supabaseClient
           .from('fila_item')
@@ -1024,9 +1162,7 @@
           `)
           .order('hora_entrada', { ascending: false });
 
-        if (restauranteSelecionadoId) {
-          queryFilas = queryFilas.eq('restaurante_id', restauranteSelecionadoId);
-        }
+        queryFilas = aplicarFiltroRestauranteDashboard(queryFilas);
 
         if (inicio) {
           queryFilas = queryFilas.gte('hora_entrada', inicio);
@@ -1044,7 +1180,6 @@
           .from('feedback')
           .select(`
             id,
-            restaurante_id,
             cliente_id,
             origem_id,
             origem_tipo,
@@ -1059,10 +1194,6 @@
           `)
           .order('data_criacao', { ascending: false });
 
-        if (restauranteSelecionadoId) {
-          queryFeedbacks = queryFeedbacks.eq('restaurante_id', restauranteSelecionadoId);
-        }
-
         if (inicio) {
           queryFeedbacks = queryFeedbacks.gte('data_criacao', inicio);
         }
@@ -1075,19 +1206,43 @@
           queryFeedbacks = queryFeedbacks.eq('origem_tipo', filtroOrigem.value);
         }
 
-        const [{ data: filas, error: erroFilas }, { data: feedbacks, error: erroFeedbacks }] = await Promise.all([
+        const promiseIdsOrigensFeedbacks = obterIdsOrigensFeedbacksEscopo(inicio, fim);
+
+        let queryReservas = supabaseClient
+          .from('reserva')
+          .select('id', { count: 'exact', head: true });
+
+        queryReservas = aplicarFiltroRestauranteDashboard(queryReservas);
+
+        if (inicio) {
+          queryReservas = queryReservas.gte('data_hora', inicio);
+        }
+
+        if (fim) {
+          queryReservas = queryReservas.lte('data_hora', fim);
+        }
+
+        const [
+          { data: filas, error: erroFilas },
+          { data: feedbacks, error: erroFeedbacks },
+          { count: totalReservas, error: erroReservas },
+          idsOrigensFeedbacks
+        ] = await Promise.all([
           queryFilas,
-          queryFeedbacks
+          queryFeedbacks,
+          queryReservas,
+          promiseIdsOrigensFeedbacks
         ]);
 
         if (erroFilas) throw erroFilas;
         if (erroFeedbacks) throw erroFeedbacks;
+        if (erroReservas) throw erroReservas;
 
         const filasData = filas || [];
-        const feedbacksData = feedbacks || [];
+        const feedbacksData = (feedbacks || []).filter(item => feedbackPertenceAoEscopo(item, idsOrigensFeedbacks));
 
         atualizarContextoRestauranteVisual();
-        atualizarCards(filasData, feedbacksData);
+        atualizarCards(filasData, feedbacksData, totalReservas || 0);
         renderizarTabelaFeedbacks(feedbacksData);
         renderizarMotivosFrequentes(feedbacksData);
 
@@ -1099,7 +1254,7 @@
         setMensagemDashboard('Dashboard atualizado com sucesso.', 'sucesso');
       } catch (erro) {
         console.error('Erro ao carregar dashboard do gestor:', erro);
-        setMensagemDashboard('Não foi possível carregar os dados do dashboard.', 'erro');
+        setMensagemDashboard(`Nao foi possivel carregar os dados do dashboard: ${obterMensagemErroSupabase(erro)}`, 'erro');
       }
     }
 
@@ -1178,14 +1333,11 @@
       tabelaRestaurantesMaster.innerHTML = '';
 
       restaurantesDisponiveis.forEach(restaurante => {
-        const abertura = restaurante.horario_abertura ? String(restaurante.horario_abertura).slice(0, 5) : '--:--';
-        const fechamento = restaurante.horario_fechamento ? String(restaurante.horario_fechamento).slice(0, 5) : '--:--';
-
         tabelaRestaurantesMaster.innerHTML += `
           <tr>
             <td>${restaurante.nome || '-'}</td>
-            <td>${restaurante.capacidade_maxima ?? '-'}</td>
-            <td>${abertura} às ${fechamento}</td>
+            <td>${obterCapacidadeRestaurante(restaurante)}</td>
+            <td>${obterHorarioRestaurante(restaurante)}</td>
             <td>${restaurante.id}</td>
           </tr>
         `;
@@ -1201,7 +1353,7 @@
       evento?.preventDefault();
 
       if (!IS_MASTER) {
-        setMensagemCadastroRestaurante('Apenas usuários master podem cadastrar restaurantes.', 'erro');
+        setMensagemCadastroRestaurante('Apenas usuÃ¡rios master podem cadastrar restaurantes.', 'erro');
         return;
       }
 
@@ -1213,7 +1365,7 @@
       const senhaAdmin = senhaAdminNovoRestaurante?.value.trim();
 
       if (!nome || !capacidadeMaxima || !horarioAbertura || !horarioFechamento || !usuarioAdmin || !senhaAdmin) {
-        setMensagemCadastroRestaurante('Preencha todos os campos obrigatórios.', 'erro');
+        setMensagemCadastroRestaurante('Preencha todos os campos obrigatÃ³rios.', 'erro');
         return;
       }
 
@@ -1229,7 +1381,7 @@
         if (erroBuscaUsuario) throw erroBuscaUsuario;
 
         if (usuarioExistente) {
-          setMensagemCadastroRestaurante('Já existe um usuário com esse login.', 'erro');
+          setMensagemCadastroRestaurante('JÃ¡ existe um usuÃ¡rio com esse login.', 'erro');
           return;
         }
 
@@ -1237,11 +1389,11 @@
           .from('restaurante')
           .insert({
             nome,
-            capacidade_maxima: capacidadeMaxima,
+            capacidade: capacidadeMaxima,
             horario_abertura: horarioAbertura,
             horario_fechamento: horarioFechamento
           })
-          .select('id, nome, capacidade_maxima, horario_abertura, horario_fechamento')
+          .select('*')
           .single();
 
         if (erroRestaurante) throw erroRestaurante;
@@ -1259,7 +1411,7 @@
 
         if (erroUsuario) throw erroUsuario;
 
-        setMensagemCadastroRestaurante('Restaurante e usuário administrador cadastrados com sucesso.', 'sucesso');
+        setMensagemCadastroRestaurante('Restaurante e usuÃ¡rio administrador cadastrados com sucesso.', 'sucesso');
         limparFormularioRestaurante();
         await carregarRestaurantesMaster();
 

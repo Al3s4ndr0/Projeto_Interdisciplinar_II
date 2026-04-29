@@ -7,7 +7,7 @@
 
 <title>Qmesa - Reserva confirmada</title>
 
-<link rel="stylesheet" href="../pags_css/style.css">
+<link rel="stylesheet" href="/pags_css/style.css">
 
 </head>
 
@@ -25,7 +25,7 @@
     </svg>
   </a>
 
-  <a href="../pags_html/index.html" class="botao-home" aria-label="Ir para início">
+  <a href="/pags_html/index.html" class="botao-home" aria-label="Ir para inÃ­cio">
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path d="M3 10.5L12 3l9 7.5"/>
       <path d="M5.5 9.5V21h13V9.5"/>
@@ -35,7 +35,7 @@
 </div>
 
 <div class="marca-agradecimento">
-  <img src="../images/logo_restaurante.png" alt="Logo do restaurante" class="logo-agradecimento">
+  <img src="/images/logo_restaurante.png" alt="Logo do restaurante" class="logo-agradecimento">
 </div>
 
 <p class="frase-agradecimento">
@@ -56,12 +56,12 @@ Estamos ansiosos para lhe atender
 </p>
 
 <div class="ilustracao-acompanhamento">
-  <img src="../images/reserva_agendada.png" alt="Reserva agendada">
+  <img src="/images/reserva_agendada.png" alt="Reserva agendada">
 </div>
 
 <div class="acoes-acompanhamento">
 
-<a href="../pags_html/reagendar_reserva.html" class="botao-primario botao-reserva">
+<a href="/pags_html/reagendar_reserva.html" class="botao-primario botao-reserva">
 Reagendar
 </a>
 
@@ -69,8 +69,8 @@ Reagendar
 Cancelar reserva
 </button>
 
-<a href="../pags_html/index.html" class="botao-primario botao-inicio">
-Voltar à tela inicial
+<a href="/pags_html/index.html" class="botao-primario botao-inicio">
+Voltar Ã  tela inicial
 </a>
 
 </div>
@@ -116,7 +116,7 @@ Voltar à tela inicial
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpsZmJ6ZHFoYWV6ZHR5eWFqcWxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjM0NjksImV4cCI6MjA4ODkzOTQ2OX0.6VX3Z1FjxgZuBYALd2oU4bQl0nzbMcBUcc0nLW_DbvA'
   );
 
-  const RESTAURANTE_NOME = 'Mangálhos Grill';
+  const RESTAURANTE_NOME = 'MangÃ¡lhos Grill';
   const LINK_CONSULTA_RESERVAS = `${window.location.origin}${window.location.pathname.replace('reserva_confirmada.html', 'consultar_reservas.html')}`;
   const EMAILJS_CONFIG = {
     publicKey: '1AI1-s7z0WFVbln51',
@@ -318,7 +318,7 @@ Voltar à tela inicial
         console.warn('Reserva cancelada, mas o email de cancelamento nao foi enviado:', erroEmail);
       }
 
-      window.location.href = '../pags_html/cancelamento_reserva_confirmado.html';
+      window.location.href = '/pags_html/cancelamento_reserva_confirmado.html';
     } catch (error) {
       console.error('Erro ao cancelar reserva:', error);
       mensagemCancelamentoReserva.textContent = 'Nao foi possivel cancelar a reserva no momento.';

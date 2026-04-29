@@ -7,6 +7,7 @@ const STORAGE_KEY = 'qmesa_auth';
 let itensCardapio = [];
 let itemEditando = null;
 let sessaoAtual = null;
+let restaurantesDisponiveis = [];
 
 const elementos = {
     modalItemCardapio: document.getElementById('modalItemCardapio'),
@@ -21,6 +22,7 @@ const elementos = {
     btnFecharModal: document.getElementById('btnFecharModal'),
     btnCancelarModal: document.getElementById('btnCancelarModal'),
     buscaCardapio: document.getElementById('buscaCardapio'),
+    filtroRestauranteCardapio: document.getElementById('filtroRestauranteCardapio'),
     filtroCategoria: document.getElementById('filtroCategoria'),
     filtroStatus: document.getElementById('filtroStatus'),
     tabelaItens: document.getElementById('tabelaItens'),
@@ -47,8 +49,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!sessaoAtual) return;
 
     isMaster = sessaoAtual.role === 'master';
+    if (isMaster) document.body.classList.add('dashboard-master');
     preencherContextoUsuario();
     inicializarEventListeners();
+    await carregarRestaurantesMaster();
     await carregarItensCardapio();
 });
 
@@ -58,6 +62,7 @@ function inicializarEventListeners() {
     elementos.btnCancelarModal?.addEventListener('click', fecharModal);
     elementos.formItemCardapio?.addEventListener('submit', salvarItem);
     elementos.buscaCardapio?.addEventListener('input', renderizarTabela);
+    elementos.filtroRestauranteCardapio?.addEventListener('change', carregarItensCardapio);
     elementos.filtroCategoria?.addEventListener('change', renderizarTabela);
     elementos.filtroStatus?.addEventListener('change', renderizarTabela);
 
@@ -119,6 +124,8 @@ async function carregarItensCardapio() {
 
         if (!isMaster) {
             query = query.eq('restaurante_id', sessaoAtual.restaurante_id);
+        } else if (elementos.filtroRestauranteCardapio?.value) {
+            query = query.eq('restaurante_id', elementos.filtroRestauranteCardapio.value);
         }
 
         const { data, error } = await query;
@@ -133,6 +140,31 @@ async function carregarItensCardapio() {
         console.error('Erro ao carregar itens:', error);
         mostrarErro(`Nao foi possivel carregar o cardapio: ${error.message || 'erro desconhecido'}`);
     }
+}
+
+async function carregarRestaurantesMaster() {
+    if (!isMaster || !elementos.filtroRestauranteCardapio) return;
+
+    elementos.filtroRestauranteCardapio.style.display = '';
+
+    const { data, error } = await supabaseClient
+        .from('restaurante')
+        .select('id, nome')
+        .order('nome', { ascending: true });
+
+    if (error) {
+        console.error('Erro ao carregar restaurantes:', error);
+        mostrarErro(`Nao foi possivel carregar restaurantes: ${error.message || 'erro desconhecido'}`);
+        return;
+    }
+
+    restaurantesDisponiveis = data || [];
+    elementos.filtroRestauranteCardapio.innerHTML = [
+        '<option value="">Todos os restaurantes</option>',
+        ...restaurantesDisponiveis.map(restaurante => `
+            <option value="${restaurante.id}">${escapeHtml(restaurante.nome || restaurante.id)}</option>
+        `)
+    ].join('');
 }
 
 async function carregarRestaurante() {
@@ -154,6 +186,11 @@ async function carregarRestaurante() {
     if (!error && data?.nome && elementos.nomeRestauranteSidebar) {
         elementos.nomeRestauranteSidebar.textContent = data.nome;
     }
+}
+
+function obterRestauranteSelecionadoCardapio() {
+    if (!isMaster) return sessaoAtual?.restaurante_id || '';
+    return elementos.filtroRestauranteCardapio?.value || '';
 }
 
 function obterItensFiltrados() {
@@ -251,6 +288,12 @@ function atualizarEstatisticas() {
 }
 
 function abrirModalAdicionar() {
+    if (isMaster && !obterRestauranteSelecionadoCardapio()) {
+        mostrarErro('Selecione um restaurante para cadastrar um item no cardapio.');
+        elementos.filtroRestauranteCardapio?.focus();
+        return;
+    }
+
     itemEditando = null;
     elementos.formItemCardapio?.reset();
     if (elementos.modalTitulo) elementos.modalTitulo.textContent = 'Adicionar item';
@@ -287,13 +330,15 @@ function fecharModal() {
 async function salvarItem(e) {
     e.preventDefault();
 
-    if (!sessaoAtual?.restaurante_id && !isMaster) {
+    const restauranteIdSelecionado = itemEditando?.restaurante_id || obterRestauranteSelecionadoCardapio();
+
+    if (!restauranteIdSelecionado) {
         mostrarErro('Sessao invalida para salvar itens.');
         return;
     }
 
     const payload = {
-        restaurante_id: sessaoAtual.restaurante_id,
+        restaurante_id: restauranteIdSelecionado,
         nome: (elementos.itemNome?.value || '').trim(),
         descricao: (elementos.itemDescricao?.value || '').trim() || null,
         categoria: (elementos.itemCategoria?.value || '').trim(),
@@ -318,7 +363,7 @@ async function salvarItem(e) {
                     disponivel: payload.disponivel
                 })
                 .eq('id', itemEditando.id)
-                .eq('restaurante_id', sessaoAtual.restaurante_id)
+                .eq('restaurante_id', itemEditando.restaurante_id || restauranteIdSelecionado)
                 .select('id')
                 .maybeSingle();
 
@@ -360,11 +405,12 @@ async function excluirItem(itemId) {
     if (!window.confirm('Tem certeza que deseja excluir este item do cardapio?')) return;
 
     try {
+        const item = itensCardapio.find((registro) => registro.id === itemId);
         const { data, error } = await supabaseClient
             .from('item_cardapio')
             .delete()
             .eq('id', itemId)
-            .eq('restaurante_id', sessaoAtual.restaurante_id)
+            .eq('restaurante_id', item?.restaurante_id || sessaoAtual.restaurante_id)
             .select('id');
 
         if (error) throw error;
@@ -403,7 +449,7 @@ function logout() {
     window.localStorage.removeItem(STORAGE_KEY);
     window.sessionStorage.removeItem(STORAGE_KEY);
     window.localStorage.removeItem('remember_user');
-    window.location.href = '../pags_html/login_usuario.html';
+    window.location.href = '/pags_html/login_usuario.html';
 }
 
 function formatarPreco(preco) {
@@ -411,6 +457,7 @@ function formatarPreco(preco) {
 }
 
 function formatarRole(role) {
+    if (role === 'master') return 'Acesso master';
     if (role === 'admin') return 'Acesso administrador';
     if (role === 'gestor') return 'Acesso gestor';
     return 'Acesso operador';
