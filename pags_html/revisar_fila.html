@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Qmesa - RevisÃ£o dos dados da fila</title>
+  <title>Qmesa - Revisão dos dados da fila</title>
   <link rel="stylesheet" href="/pags_css/style.css" />
 </head>
 
@@ -152,7 +152,7 @@
       const qtdPessoas = sessionStorage.getItem('fila_qtd_pessoas');
 
       if (!nome || !cpf || !telefone || !qtdPessoas) {
-        mensagem.textContent = 'Nenhum dado foi encontrado para revisÃ£o. Preencha o formulÃ¡rio novamente.';
+        mensagem.textContent = 'Nenhum dado foi encontrado para revisão. Preencha o formulário novamente.';
         mensagem.style.color = 'red';
         btnConfirmar.disabled = true;
         return;
@@ -171,7 +171,7 @@
       const qtdPessoas = sessionStorage.getItem('fila_qtd_pessoas');
 
       if (!nome || !cpf || !telefone || !qtdPessoas) {
-        mensagem.textContent = 'Os dados da fila estÃ£o incompletos.';
+        mensagem.textContent = 'Os dados da fila estão incompletos.';
         mensagem.style.color = 'red';
         return;
       }
@@ -208,7 +208,7 @@
           }
 
           if (filaExistente) {
-            mensagem.textContent = 'JÃ¡ existe uma fila ativa para este CPF.';
+            mensagem.textContent = 'Já existe uma fila ativa para este CPF.';
             mensagem.style.color = 'red';
             btnConfirmar.disabled = false;
             btnConfirmar.textContent = 'Confirmar entrada';
@@ -289,19 +289,19 @@
         sessionStorage.setItem('fila_tempo_estimado', tempoEstimado);
         sessionStorage.setItem('fila_item_id', filaInserida.id);
         sessionStorage.setItem('cliente_id', clienteId);
-        sessionStorage.setItem('fila_mensagem_sucesso', 'VocÃª entrou na fila com sucesso!');
+        sessionStorage.setItem('fila_mensagem_sucesso', 'Você entrou na fila com sucesso!');
 
         window.location.href = 'fila_confirmada.html';
 
       } catch (error) {
-        console.error('Erro tÃ©cnico ao confirmar fila:', error);
+        console.error('Erro técnico ao confirmar fila:', error);
 
         if (error.message && error.message.includes('row-level security')) {
-          mensagem.textContent = 'NÃ£o foi possÃ­vel concluir sua entrada na fila no momento. Tente novamente em instantes.';
+          mensagem.textContent = 'Não foi possível concluir sua entrada na fila no momento. Tente novamente em instantes.';
         } else if (error.message && error.message.includes('Failed to fetch')) {
-          mensagem.textContent = 'NÃ£o foi possÃ­vel conectar ao sistema. Verifique sua internet e tente novamente.';
+          mensagem.textContent = 'Não foi possível conectar ao sistema. Verifique sua internet e tente novamente.';
         } else if (error.message && error.message.toLowerCase().includes('duplicate')) {
-          mensagem.textContent = 'JÃ¡ existe um cadastro com este CPF.';
+          mensagem.textContent = 'Já existe um cadastro com este CPF.';
         } else {
           mensagem.textContent = 'Ocorreu um erro ao confirmar sua entrada na fila. Tente novamente.';
         }

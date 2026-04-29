@@ -31,7 +31,7 @@
 
       <nav class="sidebar-nav">
         <div class="sidebar-nav-bloco">
-          <span class="sidebar-nav-titulo">VisÃ£o geral</span>
+          <span class="sidebar-nav-titulo">Visão geral</span>
 
           <a href="/pags_html/dashboard.html" class="sidebar-link" id="linkDashboard">
             <span class="sidebar-icone">
@@ -49,21 +49,21 @@
             </span>
             <span class="sidebar-link-texto">
               <span class="sidebar-link-titulo">Painel operacional</span>
-              <span class="sidebar-link-subtitulo">GestÃ£o em tempo real</span>
+              <span class="sidebar-link-subtitulo">Gestão em tempo real</span>
             </span>
           </a>
         </div>
 
         <div class="sidebar-nav-bloco">
-          <span class="sidebar-nav-titulo">OperaÃ§Ã£o</span>
+          <span class="sidebar-nav-titulo">Operação</span>
 
           <a href="/pags_html/gestao_cardapio.html" class="sidebar-link">
             <span class="sidebar-icone">
               <svg viewBox="0 0 24 24"><path d="M4 6h16"></path><path d="M7 12h10"></path><path d="M9 18h6"></path></svg>
             </span>
             <span class="sidebar-link-texto">
-              <span class="sidebar-link-titulo">Gerenciar cardÃ¡pio</span>
-              <span class="sidebar-link-subtitulo">Itens, preÃ§os e categorias</span>
+              <span class="sidebar-link-titulo">Gerenciar cardápio</span>
+              <span class="sidebar-link-subtitulo">Itens, preços e categorias</span>
             </span>
           </a>
 
@@ -92,14 +92,14 @@
               <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
             </span>
             <span class="sidebar-link-texto">
-              <span class="sidebar-link-titulo">UsuÃ¡rios</span>
-              <span class="sidebar-link-subtitulo">Perfis e permissÃµes</span>
+              <span class="sidebar-link-titulo">Usuários</span>
+              <span class="sidebar-link-subtitulo">Perfis e permissões</span>
             </span>
           </a>
         </div>
 
         <div class="sidebar-nav-bloco">
-          <span class="sidebar-nav-titulo">ExpansÃ£o</span>
+          <span class="sidebar-nav-titulo">Expansão</span>
 
           <a href="#" class="sidebar-link">
             <span class="sidebar-icone">
@@ -116,7 +116,7 @@
               <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82"></path><path d="M4.6 9a1.65 1.65 0 0 0-.33-1.82"></path><path d="M9 4.6A1.65 1.65 0 0 0 7.18 4.27"></path><path d="M15 19.4a1.65 1.65 0 0 0 1.82.33"></path><path d="M4.6 15a1.65 1.65 0 0 1-.33 1.82"></path><path d="M19.4 9a1.65 1.65 0 0 1 .33-1.82"></path><path d="M15 4.6a1.65 1.65 0 0 1 1.82-.33"></path><path d="M9 19.4a1.65 1.65 0 0 1-1.82.33"></path></svg>
             </span>
             <span class="sidebar-link-texto">
-              <span class="sidebar-link-titulo">ConfiguraÃ§Ãµes</span>
+              <span class="sidebar-link-titulo">Configurações</span>
               <span class="sidebar-link-subtitulo">Identidade e restaurante</span>
             </span>
           </a>
@@ -266,7 +266,7 @@
       <table class="dashboard-operacional-tabela">
         <thead>
           <tr>
-            <th>PosiÃ§Ã£o</th>
+            <th>Posição</th>
             <th>Cliente</th>
             <th>CPF</th>
             <th>Telefone</th>
@@ -275,7 +275,7 @@
             <th>Tempo Estimado</th>
             <th>Tempo na fila</th>
             <th>Entrada</th>
-            <th>AÃ§Ãµes</th>
+            <th>Ações</th>
           </tr>
         </thead>
 
@@ -331,7 +331,7 @@
 
             <div class="modal-fila-campo">
               <label for="modalCpf">CPF</label>
-              <input type="text" id="modalCpf" maxlength="20" placeholder="Somente nÃºmeros ou formatado" />
+              <input type="text" id="modalCpf" maxlength="20" placeholder="Somente números ou formatado" />
             </div>
 
             <div class="modal-fila-campo">
@@ -372,7 +372,7 @@
   <div class="modal-status-overlay" id="modalStatusOverlay">
     <div class="modal-status" role="dialog" aria-modal="true" aria-labelledby="modalStatusTitulo">
       <div class="modal-status-header">
-        <h2 class="modal-status-titulo" id="modalStatusTitulo">Confirmar alteraÃ§Ã£o</h2>
+        <h2 class="modal-status-titulo" id="modalStatusTitulo">Confirmar alteração</h2>
         <button class="modal-status-fechar" id="btnFecharModalStatus" type="button" aria-label="Fechar modal">&times;</button>
       </div>
 
@@ -393,7 +393,7 @@
 
           <div style="display:flex; flex-direction:column; gap:8px;">
             <label for="modalObservacaoStatus" style="font-size:13px; font-weight:600; color:#1f1f1f;">
-              ObservaÃ§Ã£o adicional
+              Observação adicional
             </label>
             <textarea
               id="modalObservacaoStatus"
@@ -672,9 +672,9 @@
       if (status === 'Desistente') {
         return [
           'Cliente desistiu espontaneamente',
-          'NÃ£o respondeu ao chamado',
+          'Não respondeu ao chamado',
           'Tempo de espera excedido',
-          'MudanÃ§a de planos',
+          'Mudança de planos',
           'Outro motivo'
         ];
       }
@@ -740,11 +740,11 @@
 
       if (erroFila) throw erroFila;
       if (!fila?.cliente_id) {
-        throw new Error('Cliente nÃ£o identificado para salvar feedback.');
+        throw new Error('Cliente não identificado para salvar feedback.');
       }
 
       const motivoFinal = status === 'Desistente'
-        ? `DesistÃªncia operacional - ${motivo}`
+        ? `Desistência operacional - ${motivo}`
         : `Cancelamento operacional - ${motivo}`;
 
       const comentarioFinal = observacao?.trim()
@@ -776,7 +776,7 @@
       let motivo = '';
       let observacao = '';
 
-      // ðŸ”¹ CASOS QUE EXIGEM MOTIVO
+      // 🔹 CASOS QUE EXIGEM MOTIVO
       if (status === 'Desistente' || status === 'Cancelado') {
         motivo = modalMotivoStatus.value;
         observacao = modalObservacaoStatus.value || '';
@@ -788,10 +788,10 @@
         }
       }
 
-      // ðŸ”¹ FECHA MODAL ANTES DE EXECUTAR
+      // 🔹 FECHA MODAL ANTES DE EXECUTAR
       fecharModalStatus();
 
-      // ðŸ”¹ MONTA PAYLOAD
+      // 🔹 MONTA PAYLOAD
       const payload = { status };
 
       if (['Atendido', 'Desistente', 'Cancelado'].includes(status)) {
@@ -805,7 +805,7 @@
       }
 
       try {
-        // ðŸ”¹ ATUALIZA STATUS
+        // 🔹 ATUALIZA STATUS
         const { error } = await supabaseClient
           .from('fila_item')
           .update(payload)
@@ -813,7 +813,7 @@
 
         if (error) throw error;
 
-        // ðŸ”¹ SALVA FEEDBACK (SÃ“ CANCELADO / DESISTENTE)
+        // 🔹 SALVA FEEDBACK (SÓ CANCELADO / DESISTENTE)
         if (status === 'Desistente' || status === 'Cancelado') {
           try {
             const { data: fila, error: erroFila } = await supabaseClient
@@ -826,7 +826,7 @@
 
             if (fila?.cliente_id) {
               const motivoFinal = status === 'Desistente'
-                ? `DesistÃªncia operacional - ${motivo}`
+                ? `Desistência operacional - ${motivo}`
                 : `Cancelamento operacional - ${motivo}`;
 
               const comentarioFinal = observacao?.trim()
@@ -850,15 +850,15 @@
 
           } catch (erroFeedback) {
             console.error('Erro ao salvar feedback:', erroFeedback);
-            setMensagem('Status alterado, mas nÃ£o foi possÃ­vel salvar o motivo.', 'erro');
+            setMensagem('Status alterado, mas não foi possível salvar o motivo.', 'erro');
           }
         }
 
-        // ðŸ”¹ RECALCULA FILA
+        // 🔹 RECALCULA FILA
         await recalcularPosicoes();
         await carregarFila();
 
-        // ðŸ”¹ MENSAGEM FINAL
+        // 🔹 MENSAGEM FINAL
         if (acao === 'reativar') {
           setMensagem('Pessoa recolocada na fila com sucesso.', 'sucesso');
         } else {
@@ -1023,7 +1023,7 @@
               <div class="fila-mobile-posicao">${posicaoDinamica}</div>
               <div class="fila-mobile-identificacao">
                 <strong class="fila-mobile-nome">${nome}</strong>
-                <span class="fila-mobile-contato">${telefone} â€¢ CPF ${cpf}</span>
+                <span class="fila-mobile-contato">${telefone} • CPF ${cpf}</span>
               </div>
               <div class="fila-mobile-status">
                 <span class="${classeStatus(item.status)}">${escaparHtml(item.status || '-')}</span>
@@ -1091,7 +1091,7 @@
           <button class="dashboard-operacional-btn btn-atendido" onclick="alterar('${item.id}','Atendido')">OK</button>
           <button class="dashboard-operacional-btn btn-desistente" onclick="alterar('${item.id}','Desistente')">Desistiu</button>
           <button class="dashboard-operacional-btn btn-cancelado" onclick="alterar('${item.id}','Cancelado')">Cancelar</button>
-          <button class="dashboard-operacional-btn btn-editar" onclick="abrirModalEdicao('${item.id}')">âœï¸</button>
+          <button class="dashboard-operacional-btn btn-editar" onclick="abrirModalEdicao('${item.id}')">✏️</button>
         `;
 
         if (['Cancelado', 'Desistente'].includes(item.status)) {
@@ -1270,7 +1270,7 @@
         .maybeSingle();
 
       if (erroFila || !fila) {
-        setMensagem('NÃ£o foi possÃ­vel carregar os dados para ediÃ§Ã£o.', 'erro');
+        setMensagem('Não foi possível carregar os dados para edição.', 'erro');
         return;
       }
 
@@ -1399,7 +1399,7 @@
       const { data, error } = await query;
 
       if (error) {
-        setMensagem('Erro ao recalcular posiÃ§Ãµes: ' + error.message, 'erro');
+        setMensagem('Erro ao recalcular posições: ' + error.message, 'erro');
         return false;
       }
 
@@ -1417,7 +1417,7 @@
           .eq('id', item.id);
 
         if (erroUpdate) {
-          setMensagem('Erro ao atualizar posiÃ§Ãµes: ' + erroUpdate.message, 'erro');
+          setMensagem('Erro ao atualizar posições: ' + erroUpdate.message, 'erro');
           return false;
         }
       }
@@ -1446,7 +1446,7 @@
       }
 
       if (!numeroPessoas || numeroPessoas < 1) {
-        setMensagemModal('Informe uma quantidade vÃ¡lida de pessoas.', 'erro');
+        setMensagemModal('Informe uma quantidade válida de pessoas.', 'erro');
         modalPessoas.focus();
         return;
       }

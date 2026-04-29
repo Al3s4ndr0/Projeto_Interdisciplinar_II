@@ -34,7 +34,7 @@
         </h1>
 
         <p class="subtitulo-acompanhamento" id="subtituloAcompanhamento">
-          Aproveite para olhar o CardÃ¡pio
+          Aproveite para olhar o Cardápio
         </p>
 
         <div class="barra-progresso">
@@ -45,7 +45,7 @@
         </div>
 
         <div class="ilustracao-acompanhamento">
-          <img id="imagemStatus" src="/images/mesa_ocupada.png" alt="IlustraÃ§Ã£o da fila" />
+          <img id="imagemStatus" src="/images/mesa_ocupada.png" alt="Ilustração da fila" />
         </div>
 
         <p class="tempo-medio" id="textoTempo">Tempo estimado: 10 minutos</p>
@@ -56,7 +56,7 @@
 
         <div class="acoes-acompanhamento">
           <button type="button" class="botao-primario" id="btnAcaoPrincipal">Visitar restaurante</button>
-          <button type="button" class="botao-secundario" id="btnCardapioExtra" style="display: none;">Ver cardÃ¡pio</button>
+          <button type="button" class="botao-secundario" id="btnCardapioExtra" style="display: none;">Ver cardápio</button>
           <button type="button" class="botao-secundario" id="btnCancelar">Cancelar reserva</button>
         </div>
       </section>
@@ -82,7 +82,7 @@
 
   <div id="toastNotificacao" class="toast-notificacao">
     <strong id="toastTitulo">Qmesa</strong>
-    <p id="toastTexto">AtualizaÃ§Ã£o da sua fila.</p>
+    <p id="toastTexto">Atualização da sua fila.</p>
   </div>
 
   <audio id="audioNotificacao" preload="auto">
@@ -124,11 +124,11 @@
     let cliqueACaminhoEmAndamento = false;
 
     audioNotificacao.addEventListener('canplaythrough', () => {
-      console.log('Ãudio carregado com sucesso');
+      console.log('Áudio carregado com sucesso');
     });
 
     audioNotificacao.addEventListener('error', (e) => {
-      console.error('Erro ao carregar Ã¡udio', e);
+      console.error('Erro ao carregar áudio', e);
     });
 
     function mostrarToast(titulo, texto) {
@@ -199,7 +199,7 @@
         await Notification.requestPermission();
         sessionStorage.setItem('notificacao_permissao_solicitada', 'true');
       } catch (erro) {
-        console.warn('NÃ£o foi possÃ­vel solicitar permissÃ£o de notificaÃ§Ã£o.', erro);
+        console.warn('Não foi possível solicitar permissão de notificação.', erro);
       }
     }
 
@@ -207,7 +207,7 @@
       if (!audioNotificacao) return;
 
       if (!audioLiberado) {
-        console.warn('Ãudio ainda nÃ£o foi liberado por interaÃ§Ã£o do usuÃ¡rio.');
+        console.warn('Áudio ainda não foi liberado por interação do usuário.');
         return;
       }
 
@@ -219,11 +219,11 @@
 
         if (promessa && typeof promessa.catch === 'function') {
           promessa.catch((erro) => {
-            console.warn('NÃ£o foi possÃ­vel tocar o som da notificaÃ§Ã£o.', erro);
+            console.warn('Não foi possível tocar o som da notificação.', erro);
           });
         }
       } catch (erro) {
-        console.warn('Erro ao tocar som da notificaÃ§Ã£o.', erro);
+        console.warn('Erro ao tocar som da notificação.', erro);
       }
     }
 
@@ -251,9 +251,9 @@
           audioLiberado = true;
           sessionStorage.setItem('audio_liberado', 'true');
 
-          console.log('Ãudio liberado com sucesso.');
+          console.log('Áudio liberado com sucesso.');
         } catch (erro) {
-          console.warn('NÃ£o foi possÃ­vel liberar o Ã¡udio na primeira interaÃ§Ã£o.', erro);
+          console.warn('Não foi possível liberar o áudio na primeira interação.', erro);
           audioLiberado = false;
           sessionStorage.removeItem('audio_liberado');
         }
@@ -277,7 +277,7 @@
       try {
         new Notification(titulo, { body: corpo });
       } catch (erro) {
-        console.warn('Falha ao exibir notificaÃ§Ã£o.', erro);
+        console.warn('Falha ao exibir notificação.', erro);
       }
     }
 
@@ -285,7 +285,7 @@
       const statusAnterior = sessionStorage.getItem('fila_status_anterior');
       const posicaoAnterior = sessionStorage.getItem('fila_posicao_anterior');
 
-      console.log('MudanÃ§a de fila', {
+      console.log('Mudança de fila', {
         statusAnterior,
         statusAtual,
         posicaoAnterior,
@@ -294,13 +294,13 @@
 
       if (statusAnterior && statusAnterior !== statusAtual) {
         if (statusAtual === 'Preparando') {
-          notificar('Qmesa', 'Sua mesa estÃ¡ sendo preparada.', true);
+          notificar('Qmesa', 'Sua mesa está sendo preparada.', true);
         } else if (statusAtual === 'Chamado') {
-          notificar('Qmesa', 'Sua mesa estÃ¡ pronta. Dirija-se ao balcÃ£o.', true);
+          notificar('Qmesa', 'Sua mesa está pronta. Dirija-se ao balcão.', true);
         } else if (statusAtual === 'A caminho') {
-          notificar('Qmesa', 'Perfeito! Estamos aguardando vocÃª no balcÃ£o.', true);
+          notificar('Qmesa', 'Perfeito! Estamos aguardando você no balcão.', true);
         } else if (statusAtual === 'Atendido') {
-          notificar('Qmesa', 'Seu atendimento foi concluÃ­do.', true);
+          notificar('Qmesa', 'Seu atendimento foi concluído.', true);
         } else if (statusAtual === 'Cancelado' || statusAtual === 'Desistente') {
           notificar('Qmesa', 'Sua fila foi encerrada.', false);
         }
@@ -311,7 +311,7 @@
         String(posicaoAnterior) !== String(posicaoAtual) &&
         STATUS_EM_FILA.includes(statusAtual)
       ) {
-        notificar('Qmesa', `Sua posiÃ§Ã£o na fila mudou para ${posicaoAtual}.`, false);
+        notificar('Qmesa', `Sua posição na fila mudou para ${posicaoAtual}.`, false);
       }
 
       sessionStorage.setItem('fila_status_anterior', statusAtual);
@@ -390,16 +390,16 @@
           if (error) {
             btnAcaoPrincipal.disabled = false;
             btnAcaoPrincipal.textContent = 'Estou a caminho';
-            mostrarToast('Qmesa', 'Erro ao confirmar que vocÃª estÃ¡ a caminho.');
+            mostrarToast('Qmesa', 'Erro ao confirmar que você está a caminho.');
             return;
           }
 
-          notificar('Qmesa', 'Perfeito! Estamos aguardando vocÃª no balcÃ£o.', true);
+          notificar('Qmesa', 'Perfeito! Estamos aguardando você no balcão.', true);
           await carregarAcompanhamento();
         };
 
         btnCardapioExtra.style.display = 'inline-flex';
-        btnCardapioExtra.textContent = 'Ver cardÃ¡pio';
+        btnCardapioExtra.textContent = 'Ver cardápio';
         btnCardapioExtra.onclick = () => {
           window.location.href = 'cardapio.html';
         };
@@ -411,14 +411,14 @@
         btnAcaoPrincipal.disabled = true;
 
         btnCardapioExtra.style.display = 'inline-flex';
-        btnCardapioExtra.textContent = 'Ver cardÃ¡pio';
+        btnCardapioExtra.textContent = 'Ver cardápio';
         btnCardapioExtra.onclick = () => {
           window.location.href = 'cardapio.html';
         };
 
         btnCancelar.style.display = 'inline-flex';
       } else if (status === 'Atendido') {
-        btnAcaoPrincipal.textContent = 'Avaliar experiÃªncia';
+        btnAcaoPrincipal.textContent = 'Avaliar experiência';
         btnAcaoPrincipal.className = 'botao-primario';
         btnAcaoPrincipal.disabled = false;
         btnAcaoPrincipal.onclick = () => {
@@ -427,7 +427,7 @@
 
         btnCancelar.style.display = 'none';
       } else if (status === 'Cancelado' || status === 'Desistente') {
-        btnAcaoPrincipal.textContent = 'Voltar ao inÃ­cio';
+        btnAcaoPrincipal.textContent = 'Voltar ao início';
         btnAcaoPrincipal.className = 'botao-primario';
         btnAcaoPrincipal.disabled = false;
         btnAcaoPrincipal.onclick = () => {
@@ -452,51 +452,51 @@
 
       if (status === 'Aguardando') {
         tituloAcompanhamento.textContent = 'Estamos esperando os clientes atuais finalizarem';
-        subtituloAcompanhamento.textContent = 'Aproveite para olhar o CardÃ¡pio';
+        subtituloAcompanhamento.textContent = 'Aproveite para olhar o Cardápio';
         imagemStatus.src = '/images/mesa_ocupada.png';
-        imagemStatus.alt = 'IlustraÃ§Ã£o de clientes na mesa';
+        imagemStatus.alt = 'Ilustração de clientes na mesa';
         barraIndicador.textContent = posicaoNumero || '1';
         textoTempo.textContent = `Tempo estimado: ${tempoEstimado} minutos`;
         textoTempoFila.textContent = `Tempo na fila: ${tempoNaFila}`;
       } else if (status === 'Preparando') {
         tituloAcompanhamento.innerHTML = 'Estamos preparando sua mesa com carinho';
-        subtituloAcompanhamento.textContent = 'Agradecemos pela paciÃªncia';
+        subtituloAcompanhamento.textContent = 'Agradecemos pela paciência';
         imagemStatus.src = '/images/preparando_mesa.png';
-        imagemStatus.alt = 'IlustraÃ§Ã£o de preparaÃ§Ã£o da mesa';
+        imagemStatus.alt = 'Ilustração de preparação da mesa';
         barraIndicador.textContent = posicaoNumero || '1';
         textoTempo.textContent = `Tempo estimado: ${tempoEstimado} minutos`;
         textoTempoFila.textContent = `Tempo na fila: ${tempoNaFila}`;
       } else if (status === 'Chamado') {
-        tituloAcompanhamento.innerHTML = 'Sua mesa estÃ¡ pronta!<br>Dirija-se ao balcÃ£o';
+        tituloAcompanhamento.innerHTML = 'Sua mesa está pronta!<br>Dirija-se ao balcão';
         subtituloAcompanhamento.textContent = 'Confirme quando estiver a caminho';
         imagemStatus.src = '/images/mesa_pronta.png';
-        imagemStatus.alt = 'IlustraÃ§Ã£o de mesa pronta';
+        imagemStatus.alt = 'Ilustração de mesa pronta';
         barraIndicador.textContent = '0';
-        textoTempo.textContent = 'Sua mesa ficarÃ¡ reservada por 5 minutos';
+        textoTempo.textContent = 'Sua mesa ficará reservada por 5 minutos';
         textoTempoFila.textContent = `Tempo na fila: ${tempoNaFila}`;
       } else if (status === 'A caminho') {
         tituloAcompanhamento.innerHTML = 'Estamos aguardando sua chegada';
-        subtituloAcompanhamento.textContent = 'Sua presenÃ§a jÃ¡ foi sinalizada para a operaÃ§Ã£o';
+        subtituloAcompanhamento.textContent = 'Sua presença já foi sinalizada para a operação';
         imagemStatus.src = '/images/mesa_pronta.png';
-        imagemStatus.alt = 'Cliente a caminho do balcÃ£o';
-        barraIndicador.textContent = 'âœ“';
-        textoTempo.textContent = 'Perfeito! Nossa equipe jÃ¡ foi avisada.';
+        imagemStatus.alt = 'Cliente a caminho do balcão';
+        barraIndicador.textContent = '✓';
+        textoTempo.textContent = 'Perfeito! Nossa equipe já foi avisada.';
         textoTempoFila.textContent = `Tempo na fila: ${tempoNaFila}`;
       } else if (status === 'Atendido') {
-        tituloAcompanhamento.textContent = 'Atendimento concluÃ­do';
-        subtituloAcompanhamento.textContent = 'Obrigado pela preferÃªncia';
+        tituloAcompanhamento.textContent = 'Atendimento concluído';
+        subtituloAcompanhamento.textContent = 'Obrigado pela preferência';
         imagemStatus.src = '/images/mesa_pronta.png';
-        imagemStatus.alt = 'Atendimento concluÃ­do';
-        barraIndicador.textContent = 'âœ“';
+        imagemStatus.alt = 'Atendimento concluído';
+        barraIndicador.textContent = '✓';
         textoTempo.textContent = 'Seu atendimento foi finalizado com sucesso';
         textoTempoFila.textContent = '';
       } else if (status === 'Cancelado' || status === 'Desistente') {
         tituloAcompanhamento.textContent = 'Sua fila foi encerrada';
-        subtituloAcompanhamento.textContent = 'VocÃª pode realizar uma nova entrada quando quiser';
+        subtituloAcompanhamento.textContent = 'Você pode realizar uma nova entrada quando quiser';
         imagemStatus.src = '/images/mesa_ocupada.png';
         imagemStatus.alt = 'Fila encerrada';
         barraIndicador.textContent = '-';
-        textoTempo.textContent = 'Sua reserva nÃ£o estÃ¡ mais ativa';
+        textoTempo.textContent = 'Sua reserva não está mais ativa';
         textoTempoFila.textContent = '';
       } else {
         tituloAcompanhamento.textContent = 'Estamos acompanhando sua fila';
@@ -607,7 +607,7 @@
         definirVisualPorStatus(fila.status, posicaoAtual, tempoEstimadoAtual, tempoNaFila);
       } catch (erro) {
         console.error('Erro ao carregar fila:', erro);
-        mensagemErro.textContent = 'NÃ£o foi possÃ­vel consultar sua fila agora. Tente novamente.';
+        mensagemErro.textContent = 'Não foi possível consultar sua fila agora. Tente novamente.';
       }
     }
 
@@ -648,7 +648,7 @@
         window.location.href = 'cancelamento_confirmado.html';
       } catch (erro) {
         console.error('Erro ao cancelar fila:', erro);
-        mensagemErro.textContent = 'NÃ£o foi possÃ­vel cancelar sua reserva no momento.';
+        mensagemErro.textContent = 'Não foi possível cancelar sua reserva no momento.';
       }
     }
 

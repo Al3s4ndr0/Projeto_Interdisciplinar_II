@@ -37,11 +37,11 @@
         <div class="circulo-posicao" id="numeroFila">-</div>
 
         <p class="texto-posicao" id="textoPosicao">
-          VocÃª estÃ¡ na fila.
+          Você está na fila.
         </p>
 
         <p class="texto-tempo" id="textoTempo">
-          Seu tempo mÃ©dio de espera Ã© de:
+          Seu tempo médio de espera é de:
         </p>
 
         <p class="texto-apoio">
@@ -126,13 +126,13 @@
         4: 'QUARTO',
         5: 'QUINTO',
         6: 'SEXTO',
-        7: 'SÃ‰TIMO',
+        7: 'SÉTIMO',
         8: 'OITAVO',
         9: 'NONO',
-        10: 'DÃ‰CIMO'
+        10: 'DÉCIMO'
       };
 
-      return mapa[numero] || `${numero}Âº`;
+      return mapa[numero] || `${numero}º`;
     }
 
     function exibirMensagemSucesso() {
@@ -213,15 +213,15 @@
           : (fila.tempo_estimado ?? '-');
 
         numeroFila.textContent = posicaoAtual;
-        textoPosicao.innerHTML = `VocÃª Ã© o <strong>${ordinalPorExtenso(Number(posicaoAtual))}</strong> na fila`;
-        textoTempo.innerHTML = `Seu tempo mÃ©dio de espera Ã©:<br>${tempoEstimadoAtual} minuto(s)`;
+        textoPosicao.innerHTML = `Você é o <strong>${ordinalPorExtenso(Number(posicaoAtual))}</strong> na fila`;
+        textoTempo.innerHTML = `Seu tempo médio de espera é:<br>${tempoEstimadoAtual} minuto(s)`;
 
         sessionStorage.setItem('fila_ativa', 'true');
         sessionStorage.setItem('fila_posicao', posicaoAtual);
         sessionStorage.setItem('fila_tempo_estimado', tempoEstimadoAtual);
       } catch (erro) {
         console.error('Erro ao carregar fila confirmada:', erro);
-        mensagemErro.textContent = 'NÃ£o foi possÃ­vel consultar sua fila agora. Tente novamente.';
+        mensagemErro.textContent = 'Não foi possível consultar sua fila agora. Tente novamente.';
       }
     }
 
@@ -253,7 +253,7 @@
           throw error;
         }
 
-        // salva referÃªncia do cancelamento para o fluxo de comentÃ¡rio
+        // salva referência do cancelamento para o fluxo de comentário
         sessionStorage.setItem('fila_cancelada_item_id', filaItemId);
         sessionStorage.setItem('fila_cancelada_cliente_id', clienteId || '');
 
@@ -262,7 +262,7 @@
         window.location.href = 'cancelamento_confirmado.html';
       } catch (erro) {
         console.error('Erro ao cancelar fila:', erro);
-        mensagemErro.textContent = 'NÃ£o foi possÃ­vel cancelar sua fila no momento. Tente novamente.';
+        mensagemErro.textContent = 'Não foi possível cancelar sua fila no momento. Tente novamente.';
         btnCancelar.disabled = false;
         btnCancelar.textContent = 'Cancelar reserva';
       }

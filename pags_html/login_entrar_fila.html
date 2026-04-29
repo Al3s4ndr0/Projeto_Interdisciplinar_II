@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Qmesa - IdentificaÃ§Ã£o</title>
+  <title>Qmesa - Identificação</title>
   <link rel="stylesheet" href="/pags_css/style.css" />
 </head>
 
@@ -37,7 +37,7 @@
 
           <p class="descricao-fila">
             Informe seu CPF para continuar. Se for seu primeiro acesso, solicitaremos os demais dados para cadastro.
-            Caso jÃ¡ possua cadastro, seus dados serÃ£o preenchidos automaticamente e poderÃ£o ser editados.
+            Caso já possua cadastro, seus dados serão preenchidos automaticamente e poderão ser editados.
           </p>
 
           <form class="formulario formulario-identificacao" id="formLoginFila">
@@ -47,7 +47,7 @@
                 type="text"
                 id="cpf"
                 class="campo"
-                placeholder="Qual Ã© o seu CPF? *"
+                placeholder="Qual é o seu CPF? *"
                 maxlength="14"
                 required
               />
@@ -60,7 +60,7 @@
                   type="text"
                   id="nome"
                   class="campo"
-                  placeholder="Qual Ã© o seu nome? *"
+                  placeholder="Qual é o seu nome? *"
                 />
               </div>
 
@@ -70,7 +70,7 @@
                   type="text"
                   id="telefone"
                   class="campo"
-                  placeholder="Qual Ã© o seu telefone? *"
+                  placeholder="Qual é o seu telefone? *"
                   maxlength="15"
                 />
               </div>
@@ -300,7 +300,7 @@
       mensagem.textContent = '';
 
       if (!validarCPF(cpfLimpo)) {
-        mensagem.textContent = 'CPF invÃ¡lido. Verifique o nÃºmero informado.';
+        mensagem.textContent = 'CPF inválido. Verifique o número informado.';
         mensagem.style.color = 'red';
         return;
       }
@@ -342,7 +342,7 @@
           nome.value = '';
           telefone.value = '';
 
-          mensagem.textContent = 'CPF nÃ£o localizado. Complete os dados para criar seu cadastro.';
+          mensagem.textContent = 'CPF não localizado. Complete os dados para criar seu cadastro.';
           mensagem.style.color = '#d97706';
         }
 
@@ -356,7 +356,7 @@
 
       } catch (error) {
         console.error('Erro ao consultar CPF:', error);
-        mensagem.textContent = 'NÃ£o foi possÃ­vel consultar o CPF no momento.';
+        mensagem.textContent = 'Não foi possível consultar o CPF no momento.';
         mensagem.style.color = 'red';
       } finally {
         btnAcaoFila.disabled = false;
@@ -383,7 +383,7 @@
       }
 
       if (!validarCPF(cpfLimpo)) {
-        mensagem.textContent = 'CPF invÃ¡lido.';
+        mensagem.textContent = 'CPF inválido.';
         mensagem.style.color = 'red';
         return;
       }
@@ -395,7 +395,7 @@
       }
 
       if (!validarTelefone(telefoneCliente)) {
-        mensagem.textContent = 'Telefone invÃ¡lido. Informe DDD + nÃºmero.';
+        mensagem.textContent = 'Telefone inválido. Informe DDD + número.';
         mensagem.style.color = 'red';
         return;
       }
@@ -461,7 +461,7 @@
       btnAcaoFila.type = 'submit';
       btnAcaoFila.textContent = 'Continuar';
 
-      mensagem.textContent = 'Dados recuperados. VocÃª pode revisar ou continuar.';
+      mensagem.textContent = 'Dados recuperados. Você pode revisar ou continuar.';
       mensagem.style.color = 'green';
     }
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Qmesa - ExperiÃªncia na fila</title>
+  <title>Qmesa - Experiência na fila</title>
   <link rel="stylesheet" href="/pags_css/style.css" />
 </head>
 <body class="tema-fila">
@@ -29,10 +29,10 @@
       </header>
 
       <section class="conteudo">
-        <h1 class="titulo titulo-experiencia">AGORA Ã‰ SÃ“<br>APROVEITAR!</h1>
+        <h1 class="titulo titulo-experiencia">AGORA É SÓ<br>APROVEITAR!</h1>
 
         <p class="descricao descricao-experiencia">
-          Esperamos que sua experiÃªncia tenha sido positiva. Compartilha com a gente!
+          Esperamos que sua experiência tenha sido positiva. Compartilha com a gente!
         </p>
 
         <form id="formExperienciaFila">
@@ -41,19 +41,19 @@
 
             <div class="estrelas">
               <input type="radio" id="estrela5" name="avaliacao" value="5">
-              <label for="estrela5">â˜…</label>
+              <label for="estrela5">?</label>
 
               <input type="radio" id="estrela4" name="avaliacao" value="4">
-              <label for="estrela4">â˜…</label>
+              <label for="estrela4">?</label>
 
               <input type="radio" id="estrela3" name="avaliacao" value="3">
-              <label for="estrela3">â˜…</label>
+              <label for="estrela3">?</label>
 
               <input type="radio" id="estrela2" name="avaliacao" value="2">
-              <label for="estrela2">â˜…</label>
+              <label for="estrela2">?</label>
 
               <input type="radio" id="estrela1" name="avaliacao" value="1">
-              <label for="estrela1">â˜…</label>
+              <label for="estrela1">?</label>
             </div>
           </section>
 
@@ -66,23 +66,23 @@
             </label>
 
             <label class="opcao-experiencia">
-              <input type="radio" name="tempo_espera" value="Sim, esperei atÃ© menos que o previsto">
-              <span>Sim, esperei atÃ© menos que o previsto</span>
+              <input type="radio" name="tempo_espera" value="Sim, esperei até menos que o previsto">
+              <span>Sim, esperei até menos que o previsto</span>
             </label>
 
             <label class="opcao-experiencia">
-              <input type="radio" name="tempo_espera" value="NÃ£o, esperei um pouco mais que o previsto">
-              <span>NÃ£o, esperei um pouco mais que o previsto</span>
+              <input type="radio" name="tempo_espera" value="Não, esperei um pouco mais que o previsto">
+              <span>Não, esperei um pouco mais que o previsto</span>
             </label>
 
             <label class="opcao-experiencia">
-              <input type="radio" name="tempo_espera" value="NÃ£o, esperei muito mais que o previsto">
-              <span>NÃ£o, esperei muito mais que o previsto</span>
+              <input type="radio" name="tempo_espera" value="Não, esperei muito mais que o previsto">
+              <span>Não, esperei muito mais que o previsto</span>
             </label>
           </section>
 
           <section class="bloco-comentario-experiencia">
-            <p class="pergunta-experiencia">Gostaria de deixar algum comentÃ¡rio?</p>
+            <p class="pergunta-experiencia">Gostaria de deixar algum comentário?</p>
             <textarea
               id="campoComentario"
               class="campo-comentario"
@@ -94,7 +94,7 @@
 
           <div class="acoes-experiencia">
             <button type="submit" class="botao-primario" id="btnEnviarAvaliacao">
-              Enviar avaliaÃ§Ã£o
+              Enviar avaliação
             </button>
           </div>
         </form>
@@ -104,8 +104,8 @@
 
     <div id="modalFeedbackExistente" class="modal">
       <div class="modal-conteudo">
-        <h2>VocÃª jÃ¡ avaliou</h2>
-        <p>Deseja manter sua avaliaÃ§Ã£o ou editar?</p>
+        <h2>Você já avaliou</h2>
+        <p>Deseja manter sua avaliação ou editar?</p>
 
         <div class="modal-acoes">
           <button class="botao-secundario" onclick="fecharModal()">
@@ -113,7 +113,7 @@
           </button>
 
           <button class="botao-primario" onclick="editarFeedback()">
-            Editar avaliaÃ§Ã£o
+            Editar avaliação
           </button>
         </div>
       </div>
@@ -172,13 +172,13 @@ async function obterClienteDaFila(id) {
 function editarFeedback() {
   fecharModal();
 
-  // habilita ediÃ§Ã£o
+  // habilita edição
   btnEnviarAvaliacao.disabled = false;
 
   // feedback visual
-  setMensagemExperiencia('Edite sua avaliaÃ§Ã£o e clique em salvar.');
+  setMensagemExperiencia('Edite sua avaliação e clique em salvar.');
 
-  // foco no comentÃ¡rio (melhora UX)
+  // foco no comentário (melhora UX)
   campoComentario.focus();
 }
 
@@ -187,7 +187,7 @@ async function init() {
   clienteId = sessionStorage.getItem('cliente_id');
 
   if (!filaItemId) {
-    setMsg('Fila nÃ£o identificada.', 'erro');
+    setMsg('Fila não identificada.', 'erro');
     return;
   }
 
@@ -196,11 +196,11 @@ async function init() {
   }
 
   if (!clienteId) {
-    setMsg('Cliente nÃ£o identificado.', 'erro');
+    setMsg('Cliente não identificado.', 'erro');
     return;
   }
 
-  // âœ” AGORA NA ORDEM CORRETA
+  // ? AGORA NA ORDEM CORRETA
   const { data, error } = await supabaseClient
     .from('feedback')
     .select('*')
@@ -221,7 +221,7 @@ async function init() {
     marcarTempo(data.tempo_espera_resposta);
     comentarioInput.value = data.comentario || '';
 
-    btn.textContent = 'Atualizar avaliaÃ§Ã£o';
+    btn.textContent = 'Atualizar avaliação';
 
     abrirModal();
   }
@@ -260,10 +260,10 @@ form.addEventListener('submit', async (e) => {
 
     if (error) throw error;
 
-    setMsg('AvaliaÃ§Ã£o salva com sucesso!', 'sucesso');
+    setMsg('Avaliação salva com sucesso!', 'sucesso');
 
-    // â— NÃƒO remove session
-    // â— mantÃ©m para permitir ediÃ§Ã£o
+    // Nao remove session
+    // mantem para permitir edicao
 
     setTimeout(() => {
       window.location.href = '/pags_html/agradecimento_avaliacao.html';
@@ -271,9 +271,9 @@ form.addEventListener('submit', async (e) => {
 
   } catch (err) {
     console.error(err);
-    setMsg('Erro ao salvar avaliaÃ§Ã£o.', 'erro');
+    setMsg('Erro ao salvar avaliação.', 'erro');
     btn.disabled = false;
-    btn.textContent = feedbackId ? 'Atualizar avaliaÃ§Ã£o' : 'Enviar avaliaÃ§Ã£o';
+    btn.textContent = feedbackId ? 'Atualizar avaliação' : 'Enviar avaliação';
   }
 });
 

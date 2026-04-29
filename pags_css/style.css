@@ -116,7 +116,7 @@ a{
   gap: 12px;
 }
 
-/* BOTÕES */
+/* BOTOES */
 
 .acoes-topo{
   position: absolute;
@@ -269,7 +269,7 @@ a{
   box-shadow: var(--sombra-botao-reserva);
 }
 
-/* TELA FORMULÁRIO / FILA */
+/* TELA FORMULARIO / FILA */
 
 .cartao-formulario{
   max-width: var(--largura-mobile);
@@ -412,7 +412,7 @@ a{
   box-shadow: var(--sombra-botao-cancelamento);
 }
 
-/* REVISÃO DE DADOS */
+/* REVISAO DE DADOS */
 
 .cartao-revisao .conteudo{
   flex: 1;
@@ -508,7 +508,7 @@ a{
   opacity: 0.96;
 }
 
-/* CONFIRMAÇÃO DE FILA */
+/* CONFIRMACAO DE FILA */
 
 .cartao-confirmacao{
   max-width: var(--largura-mobile);
@@ -795,7 +795,7 @@ a{
   left: 78%;
 }
 
-/* VARIAÇÕES - MESA PRONTA */
+/* VARIACOES - MESA PRONTA */
 
 .barra-progresso-preenchimento-pronta{
   width: 100%;
@@ -820,7 +820,7 @@ a{
   text-align: center;
 }
 
-/* EXPERIÊNCIA NA FILA / AVALIAÇÃO */
+/* EXPERIENCIA NA FILA / AVALIACAO */
 
 .cartao-experiencia{
   max-width: 420px;
@@ -1000,7 +1000,7 @@ a{
   box-shadow: var(--sombra-botao-inicio);
 }
 
-/* AGRADECIMENTO DA AVALIAÇÃO */
+/* AGRADECIMENTO DA AVALIACAO */
 
 .cartao-agradecimento{
   max-width: var(--largura-mobile);
@@ -1076,7 +1076,7 @@ a{
   box-shadow: var(--sombra-botao-fila);
 }
 
-/* CARDÁPIO */
+/* CARDAPIO */
 
 .cartao-cardapio{
   max-width: 420px;
@@ -1538,7 +1538,7 @@ a{
   color: #7d7d7d;
 }
 
-/* CANCELAMENTO SEM COMENTÁRIO */
+/* CANCELAMENTO SEM COMENTARIO */
 
 .cartao-cancelamento-sem-comentario{
   max-width: var(--largura-mobile);
@@ -1607,7 +1607,7 @@ a{
   box-shadow: 0 4px 10px rgba(23, 30, 75, 0.18);
 }
 
-/* COMENTÁRIO DE CANCELAMENTO */
+/* COMENTARIO DE CANCELAMENTO */
 
 .cartao-comentario-cancelamento{
   max-width: 420px;
@@ -1703,7 +1703,7 @@ a{
   color: #7d7d7d;
 }
 
-/* COMENTÁRIO ENVIADO */
+/* COMENTARIO ENVIADO */
 
 .cartao-comentario-enviado{
   max-width: var(--largura-mobile);
@@ -2088,7 +2088,7 @@ a{
     color: #1f7a37;
   }
 
-  /* AÇÕES */
+  /* ACOES */
   .dashboard-operacional-acoes{
     display: flex;
     flex-wrap: wrap;
@@ -2585,7 +2585,7 @@ a{
   color: #dc2626;
 }
 
-/* AÇÕES */
+/* ACOES */
 
 .dashboard-operacional-acoes{
   display: flex;
@@ -2997,7 +2997,7 @@ a{
   background: #f9fafb;
 }
 
-/* NOVO BOTÃO DE STATUS */
+/* NOVO BOTAO DE STATUS */
 
 .modal-reserva-duplicada .modal-status-header,
 .modal-reserva-duplicada .modal-status-body{
@@ -3531,7 +3531,7 @@ body.tema-fila.tema-dashboard-gestor{
       min-height: 22px;
     }
 
-    /* IDENTIFICAÇÃO DA FILA */
+    /* IDENTIFICACAO DA FILA */
 
 .bloco-identificacao{
   width: 100%;
@@ -3713,7 +3713,7 @@ body.tema-fila.tema-dashboard-gestor{
   display: none;
 }
 
-/* CORREÇÃO FINAL - LOGIN ENTRAR FILA */
+/* CORRECAO FINAL - LOGIN ENTRAR FILA */
 
 .formulario-identificacao,
 .bloco-identificacao,
@@ -3864,7 +3864,7 @@ body.tema-fila.tema-dashboard-gestor{
     border-radius: var(--raio-cartao-tablet);
   }
 
-  /* início */
+  /* inicio */
   .banner{
     padding: 36px 48px 92px;
   }
@@ -3907,7 +3907,7 @@ body.tema-fila.tema-dashboard-gestor{
     padding: 15px 20px;
   }
 
-  /* formulário */
+  /* formulario */
   .cartao-formulario{
     max-width: var(--largura-tablet);
     border-radius: var(--raio-cartao-tablet);
@@ -4519,7 +4519,7 @@ body.tema-fila.tema-dashboard-gestor{
     border-radius: 50%;
   }
 
-  /* Ajustes no conteúdo */
+  /* Ajustes no conteudo */
   .cartao-formulario .conteudo {
     padding: 24px;
   }
@@ -4534,7 +4534,7 @@ body.tema-fila.tema-dashboard-gestor{
     margin-bottom: 14px;
   }
 
-  /* Botão de ação */
+  /* Botao de acao */
   .cartao-formulario .botao-primario {
     margin-top: 24px;
   }
@@ -4910,7 +4910,7 @@ body.tema-fila.tema-dashboard-gestor{
     padding: 56px 32px;
   }
 
-  /* início */
+  /* inicio */
   .tema-inicio .cartao{
     max-width: 1080px;
     min-height: 680px;
@@ -5036,7 +5036,7 @@ body.tema-fila.tema-dashboard-gestor{
     font-size: 14px;
   }
 
-  /* formulário */
+  /* formulario */
   .cartao-formulario{
     max-width: 1080px;
     min-height: 680px;
@@ -6100,8 +6100,8 @@ body.tema-fila.tema-dashboard-gestor{
   }
 }
 
-   /* Correção específica do Painel Operacional
-       Mantém o resumo em uma única linha no desktop e centraliza a referência da data. */
+   /* Correcao especifica do Painel Operacional
+       Mantem o resumo em uma unica linha no desktop e centraliza a referencia da data. */
 
     .dashboard-operacional{
       max-width: 1440px;
